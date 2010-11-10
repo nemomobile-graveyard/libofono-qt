@@ -1,0 +1,125 @@
+/*
+ * This file is part of ofono-qt
+ *
+ * Copyright (C) 2010 Nokia Corporation and/or its subsidiary(-ies).
+ *
+ * Contact: Alexander Kanavin <alexander.kanavin@nokia.com>
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public License
+ * version 2.1 as published by the Free Software Foundation.
+ *
+ * This library is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA
+ *
+ */
+
+#include <QtDBus/QtDBus>
+#include <QtCore/QObject>
+
+#include "ofonocallsettings.h"
+
+OfonoCallSettings::OfonoCallSettings(QString modemId, QObject *parent)
+    : OfonoModemInterface(modemId, "org.ofono.CallSettings", OfonoInterface::GetAllOnFirstRequest, parent)
+{
+    connect(this, SIGNAL(propertyChanged(const QString&, const QVariant&)), 
+            this, SLOT(propertyChanged(const QString&, const QVariant&)));
+    connect(this, SIGNAL(setPropertyFailed(const QString&)), 
+            this, SLOT(setPropertyFailed(const QString&)));
+    connect(this, SIGNAL(requestPropertyComplete(bool, const QString&, const QVariant&)),
+    	    this, SLOT(requestPropertyComplete(bool, const QString&, const QVariant&)));
+}
+
+OfonoCallSettings::~OfonoCallSettings()
+{
+}
+
+void OfonoCallSettings::requestCallingLinePresentation()
+{
+    requestProperty("CallingLinePresentation");
+}
+
+void OfonoCallSettings::requestCalledLinePresentation()
+{
+    requestProperty("CalledLinePresentation");
+}
+
+void OfonoCallSettings::requestCalledLineRestriction()
+{
+    requestProperty("CalledLineRestriction");
+}
+
+void OfonoCallSettings::requestCallingLineRestriction()
+{
+    requestProperty("CallingLineRestriction");
+}
+
+void OfonoCallSettings::requestHideCallerId()
+{
+    requestProperty("HideCallerId");
+}
+
+void OfonoCallSettings::requestVoiceCallWaiting()
+{
+    requestProperty("VoiceCallWaiting");
+}
+
+void OfonoCallSettings::setHideCallerId(QString preference)
+{
+    return setProperty("HideCallerId", qVariantFromValue(preference));
+}
+
+void OfonoCallSettings::setVoiceCallWaiting(QString preference)
+{
+    return setProperty("VoiceCallWaiting", qVariantFromValue(preference));
+}
+
+void OfonoCallSettings::requestPropertyComplete(bool success, const QString& property, const QVariant& value)
+{
+    if (property == "CallingLinePresentation") {	
+        success ? emit callingLinePresentationComplete(true, value.value<QString>()) : emit callingLinePresentationComplete(false, value.value<QString>());
+    } else if (property == "CalledLinePresentation") {	
+        success ? emit calledLinePresentationComplete(true, value.value<QString>()) : emit calledLinePresentationComplete(false, value.value<QString>());
+    } else if (property == "CalledLineRestriction") {	
+        success ? emit calledLineRestrictionComplete(true, value.value<QString>()) : emit calledLineRestrictionComplete(false, value.value<QString>());
+    } else if (property == "CallingLineRestriction") {	
+        success ? emit callingLineRestrictionComplete(true, value.value<QString>()) : emit callingLineRestrictionComplete(false, value.value<QString>());
+    } else if (property == "HideCallerId") {	
+        success ? emit hideCallerIdComplete(true, value.value<QString>()) : emit hideCallerIdComplete(false, value.value<QString>());
+    } else if (property == "VoiceCallWaiting") {	
+        success ? emit voiceCallWaitingComplete(true, value.value<QString>()) : emit voiceCallWaitingComplete(false, value.value<QString>());
+    }
+}
+
+void OfonoCallSettings::propertyChanged(const QString& property, const QVariant& value)
+{
+    if (property == "CallingLinePresentation") {	
+        emit callingLinePresentationChanged(value.value<QString>());
+    } else if (property == "CalledLinePresentation") {	
+        emit calledLinePresentationChanged(value.value<QString>());
+    } else if (property == "CalledLineRestriction") {	
+        emit calledLineRestrictionChanged(value.value<QString>());
+    } else if (property == "CallingLineRestriction") {	
+        emit callingLineRestrictionChanged(value.value<QString>());
+    } else if (property == "HideCallerId") {	
+        emit hideCallerIdChanged(value.value<QString>());
+    } else if (property == "VoiceCallWaiting") {	
+        emit voiceCallWaitingChanged(value.value<QString>());
+    }
+}
+
+void OfonoCallSettings::setPropertyFailed(const QString& property)
+{
+    if (property == "HideCallerId") {	
+        emit setHideCallerIdFailed();
+    } else if (property == "VoiceCallWaiting") {	
+        emit setVoiceCallWaitingFailed();
+    }
+}

@@ -1,0 +1,10 @@
+*.o
+*.a
+*.moc
+moc_*
+Makefile*
+*.so*
+*.pc
+*.prl
+doxygen.cfg
+doc/

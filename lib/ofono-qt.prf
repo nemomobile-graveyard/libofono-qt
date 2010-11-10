@@ -1,0 +1,9 @@
+prefix=/usr
+exec_prefix=$${prefix}
+
+DEPENDPATH += $${prefix}/include
+DEPENDPATH += $${prefix}/include/ofono-qt
+INCLUDEPATH += $${prefix}/include
+INCLUDEPATH += $${prefix}/include/ofono-qt
+LIBS += -L $${exec_prefix}/lib -lofono-qt
+
