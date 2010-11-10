@@ -1,12 +1,3 @@
-/**
- * This file is part of CellularQt
- *
- * Copyright (C) 2010 Nokia Corporation. All rights reserved.
- */
-
-#ifndef OFONOINTERFACE_H
-#define OFONOINTERFACE_H
-
 /*
  * This file is part of ofono-qt
  *
@@ -29,6 +20,9 @@
  * 02110-1301 USA
  *
  */
+
+#ifndef OFONOINTERFACE_H
+#define OFONOINTERFACE_H
 
 #include <QtCore/QObject>
 #include <QVariant>
