@@ -31,7 +31,6 @@
 
 //! This class is used to access oFono phonebook API
 /*!
- * This class is used to access oFono phonebook API
  * oFono phonebook API is documented in
  * http://git.kernel.org/?p=network/ofono/ofono.git;a=blob_plain;f=doc/phonebook-api.txt
  */

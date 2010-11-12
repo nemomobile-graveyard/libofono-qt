@@ -33,7 +33,6 @@
 
 //! This class is used to access oFono supplementary services API
 /*!
- * This class is used to access oFono supplementary services API.
  * The API is documented in
  * http://git.kernel.org/?p=network/ofono/ofono.git;a=blob_plain;f=doc/supplementaryservices-api.txt
  */

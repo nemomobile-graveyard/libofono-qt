@@ -35,7 +35,6 @@
 
 //! This class is used to access oFono network operator API
 /*!
- * This class is used to access oFono network operator API.
  * The API is documented in
  * http://git.kernel.org/?p=network/ofono/ofono.git;a=blob_plain;f=doc/network-api.txt
  */

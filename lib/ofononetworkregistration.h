@@ -46,7 +46,6 @@ const QDBusArgument &operator>>(const QDBusArgument &argument, OfonoOperatorStru
 
 //! This class is used to access oFono network registration API
 /*!
- * This class is used to access oFono network registration API.
  * The API is documented in
  * http://git.kernel.org/?p=network/ofono/ofono.git;a=blob_plain;f=doc/network-api.txt
  */

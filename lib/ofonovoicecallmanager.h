@@ -31,7 +31,6 @@
 
 //! This class is used to access oFono voice call manager API
 /*!
- * This class is used to access oFono voice call manager API.
  * The API is documented in
  * http://git.kernel.org/?p=network/ofono/ofono.git;a=blob_plain;f=doc/voicecallmanager-api.txt
  */

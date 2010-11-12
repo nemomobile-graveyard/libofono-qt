@@ -30,7 +30,6 @@
 
 //! This class is used to access oFono radio settings API
 /*!
- * This class is used to access oFono radio settings API
  * The API is documented in
  * http://git.kernel.org/?p=network/ofono/ofono.git;a=blob_plain;f=doc/radio-settings-api.txt
  */

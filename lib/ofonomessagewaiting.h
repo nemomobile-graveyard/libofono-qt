@@ -30,7 +30,6 @@
 
 //! This class is used to access oFono message waiting API
 /*!
- * This class is used to access oFono message waiting API
  * oFono message manager API is documented in
  * http://git.kernel.org/?p=network/ofono/ofono.git;a=blob_plain;f=doc/message-waiting-api.txt
  */

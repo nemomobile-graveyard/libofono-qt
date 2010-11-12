@@ -33,7 +33,7 @@
 //! Basic oFono interface class
 /*!
  * This class implements basic access to properties of oFono interfaces.
- * It should not be instantiated direcrtly; instead you should instantiate
+ * It should not be instantiated directly; instead you should instantiate
  * interface-specific subclasses.
  */
 class OFONO_QT_EXPORT OfonoInterface : public QObject
@@ -68,13 +68,13 @@ public:
     
     //! Request a property asynchronously.
     /*! 
-     * Request a property asynchronoously. Result is returned via requestPropertyComplete() signal.
+     * Result is returned via requestPropertyComplete() signal.
      */
     void requestProperty(const QString &name);
 
     //! Set a property asynchronously.
     /*!
-     * Sets a property asynchronously. Result is returned via propertyChanged() signal
+     * Result is returned via propertyChanged() signal
      * if setting is successful or via setPropertyFailed() signal if setting has failed.
      */
     void setProperty(const QString &name, const QVariant &property);
@@ -112,7 +112,6 @@ signals:
     
     //! Issued when requesting a property has completed
     /*!
-     * Issued when requesting a property has completed.
      * \param success true if requesting a property was successful, false if there was an error
      * \param name name of the property
      * \param property value of the property
@@ -121,7 +120,6 @@ signals:
     
     //! Issued when setting a property has failed
     /*!
-     * Issued when setting a property has failed
      * \param name name of the property
      */
     void setPropertyFailed(const QString &name);

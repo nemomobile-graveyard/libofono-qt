@@ -32,7 +32,6 @@
 
 //! This class is used to access oFono SIM API
 /*!
- * This class is used to access oFono SIM API.
  * The API is documented in
  * http://git.kernel.org/?p=network/ofono/ofono.git;a=blob_plain;f=doc/sim-api.txt
  */

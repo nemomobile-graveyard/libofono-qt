@@ -34,7 +34,6 @@
 
 //! This class implements a generic modem interface object
 /*!
- * This class implements a generic modem interface object. 
  * It adds validity checking and modem binding to OfonoInterface class.
  * It should not be instantiated directly; instead you should instantiate
  * interface-specific subclasses.
@@ -46,7 +45,6 @@ public:
 
     //! Construct a modem interface object
     /*!
-     * Construct a modem interface object.
      * \param modemSetting modem selection setting
      * \param modemPath path to the modem (may not be significant, depending on modemSetting)
      * \param ifname d-bus interface name
@@ -57,7 +55,7 @@ public:
 
     //! Check that the modem interface object is valid
     /*!
-     * Check that the modem interface object is valid. This means that a modem d-bus object
+     * This means that a modem d-bus object
      * exists and has the d-bus interface specified in the contstructor.
      */
     bool isValid() const;
@@ -68,7 +66,7 @@ public:
 signals:
     //! Interface validity has changed
     /*!
-     * Interface validity has changed. This may mean that modem has become unavailable
+     * This may mean that modem has become unavailable
      * (or available again) or that the modem interface has become unavailable
      * (or available again)
      */

@@ -31,7 +31,6 @@
 
 //! This class is used to access oFono message manager API
 /*!
- * This class is used to access oFono message manager API
  * oFono message manager API is documented in
  * http://git.kernel.org/?p=network/ofono/ofono.git;a=blob_plain;f=doc/message-api.txt
  */
