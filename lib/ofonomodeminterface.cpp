@@ -28,16 +28,16 @@
 #include "ofonomodeminterface.h"
 #include "ofonomodem.h"
 
-OfonoModemInterface::OfonoModemInterface(const QString& modemId, const QString& ifname, GetPropertySetting setting, QObject *parent)
-    : OfonoInterface("/", ifname, setting, parent)
+OfonoModemInterface::OfonoModemInterface(OfonoModem::SelectionSetting modemSetting, const QString& modemPath, const QString& ifname, GetPropertySetting propertySetting, QObject *parent)
+    : OfonoInterface("/", ifname, propertySetting, parent)
 {
 
-    m_m = new OfonoModem(modemId, this);
+    m_m = new OfonoModem(modemSetting, modemPath, this);
     connect(m_m, SIGNAL(validityChanged(bool)), this, SLOT(modemValidityChanged(bool)));
     connect(m_m, SIGNAL(interfacesChanged(QStringList)), this, SLOT(interfacesChanged(QStringList)));
-    connect(m_m, SIGNAL(modemIdChanged(QString)), this, SLOT(setPath(QString)));
+    connect(m_m, SIGNAL(modemPathChanged(QString)), this, SLOT(setPath(QString)));
 
-    setPath(m_m->modemId());
+    setPath(m_m->modemPath());
     m_isValid = checkValidity();
 }
 
@@ -73,7 +73,7 @@ void OfonoModemInterface::modemValidityChanged(bool /*validity*/)
     updateValidity();
 }
 
-void OfonoModemInterface::interfacesChanged(QStringList /*interfaces*/)
+void OfonoModemInterface::interfacesChanged(const QStringList& /*interfaces*/)
 {
     updateValidity();
 }

@@ -30,33 +30,101 @@
 #include <QDBusError>
 #include "libofono-qt_global.h"
 
+//! Basic oFono interface class
+/*!
+ * This class implements basic access to properties of oFono interfaces.
+ * It should not be instantiated direcrtly; instead you should instantiate
+ * interface-specific subclasses.
+ */
 class OFONO_QT_EXPORT OfonoInterface : public QObject
 {
     Q_OBJECT
 public:
+
+    //! How to handle getting the properties
     enum GetPropertySetting {
-    	GetAllOnStartup,
-    	GetAllOnFirstRequest
+    	GetAllOnStartup,	/*!< Get all properties synchronously on startup;
+    				 * they would be immediately available. */
+    	GetAllOnFirstRequest 	/*!< Do not get properties on startup;
+    			     	 * get them in an asynhronous way when the first
+    			     	 * property is requested. */
     };
 
-    OfonoInterface(const QString& path, const QString& ifname, GetPropertySetting setting, QObject *parent=0);
+    /*!
+     * \param path D-Bus path to the interface
+     * \param ifname D-Bus name of the interface
+     * \param setting specifies how the object should handle oFono properties of the interface
+     */
+    OfonoInterface(const QString &path, const QString &ifname, GetPropertySetting setting, QObject *parent=0);
     ~OfonoInterface();
 
+    //! Get all properties
+    /*!
+     * Returns the full set of current properties. If the object was constructed with
+     * OfonoInterface::GetAllOnFirstRequest, and no properties have been explicitly queried yet
+     * via requestProperty(), then returns nothing.
+     */
     QVariantMap properties() const;
-    void requestProperty(const QString& name);
-    void setProperty(const QString& name, const QVariant& property);
+    
+    //! Request a property asynchronously.
+    /*! 
+     * Request a property asynchronoously. Result is returned via requestPropertyComplete() signal.
+     */
+    void requestProperty(const QString &name);
+
+    //! Set a property asynchronously.
+    /*!
+     * Sets a property asynchronously. Result is returned via propertyChanged() signal
+     * if setting is successful or via setPropertyFailed() signal if setting has failed.
+     */
+    void setProperty(const QString &name, const QVariant &property);
+    
+    //! Resets the property cache.
     void resetProperties();
     
+    //! Get the interface D-Bus path
     QString path() const {return m_path;}
     
+    //! Get the interface D-Bus name
     QString ifname() const {return m_ifname;}
+
+    //! Get the D-Bus error name of the last operation.
+    /*!
+     * Returns the D-Bus error name of the last operation (setting a property
+     * or calling a method) if it has failed
+     */
     QString errorName() const {return m_errorName;}
+
+    //! Get the D-Bus error message of the last operation.
+    /*!
+     * Returns the D-Bus error message of the last operation (setting a property
+     * or calling a method) if it has failed
+     */
     QString errorMessage() const {return m_errorMessage;}
 
 signals:
-    void propertyChanged(const QString& name, const QVariant& property);
-    void requestPropertyComplete(bool success, const QString& name, const QVariant& property);
-    void setPropertyFailed(const QString& name);
+    //! Issued when a property has changed
+    /*!
+     * \param name name of the property
+     * \param property value of the property
+     */
+    void propertyChanged(const QString &name, const QVariant &property);
+    
+    //! Issued when requesting a property has completed
+    /*!
+     * Issued when requesting a property has completed.
+     * \param success true if requesting a property was successful, false if there was an error
+     * \param name name of the property
+     * \param property value of the property
+     */
+    void requestPropertyComplete(bool success, const QString &name, const QVariant &property);
+    
+    //! Issued when setting a property has failed
+    /*!
+     * Issued when setting a property has failed
+     * \param name name of the property
+     */
+    void setPropertyFailed(const QString &name);
 
 private slots:
     void onPropertyChanged(QString property, QDBusVariant value);
@@ -65,7 +133,7 @@ private slots:
     void setPropertyResp();
     void setPropertyErr(const QDBusError& error);
 protected slots:
-    void setPath(const QString& path);
+    void setPath(const QString &path);
 private:
     QVariantMap getAllPropertiesSync();
     

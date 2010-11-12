@@ -26,8 +26,8 @@
 #include "ofonocallforwarding.h"
 
 
-OfonoCallForwarding::OfonoCallForwarding(QString modemId, QObject *parent)
-    : OfonoModemInterface(modemId, "org.ofono.CallForwarding", OfonoInterface::GetAllOnFirstRequest, parent)
+OfonoCallForwarding::OfonoCallForwarding(OfonoModem::SelectionSetting modemSetting, const QString &modemPath, QObject *parent)
+    : OfonoModemInterface(modemSetting, modemPath, "org.ofono.CallForwarding", OfonoInterface::GetAllOnFirstRequest, parent)
 {
     connect(this, SIGNAL(propertyChanged(const QString&, const QVariant&)), 
             this, SLOT(propertyChanged(const QString&, const QVariant&)));
@@ -42,7 +42,7 @@ OfonoCallForwarding::~OfonoCallForwarding()
 }
 
 
-void OfonoCallForwarding::requestDisableAll(QString type)
+void OfonoCallForwarding::requestDisableAll(const QString &type)
 {
     QDBusMessage request;
 
@@ -62,7 +62,7 @@ void OfonoCallForwarding::requestVoiceUnconditional()
     requestProperty("VoiceUnconditional");
 }
 
-void OfonoCallForwarding::setVoiceUnconditional(QString property)
+void OfonoCallForwarding::setVoiceUnconditional(const QString &property)
 {
     setProperty("VoiceUnconditional", qVariantFromValue(property));
 }
@@ -72,7 +72,7 @@ void OfonoCallForwarding::requestVoiceBusy()
     requestProperty("VoiceBusy");
 }
 
-void OfonoCallForwarding::setVoiceBusy(QString property)
+void OfonoCallForwarding::setVoiceBusy(const QString &property)
 {
     return setProperty("VoiceBusy", qVariantFromValue(property));
 }
@@ -82,7 +82,7 @@ void OfonoCallForwarding::requestVoiceNoReply()
     requestProperty("VoiceNoReply");
 }
 
-void OfonoCallForwarding::setVoiceNoReply(QString property)
+void OfonoCallForwarding::setVoiceNoReply(const QString &property)
 {
     return setProperty("VoiceNoReply", qVariantFromValue(property));
 }
@@ -102,7 +102,7 @@ void OfonoCallForwarding::requestVoiceNotReachable()
     requestProperty("VoiceNotReachable");
 }
 
-void OfonoCallForwarding::setVoiceNotReachable(QString property)
+void OfonoCallForwarding::setVoiceNotReachable(const QString &property)
 {
     return setProperty("VoiceNotReachable", qVariantFromValue(property));
 }

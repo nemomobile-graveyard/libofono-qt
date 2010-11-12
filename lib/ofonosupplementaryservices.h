@@ -31,37 +31,43 @@
 #include "ofonomodeminterface.h"
 #include "libofono-qt_global.h"
 
+//! This class is used to access oFono supplementary services API
+/*!
+ * This class is used to access oFono supplementary services API.
+ * The API is documented in
+ * http://git.kernel.org/?p=network/ofono/ofono.git;a=blob_plain;f=doc/supplementaryservices-api.txt
+ */
 class OFONO_QT_EXPORT OfonoSupplementaryServices : public OfonoModemInterface
 {
     Q_OBJECT
 
 public:
-    OfonoSupplementaryServices(QString modemId, QObject *parent=0);
+    OfonoSupplementaryServices(OfonoModem::SelectionSetting modemSetting, const QString &modemPath, QObject *parent=0);
     ~OfonoSupplementaryServices();
     
     /* Properties */
-    QString state();
+    QString state() const;
     
-    void requestInitiate(QString command);
-    void requestRespond(QString reply);
+    void requestInitiate(const QString &command);
+    void requestRespond(const QString &reply);
     void requestCancel();
     
 signals:
-    void notificationReceived(QString message);
-    void requestReceived(QString message);
+    void notificationReceived(const QString &message);
+    void requestReceived(const QString &message);
 
-    void stateChanged(QString state);
+    void stateChanged(const QString &state);
 
-    void initiateUSSDComplete(QString ussdResp);
-    void barringComplete(QString ssOp, QString cbService, QVariantMap cbMap);
-    void forwardingComplete(QString ssOp, QString cfService, QVariantMap cfMap);
-    void waitingComplete(QString ssOp, QVariantMap cwMap);
-    void callingLinePresentationComplete(QString ssOp, QString status);
-    void calledLinePresentationComplete(QString ssOp, QString status);
-    void callingLineRestrictionComplete(QString ssOp, QString status);
-    void calledLineRestrictionComplete(QString ssOp, QString status);
+    void initiateUSSDComplete(const QString &ussdResp);
+    void barringComplete(const QString &ssOp, const QString &cbService, const QVariantMap &cbMap);
+    void forwardingComplete(const QString &ssOp, const QString &cfService, const QVariantMap &cfMap);
+    void waitingComplete(const QString &ssOp, const QVariantMap &cwMap);
+    void callingLinePresentationComplete(const QString &ssOp, const QString &status);
+    void calledLinePresentationComplete(const QString &ssOp, const QString &status);
+    void callingLineRestrictionComplete(const QString &ssOp, const QString &status);
+    void calledLineRestrictionComplete(const QString &ssOp, const QString &status);
     void initiateFailed();
-    void respondComplete(bool success, QString message);
+    void respondComplete(bool success, const QString &message);
     void cancelComplete(bool success);
     
 private slots:

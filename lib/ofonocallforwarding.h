@@ -29,41 +29,47 @@
 #include "ofonomodeminterface.h"
 #include "libofono-qt_global.h"
 
+//! This class is used to access oFono call forwarding API
+/*!
+ * This class is used to access oFono call forwarding API.
+ * The API is documented in
+ * http://git.kernel.org/?p=network/ofono/ofono.git;a=blob_plain;f=doc/call-forwarding-api.txt
+ */
 class OFONO_QT_EXPORT OfonoCallForwarding : public OfonoModemInterface
 {
     Q_OBJECT
 
 public:
-    OfonoCallForwarding(QString modemId, QObject *parent=0);
+    OfonoCallForwarding(OfonoModem::SelectionSetting modemSetting, const QString &modemPath, QObject *parent=0);
     ~OfonoCallForwarding();
 
     /* Properties */
     void requestVoiceUnconditional(); /* "" | phonenumber */
-    void setVoiceUnconditional(QString property); 
+    void setVoiceUnconditional(const QString &property); 
     void requestVoiceBusy();
-    void setVoiceBusy(QString property);
+    void setVoiceBusy(const QString &property);
     void requestVoiceNoReply();
-    void setVoiceNoReply(QString property);
+    void setVoiceNoReply(const QString &property);
     void requestVoiceNoReplyTimeout();
     void setVoiceNoReplyTimeout(ushort timeout);
     void requestVoiceNotReachable();
-    void setVoiceNotReachable(QString property);
+    void setVoiceNotReachable(const QString &property);
     
     /* Methods */
-    void requestDisableAll(QString type); /* "all" | "conditional" */
+    void requestDisableAll(const QString &type); /* "all" | "conditional" */
     
 signals:
-    void voiceUnconditionalComplete(bool success, QString property);
-    void voiceBusyComplete(bool success, QString property);
-    void voiceNoReplyComplete(bool success, QString property);
+    void voiceUnconditionalComplete(bool success, const QString &property);
+    void voiceBusyComplete(bool success, const QString &property);
+    void voiceNoReplyComplete(bool success, const QString &property);
     void voiceNoReplyTimeoutComplete(bool success, ushort timeout);
-    void voiceNotReachableComplete(bool success, QString property);
+    void voiceNotReachableComplete(bool success, const QString &property);
 
-    void voiceUnconditionalChanged(QString property);
-    void voiceBusyChanged(QString property);
-    void voiceNoReplyChanged(QString property);
+    void voiceUnconditionalChanged(const QString &property);
+    void voiceBusyChanged(const QString &property);
+    void voiceNoReplyChanged(const QString &property);
     void voiceNoReplyTimeoutChanged(ushort timeout);
-    void voiceNotReachableChanged(QString property);
+    void voiceNotReachableChanged(const QString &property);
 
     void setVoiceUnconditionalFailed();
     void setVoiceBusyFailed();

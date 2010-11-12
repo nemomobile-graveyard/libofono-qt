@@ -26,8 +26,8 @@
 
 #include "ofonocallsettings.h"
 
-OfonoCallSettings::OfonoCallSettings(QString modemId, QObject *parent)
-    : OfonoModemInterface(modemId, "org.ofono.CallSettings", OfonoInterface::GetAllOnFirstRequest, parent)
+OfonoCallSettings::OfonoCallSettings(OfonoModem::SelectionSetting modemSetting, const QString &modemPath, QObject *parent)
+    : OfonoModemInterface(modemSetting, modemPath, "org.ofono.CallSettings", OfonoInterface::GetAllOnFirstRequest, parent)
 {
     connect(this, SIGNAL(propertyChanged(const QString&, const QVariant&)), 
             this, SLOT(propertyChanged(const QString&, const QVariant&)));
@@ -71,12 +71,12 @@ void OfonoCallSettings::requestVoiceCallWaiting()
     requestProperty("VoiceCallWaiting");
 }
 
-void OfonoCallSettings::setHideCallerId(QString preference)
+void OfonoCallSettings::setHideCallerId(const QString &preference)
 {
     return setProperty("HideCallerId", qVariantFromValue(preference));
 }
 
-void OfonoCallSettings::setVoiceCallWaiting(QString preference)
+void OfonoCallSettings::setVoiceCallWaiting(const QString &preference)
 {
     return setProperty("VoiceCallWaiting", qVariantFromValue(preference));
 }

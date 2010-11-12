@@ -27,8 +27,8 @@
 #include "ofonosimmanager.h"
 
 
-OfonoSimManager::OfonoSimManager(QString modemId, QObject *parent)
-    : OfonoModemInterface(modemId, "org.ofono.SimManager", OfonoInterface::GetAllOnStartup, parent)
+OfonoSimManager::OfonoSimManager(OfonoModem::SelectionSetting modemSetting, const QString &modemPath, QObject *parent)
+    : OfonoModemInterface(modemSetting, modemPath, "org.ofono.SimManager", OfonoInterface::GetAllOnStartup, parent)
 {
     connect(this, SIGNAL(propertyChanged(const QString&, const QVariant&)), 
             this, SLOT(propertyChanged(const QString&, const QVariant&)));
@@ -41,7 +41,7 @@ OfonoSimManager::~OfonoSimManager()
 {
 }
 
-void OfonoSimManager::requestChangePin(QString pintype, QString oldpin, QString newpin)
+void OfonoSimManager::requestChangePin(const QString &pintype, const QString &oldpin, const QString &newpin)
 {
     QDBusMessage request;
 
@@ -55,7 +55,7 @@ void OfonoSimManager::requestChangePin(QString pintype, QString oldpin, QString 
 					SLOT(changePinErr(const QDBusError&)));
 }
 
-void OfonoSimManager::requestEnterPin(QString pintype, QString pin)
+void OfonoSimManager::requestEnterPin(const QString &pintype, const QString &pin)
 {
     QDBusMessage request;
 
@@ -69,7 +69,7 @@ void OfonoSimManager::requestEnterPin(QString pintype, QString pin)
 					SLOT(enterPinErr(const QDBusError&)));
 }
 
-void OfonoSimManager::requestResetPin(QString pintype, QString puk, QString newpin)
+void OfonoSimManager::requestResetPin(const QString &pintype, const QString &puk, const QString &newpin)
 {
     QDBusMessage request;
 
@@ -83,7 +83,7 @@ void OfonoSimManager::requestResetPin(QString pintype, QString puk, QString newp
 					SLOT(resetPinErr(const QDBusError&)));
 }
 
-void OfonoSimManager::requestLockPin(QString pintype, QString pin)
+void OfonoSimManager::requestLockPin(const QString &pintype, const QString &pin)
 {
     QDBusMessage request;
 
@@ -97,7 +97,7 @@ void OfonoSimManager::requestLockPin(QString pintype, QString pin)
 					SLOT(lockPinErr(const QDBusError&)));
 }
 
-void OfonoSimManager::requestUnlockPin(QString pintype, QString pin)
+void OfonoSimManager::requestUnlockPin(const QString &pintype, const QString &pin)
 {
     QDBusMessage request;
 
@@ -111,59 +111,59 @@ void OfonoSimManager::requestUnlockPin(QString pintype, QString pin)
 					SLOT(unlockPinErr(const QDBusError&)));
 }
 
-void OfonoSimManager::setSubscriberNumbers(QStringList numbers)
+void OfonoSimManager::setSubscriberNumbers(const QStringList &numbers)
 {
     setProperty("SubscriberNumbers", qVariantFromValue(numbers));
 }
 
-bool OfonoSimManager::present()
+bool OfonoSimManager::present() const
 {
     return properties()["Present"].value<bool>();
 }
 
-QString OfonoSimManager::subscriberIdentity()
+QString OfonoSimManager::subscriberIdentity() const
 {
     return properties()["SubscriberIdentity"].value<QString>();
 }
 
-QString OfonoSimManager::mobileCountryCode()
+QString OfonoSimManager::mobileCountryCode() const
 {
     return properties()["MobileCountryCode"].value<QString>();
 }
 
-QString OfonoSimManager::mobileNetworkCode()
+QString OfonoSimManager::mobileNetworkCode() const
 {
     return properties()["MobileNetworkCode"].value<QString>();
 }
 
-QStringList OfonoSimManager::subscriberNumbers()
+QStringList OfonoSimManager::subscriberNumbers() const
 {
     return properties()["SubscriberNumbers"].value<QStringList>();
 }
 
-QMap<QString, QString> OfonoSimManager::serviceNumbers()
+QMap<QString, QString> OfonoSimManager::serviceNumbers() const
 {
     QMap<QString, QString> map;
     properties()["ServiceNumbers"].value<QDBusArgument>() >> map;
     return map;
 }
 
-QString OfonoSimManager::pinRequired()
+QString OfonoSimManager::pinRequired() const
 {
     return properties()["PinRequired"].value<QString>();
 }
 
-QStringList OfonoSimManager::lockedPins()
+QStringList OfonoSimManager::lockedPins() const
 {
     return properties()["LockedPins"].value<QStringList>();
 }
 
-QString OfonoSimManager::cardIdentifier()
+QString OfonoSimManager::cardIdentifier() const
 {
     return properties()["CardIdentifier"].value<QString>();
 }
 
-QStringList OfonoSimManager::preferredLanguages()
+QStringList OfonoSimManager::preferredLanguages() const
 {
     return properties()["PreferredLanguages"].value<QStringList>();
 }

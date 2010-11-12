@@ -29,34 +29,40 @@
 #include "ofonomodeminterface.h"
 #include "libofono-qt_global.h"
 
+//! This class is used to access oFono call barring API
+/*!
+ * This class is used to access oFono call barring API.
+ * The API is documented in
+ * http://git.kernel.org/?p=network/ofono/ofono.git;a=blob_plain;f=doc/call-barring-api.txt
+ */
 class OFONO_QT_EXPORT OfonoCallBarring : public OfonoModemInterface
 {
     Q_OBJECT
 
 public:
-    OfonoCallBarring(QString modemId, QObject *parent=0);
+    OfonoCallBarring(OfonoModem::SelectionSetting modemSetting, const QString &modemPath, QObject *parent=0);
     ~OfonoCallBarring();
 
     /* Properties */
     void requestVoiceIncoming();
-    void setVoiceIncoming(QString barrings, QString password);
+    void setVoiceIncoming(const QString &barrings, const QString &password);
     void requestVoiceOutgoing();
-    void setVoiceOutgoing(QString barrings, QString password);
+    void setVoiceOutgoing(const QString &barrings, const QString &password);
 
     /* Methods */
-    void requestChangePassword(QString old_password, QString new_password);
-    void requestDisableAll(QString password);
-    void requestDisableAllIncoming(QString password);
-    void requestDisableAllOutgoing(QString password);
+    void requestChangePassword(const QString &old_password, const QString &new_password);
+    void requestDisableAll(const QString &password);
+    void requestDisableAllIncoming(const QString &password);
+    void requestDisableAllOutgoing(const QString &password);
 
 signals:
     void incomingBarringInEffect();
     void outgoingBarringInEffect();
 
-    void voiceIncomingComplete(bool success, QString barrings);
-    void voiceOutgoingComplete(bool success, QString barrings);
-    void voiceIncomingChanged(QString barrings);
-    void voiceOutgoingChanged(QString barrings);
+    void voiceIncomingComplete(bool success, const QString &barrings);
+    void voiceOutgoingComplete(bool success, const QString &barrings);
+    void voiceIncomingChanged(const QString &barrings);
+    void voiceOutgoingChanged(const QString &barrings);
     void setVoiceIncomingFailed();
     void setVoiceOutgoingFailed();
 

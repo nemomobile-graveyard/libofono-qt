@@ -58,7 +58,7 @@ public slots:
 private slots:
     void initTestCase()
     {
-	m = new OfonoSupplementaryServices(QString(), this);
+	m = new OfonoSupplementaryServices(OfonoModem::AutomaticSelect, QString(), this);
 	connect(m, SIGNAL(stateChanged(QString)), 
 		this, SLOT(stateChanged(QString)));
 	connect(m, SIGNAL(initiateFailed()), 

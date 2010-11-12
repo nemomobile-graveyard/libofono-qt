@@ -42,7 +42,7 @@ private slots:
 
     void initTestCase()
     {
-	m = new OfonoVoiceCallManager(QString(), this);
+	m = new OfonoVoiceCallManager(OfonoModem::AutomaticSelect, QString(), this);
 	connect(m, SIGNAL(validityChanged(bool)), this, 
 		SLOT(validityChanged(bool)));
     }

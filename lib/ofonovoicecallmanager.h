@@ -29,19 +29,25 @@
 #include "ofonomodeminterface.h"
 #include "libofono-qt_global.h"
 
+//! This class is used to access oFono voice call manager API
+/*!
+ * This class is used to access oFono voice call manager API.
+ * The API is documented in
+ * http://git.kernel.org/?p=network/ofono/ofono.git;a=blob_plain;f=doc/voicecallmanager-api.txt
+ */
 class OFONO_QT_EXPORT OfonoVoiceCallManager : public OfonoModemInterface
 {
     Q_OBJECT
 
 public:
-    OfonoVoiceCallManager(QString modemId, QObject *parent=0);
+    OfonoVoiceCallManager(OfonoModem::SelectionSetting modemSetting, const QString &modemPath, QObject *parent=0);
     ~OfonoVoiceCallManager();
 
     /* Properties */
-    QStringList emergencyNumbers();
+    QStringList emergencyNumbers() const;
     
 signals:
-    void emergencyNumbersChanged(QStringList numbers);
+    void emergencyNumbersChanged(const QStringList &numbers);
 
 private slots:
     void propertyChanged(const QString& property, const QVariant& value);

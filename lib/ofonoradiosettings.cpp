@@ -26,8 +26,8 @@
 
 #include "ofonoradiosettings.h"
 
-OfonoRadioSettings::OfonoRadioSettings(QString modemId, QObject *parent)
-    : OfonoModemInterface(modemId, "org.ofono.RadioSettings", OfonoInterface::GetAllOnStartup, parent)
+OfonoRadioSettings::OfonoRadioSettings(OfonoModem::SelectionSetting modemSetting, const QString &modemPath, QObject *parent)
+    : OfonoModemInterface(modemSetting, modemPath, "org.ofono.RadioSettings", OfonoInterface::GetAllOnStartup, parent)
 {
     connect(this, SIGNAL(propertyChanged(const QString&, const QVariant&)), 
             this, SLOT(propertyChanged(const QString&, const QVariant&)));
@@ -38,7 +38,7 @@ OfonoRadioSettings::~OfonoRadioSettings()
 {
 }
 
-QString OfonoRadioSettings::technologyPreference()
+QString OfonoRadioSettings::technologyPreference() const
 {
     return properties()["TechnologyPreference"].value<QString>();
 }

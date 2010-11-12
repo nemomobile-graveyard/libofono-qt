@@ -107,7 +107,7 @@ private slots:
 
     void initTestCase()
     {
-	m = new OfonoNetworkRegistration(QString(), this);
+	m = new OfonoNetworkRegistration(OfonoModem::AutomaticSelect, QString(), this);
 
 	connect(m, SIGNAL(registerComplete(bool)), this, 
 		SLOT(registerComplete(bool)));

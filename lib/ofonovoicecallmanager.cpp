@@ -26,8 +26,8 @@
 
 #include "ofonovoicecallmanager.h"
 
-OfonoVoiceCallManager::OfonoVoiceCallManager(QString modemId, QObject *parent)
-    : OfonoModemInterface(modemId, "org.ofono.VoiceCallManager", OfonoInterface::GetAllOnStartup, parent)
+OfonoVoiceCallManager::OfonoVoiceCallManager(OfonoModem::SelectionSetting modemSetting, const QString &modemPath, QObject *parent)
+    : OfonoModemInterface(modemSetting, modemPath, "org.ofono.VoiceCallManager", OfonoInterface::GetAllOnStartup, parent)
 {
     connect(this, SIGNAL(propertyChanged(const QString&, const QVariant&)), 
             this, SLOT(propertyChanged(const QString&, const QVariant&)));
@@ -37,7 +37,7 @@ OfonoVoiceCallManager::~OfonoVoiceCallManager()
 {
 }
 
-QStringList OfonoVoiceCallManager::emergencyNumbers()
+QStringList OfonoVoiceCallManager::emergencyNumbers() const
 {
     return properties()["EmergencyNumbers"].value<QStringList>();
 }

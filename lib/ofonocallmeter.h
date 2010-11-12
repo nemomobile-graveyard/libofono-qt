@@ -29,12 +29,18 @@
 #include "ofonomodeminterface.h"
 #include "libofono-qt_global.h"
 
+//! This class is used to access oFono call meter API
+/*!
+ * This class is used to access oFono call meter API.
+ * The API is documented in
+ * http://git.kernel.org/?p=network/ofono/ofono.git;a=blob_plain;f=doc/call-meter-api.txt
+ */
 class OFONO_QT_EXPORT OfonoCallMeter : public OfonoModemInterface
 {
     Q_OBJECT
 
 public:
-    OfonoCallMeter(QString modemId, QObject *parent=0);
+    OfonoCallMeter(OfonoModem::SelectionSetting modemSetting, const QString &modemPath, QObject *parent=0);
     ~OfonoCallMeter();
 
     /* Properties */

@@ -27,8 +27,8 @@
 #include "ofonomessagewaiting.h"
 
 
-OfonoMessageWaiting::OfonoMessageWaiting(QString modemId, QObject *parent)
-    : OfonoModemInterface(modemId, "org.ofono.MessageWaiting", OfonoInterface::GetAllOnStartup, parent)
+OfonoMessageWaiting::OfonoMessageWaiting(OfonoModem::SelectionSetting modemSetting, const QString &modemPath, QObject *parent)
+    : OfonoModemInterface(modemSetting, modemPath, "org.ofono.MessageWaiting", OfonoInterface::GetAllOnStartup, parent)
 {
     connect(this, SIGNAL(propertyChanged(const QString&, const QVariant&)), 
             this, SLOT(propertyChanged(const QString&, const QVariant&)));
@@ -41,17 +41,17 @@ OfonoMessageWaiting::~OfonoMessageWaiting()
 {
 }
 
-bool OfonoMessageWaiting::voicemailWaiting()
+bool OfonoMessageWaiting::voicemailWaiting() const
 {
     return properties()["VoicemailWaiting"].value<bool>();
 }
 
-int OfonoMessageWaiting::voicemailMessageCount()
+int OfonoMessageWaiting::voicemailMessageCount() const
 {
     return properties()["VoicemailMessageCount"].value<int>();
 }
 
-QString OfonoMessageWaiting::voicemailMailboxNumber()
+QString OfonoMessageWaiting::voicemailMailboxNumber() const
 {
     return properties()["VoicemailMailboxNumber"].value<QString>();
 }

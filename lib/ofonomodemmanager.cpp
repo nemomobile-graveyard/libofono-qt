@@ -77,7 +77,7 @@ OfonoModemManager::~OfonoModemManager()
 {
 }
 
-QStringList OfonoModemManager::modems()
+QStringList OfonoModemManager::modems() const
 {
     return m_modems;
 }

@@ -28,19 +28,25 @@
 #include "ofonomodeminterface.h"
 #include "libofono-qt_global.h"
 
+//! This class is used to access oFono radio settings API
+/*!
+ * This class is used to access oFono radio settings API
+ * The API is documented in
+ * http://git.kernel.org/?p=network/ofono/ofono.git;a=blob_plain;f=doc/radio-settings-api.txt
+ */
 class OFONO_QT_EXPORT OfonoRadioSettings : public OfonoModemInterface
 {
     Q_OBJECT
 
 public:
-    OfonoRadioSettings(QString modemId, QObject *parent=0);
+    OfonoRadioSettings(OfonoModem::SelectionSetting modemSetting, const QString &modemPath, QObject *parent=0);
     ~OfonoRadioSettings();
 
-    QString technologyPreference();
+    QString technologyPreference() const;
     void setTechnologyPreference(QString preference);
 
 signals:
-    void technologyPreferenceChanged(QString preference);
+    void technologyPreferenceChanged(const QString &preference);
     void setTechnologyPreferenceFailed();
         
 private slots:

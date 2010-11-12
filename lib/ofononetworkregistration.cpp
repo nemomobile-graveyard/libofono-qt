@@ -46,8 +46,8 @@ const QDBusArgument &operator>>(const QDBusArgument &argument, OfonoOperatorStru
 }
 
 
-OfonoNetworkRegistration::OfonoNetworkRegistration(QString modemId, QObject *parent)
-    : OfonoModemInterface(modemId, "org.ofono.NetworkRegistration", OfonoInterface::GetAllOnStartup, parent)
+OfonoNetworkRegistration::OfonoNetworkRegistration(OfonoModem::SelectionSetting modemSetting, const QString &modemPath, QObject *parent)
+    : OfonoModemInterface(modemSetting, modemPath, "org.ofono.NetworkRegistration", OfonoInterface::GetAllOnStartup, parent)
 {
     qDBusRegisterMetaType<OfonoOperatorStruct>();
     qDBusRegisterMetaType<OfonoOperatorList>();
@@ -116,52 +116,52 @@ void OfonoNetworkRegistration::requestGetOperators()
 					SCAN_TIMEOUT);
 }
 
-QString OfonoNetworkRegistration::mode()
+QString OfonoNetworkRegistration::mode() const
 {
     return properties()["Mode"].value<QString>();
 }
 
-QString OfonoNetworkRegistration::status()
+QString OfonoNetworkRegistration::status() const
 {
     return properties()["Status"].value<QString>();
 }
 
-uint OfonoNetworkRegistration::locationAreaCode()
+uint OfonoNetworkRegistration::locationAreaCode() const
 {
     return properties()["LocationAreaCode"].value<uint>();
 }
 
-uint OfonoNetworkRegistration::cellId()
+uint OfonoNetworkRegistration::cellId() const
 {
     return properties()["CellId"].value<uint>();
 }
 
-QString OfonoNetworkRegistration::mcc()
+QString OfonoNetworkRegistration::mcc() const
 {
     return properties()["MobileCountryCode"].value<QString>();
 }
 
-QString OfonoNetworkRegistration::mnc()
+QString OfonoNetworkRegistration::mnc() const
 {
     return properties()["MobileNetworkCode"].value<QString>();
 }
 
-QString OfonoNetworkRegistration::technology()
+QString OfonoNetworkRegistration::technology() const
 {
     return properties()["Technology"].value<QString>();
 }
 
-QString OfonoNetworkRegistration::name()
+QString OfonoNetworkRegistration::name() const
 {
     return properties()["Name"].value<QString>();
 }
 
-uint OfonoNetworkRegistration::strength()
+uint OfonoNetworkRegistration::strength() const
 {
     return properties()["Strength"].value<uint>();
 }
 
-QString OfonoNetworkRegistration::baseStation()
+QString OfonoNetworkRegistration::baseStation() const
 {
     return properties()["BaseStation"].value<QString>();
 }

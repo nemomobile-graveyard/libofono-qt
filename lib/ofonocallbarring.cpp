@@ -27,8 +27,8 @@
 
 #define SET_PROPERTY_TIMEOUT 300000
 
-OfonoCallBarring::OfonoCallBarring(QString modemId, QObject *parent)
-    : OfonoModemInterface(modemId, "org.ofono.CallBarring", OfonoInterface::GetAllOnFirstRequest, parent)
+OfonoCallBarring::OfonoCallBarring(OfonoModem::SelectionSetting modemSetting, const QString &modemPath, QObject *parent)
+    : OfonoModemInterface(modemSetting, modemPath, "org.ofono.CallBarring", OfonoInterface::GetAllOnFirstRequest, parent)
 {
     connect(this, SIGNAL(propertyChanged(const QString&, const QVariant&)), 
             this, SLOT(propertyChanged(const QString&, const QVariant&)));
@@ -106,8 +106,8 @@ void OfonoCallBarring::setPropertyErr(const QDBusError& error)
 }
 
 
-void OfonoCallBarring::requestChangePassword(QString old_password, 
-					     QString new_password)
+void OfonoCallBarring::requestChangePassword(const QString &old_password, 
+					     const QString &new_password)
 {
     QDBusMessage request;
 
@@ -121,7 +121,7 @@ void OfonoCallBarring::requestChangePassword(QString old_password,
 					SLOT(changePasswordErr(const QDBusError&)));
 }
 
-void OfonoCallBarring::requestDisableAll(QString password)
+void OfonoCallBarring::requestDisableAll(const QString &password)
 {
     QDBusMessage request;
 
@@ -135,7 +135,7 @@ void OfonoCallBarring::requestDisableAll(QString password)
 					SLOT(disableAllErr(const QDBusError&)));
 }
 
-void OfonoCallBarring::requestDisableAllIncoming(QString password)
+void OfonoCallBarring::requestDisableAllIncoming(const QString &password)
 {
     QDBusMessage request;
 
@@ -149,7 +149,7 @@ void OfonoCallBarring::requestDisableAllIncoming(QString password)
 					SLOT(disableAllIncomingErr(const QDBusError&)));
 }
 
-void OfonoCallBarring::requestDisableAllOutgoing(QString password)
+void OfonoCallBarring::requestDisableAllOutgoing(const QString &password)
 {
     QDBusMessage request;
 
@@ -169,7 +169,7 @@ void OfonoCallBarring::requestVoiceIncoming()
     requestProperty("VoiceIncoming");
 }
 
-void OfonoCallBarring::setVoiceIncoming(QString barrings, QString password)
+void OfonoCallBarring::setVoiceIncoming(const QString &barrings, const QString &password)
 {
     setProperty("VoiceIncoming", qVariantFromValue(barrings), password);
 }
@@ -179,7 +179,7 @@ void OfonoCallBarring::requestVoiceOutgoing()
     requestProperty("VoiceOutgoing");
 }
 
-void OfonoCallBarring::setVoiceOutgoing(QString barrings, QString password)
+void OfonoCallBarring::setVoiceOutgoing(const QString &barrings, const QString &password)
 {
     setProperty("VoiceOutgoing", qVariantFromValue(barrings), password);
 }

@@ -29,21 +29,49 @@
 #include <QDBusVariant>
 #include <QStringList>
 #include "ofonointerface.h"
+#include "ofonomodem.h"
 #include "libofono-qt_global.h"
 
-class OfonoModem;
-
+//! This class implements a generic modem interface object
+/*!
+ * This class implements a generic modem interface object. 
+ * It adds validity checking and modem binding to OfonoInterface class.
+ * It should not be instantiated directly; instead you should instantiate
+ * interface-specific subclasses.
+ */
 class OFONO_QT_EXPORT OfonoModemInterface : public OfonoInterface
 {
     Q_OBJECT
 public:
-    OfonoModemInterface(const QString& modemId, const QString& ifname, GetPropertySetting setting, QObject *parent=0);
+
+    //! Construct a modem interface object
+    /*!
+     * Construct a modem interface object.
+     * \param modemSetting modem selection setting
+     * \param modemPath path to the modem (may not be significant, depending on modemSetting)
+     * \param ifname d-bus interface name
+     * \param propertySetting oFono d-bus properties setting
+     */
+    OfonoModemInterface(OfonoModem::SelectionSetting modemSetting, const QString& modemPath, const QString& ifname, GetPropertySetting propertySetting, QObject *parent=0);
     ~OfonoModemInterface();
 
+    //! Check that the modem interface object is valid
+    /*!
+     * Check that the modem interface object is valid. This means that a modem d-bus object
+     * exists and has the d-bus interface specified in the contstructor.
+     */
     bool isValid() const;
+    
+    //! Get the modem object that this interface belongs to
     OfonoModem *modem() const;
 
 signals:
+    //! Interface validity has changed
+    /*!
+     * Interface validity has changed. This may mean that modem has become unavailable
+     * (or available again) or that the modem interface has become unavailable
+     * (or available again)
+     */
     void validityChanged(bool validity);
 
 private:
@@ -52,7 +80,7 @@ private:
 
 private slots:
     void modemValidityChanged(bool validity);
-    void interfacesChanged(QStringList interfaces);
+    void interfacesChanged(const QStringList &interfaces);
 
 private:
     OfonoModem *m_m;

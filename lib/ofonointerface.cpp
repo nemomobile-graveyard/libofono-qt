@@ -93,7 +93,7 @@ QVariantMap OfonoInterface::getAllPropertiesSync()
 void OfonoInterface::requestProperty(const QString& name)
 {
     if (m_pendingProperty.length() > 0) {
-        // FIXME: should indicate that a setProperty is already in progress
+        // FIXME: should indicate that a get/setProperty is already in progress
         m_errorName = QString();
         m_errorMessage = QString();
         emit requestPropertyComplete(false, name, QVariant());
@@ -154,7 +154,7 @@ void OfonoInterface::onPropertyChanged(QString property, QDBusVariant value)
 void OfonoInterface::setProperty(const QString& name, const QVariant& property)
 {
     if (m_pendingProperty.length() > 0) {
-        // FIXME: should indicate that a setProperty is already in progress
+        // FIXME: should indicate that a get/setProperty is already in progress
         m_errorName = QString();
         m_errorMessage = QString();
         emit setPropertyFailed(name);

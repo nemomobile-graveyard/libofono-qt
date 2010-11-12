@@ -28,23 +28,29 @@
 #include "ofonomodeminterface.h"
 #include "libofono-qt_global.h"
 
+//! This class is used to access oFono message waiting API
+/*!
+ * This class is used to access oFono message waiting API
+ * oFono message manager API is documented in
+ * http://git.kernel.org/?p=network/ofono/ofono.git;a=blob_plain;f=doc/message-waiting-api.txt
+ */
 class OFONO_QT_EXPORT OfonoMessageWaiting : public OfonoModemInterface
 {
     Q_OBJECT
 
 public:
-    OfonoMessageWaiting(QString modemId, QObject *parent=0);
+    OfonoMessageWaiting(OfonoModem::SelectionSetting modemSetting, const QString &modemPath, QObject *parent=0);
     ~OfonoMessageWaiting();
 
-    bool voicemailWaiting();
-    int voicemailMessageCount();
-    QString voicemailMailboxNumber();
+    bool voicemailWaiting() const;
+    int voicemailMessageCount() const;
+    QString voicemailMailboxNumber() const;
     void setVoicemailMailboxNumber(QString mailboxnumber);
 
 signals:
     void voicemailWaitingChanged(bool waiting);
     void voicemailMessageCountChanged(int count);
-    void voicemailMailboxNumberChanged(QString mailboxnumber);
+    void voicemailMailboxNumberChanged(const QString &mailboxnumber);
 
     void setVoicemailMailboxNumberFailed();
     

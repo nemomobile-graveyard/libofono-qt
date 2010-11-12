@@ -26,8 +26,8 @@
 
 #include "ofonomessagemanager.h"
 
-OfonoMessageManager::OfonoMessageManager(QString modemId, QObject *parent)
-    : OfonoModemInterface(modemId, "org.ofono.MessageManager", OfonoInterface::GetAllOnFirstRequest, parent)
+OfonoMessageManager::OfonoMessageManager(OfonoModem::SelectionSetting modemSetting, const QString &modemPath, QObject *parent)
+    : OfonoModemInterface(modemSetting, modemPath, "org.ofono.MessageManager", OfonoInterface::GetAllOnFirstRequest, parent)
 {
     connect(this, SIGNAL(propertyChanged(const QString&, const QVariant&)), 
             this, SLOT(propertyChanged(const QString&, const QVariant&)));

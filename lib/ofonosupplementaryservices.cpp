@@ -28,8 +28,8 @@
 
 #define REQUEST_TIMEOUT 60000
 
-OfonoSupplementaryServices::OfonoSupplementaryServices(QString modemId, QObject *parent)
-    : OfonoModemInterface(modemId, "org.ofono.SupplementaryServices", OfonoInterface::GetAllOnStartup, parent)
+OfonoSupplementaryServices::OfonoSupplementaryServices(OfonoModem::SelectionSetting modemSetting, const QString &modemPath, QObject *parent)
+    : OfonoModemInterface(modemSetting, modemPath, "org.ofono.SupplementaryServices", OfonoInterface::GetAllOnStartup, parent)
 {
 
     connect(this, SIGNAL(propertyChanged(const QString&, const QVariant&)), 
@@ -48,7 +48,7 @@ OfonoSupplementaryServices::~OfonoSupplementaryServices()
 {
 }
 
-void OfonoSupplementaryServices::requestInitiate(QString command)
+void OfonoSupplementaryServices::requestInitiate(const QString &command)
 {
     QDBusMessage request;
 
@@ -63,7 +63,7 @@ void OfonoSupplementaryServices::requestInitiate(QString command)
 					REQUEST_TIMEOUT);
 }
 
-void OfonoSupplementaryServices::requestRespond(QString reply)
+void OfonoSupplementaryServices::requestRespond(const QString &reply)
 {
     QDBusMessage request;
 
@@ -92,7 +92,7 @@ void OfonoSupplementaryServices::requestCancel()
 					REQUEST_TIMEOUT);
 }
 
-QString OfonoSupplementaryServices::state()
+QString OfonoSupplementaryServices::state() const
 {
     return properties()["State"].value<QString>();
 }

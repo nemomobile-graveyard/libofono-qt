@@ -58,7 +58,7 @@ private slots:
 
     void initTestCase()
     {
-	m = new OfonoMessageManager(QString(), this);
+	m = new OfonoMessageManager(OfonoModem::AutomaticSelect, QString(), this);
 	connect(m, SIGNAL(validityChanged(bool)), this, 
 		SLOT(validityChanged(bool)));
 	connect(m, SIGNAL(serviceCenterAddressChanged(QString)), 

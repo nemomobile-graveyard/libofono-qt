@@ -52,7 +52,7 @@ private slots:
 
     void initTestCase()
     {
-	m = new OfonoCallMeter(QString(), this);
+	m = new OfonoCallMeter(OfonoModem::AutomaticSelect, QString(), this);
 	connect(m, SIGNAL(validityChanged(bool)), this, 
 		SLOT(validityChanged(bool)));
 	connect(m, SIGNAL(callMeterChanged(uint)), this, 

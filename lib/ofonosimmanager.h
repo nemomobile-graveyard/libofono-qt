@@ -30,46 +30,52 @@
 #include "ofonomodeminterface.h"
 #include "libofono-qt_global.h"
 
+//! This class is used to access oFono SIM API
+/*!
+ * This class is used to access oFono SIM API.
+ * The API is documented in
+ * http://git.kernel.org/?p=network/ofono/ofono.git;a=blob_plain;f=doc/sim-api.txt
+ */
 class OFONO_QT_EXPORT OfonoSimManager : public OfonoModemInterface
 {
     Q_OBJECT
 
 public:
-    OfonoSimManager(QString modemId, QObject *parent=0);
+    OfonoSimManager(OfonoModem::SelectionSetting modemSetting, const QString &modemPath, QObject *parent=0);
     ~OfonoSimManager();
 
     /* Properties */
-    bool present();
-    QString subscriberIdentity();
-    QString mobileCountryCode();
-    QString mobileNetworkCode();
-    QStringList subscriberNumbers();
-    QMap<QString, QString> serviceNumbers();
-    QString pinRequired();
-    QStringList lockedPins();
-    QString cardIdentifier();
-    QStringList preferredLanguages();
+    bool present() const;
+    QString subscriberIdentity() const;
+    QString mobileCountryCode() const;
+    QString mobileNetworkCode() const;
+    QStringList subscriberNumbers() const;
+    QMap<QString, QString> serviceNumbers() const;
+    QString pinRequired() const;
+    QStringList lockedPins() const;
+    QString cardIdentifier() const;
+    QStringList preferredLanguages() const;
 
-    void requestChangePin(QString pintype, QString oldpin, QString newpin);
-    void requestEnterPin(QString pintype, QString pin);
-    void requestResetPin(QString pintype, QString puk, QString newpin);
-    void requestLockPin(QString pintype, QString pin);
-    void requestUnlockPin(QString pintype, QString pin);
+    void requestChangePin(const QString &pintype, const QString &oldpin, const QString &newpin);
+    void requestEnterPin(const QString &pintype, const QString &pin);
+    void requestResetPin(const QString &pintype, const QString &puk, const QString &newpin);
+    void requestLockPin(const QString &pintype, const QString &pin);
+    void requestUnlockPin(const QString &pintype, const QString &pin);
 
-    void setSubscriberNumbers(QStringList numbers);
+    void setSubscriberNumbers(const QStringList &numbers);
 
 signals:
     void presenceChanged(bool ispresent);
-    void subscriberIdentityChanged(QString imsi);
-    void mobileCountryCodeChanged(QString mcc);
-    void mobileNetworkCodeChanged(QString mnc);
-    void subscriberNumbersChanged(QStringList msisdns);
+    void subscriberIdentityChanged(const QString &imsi);
+    void mobileCountryCodeChanged(const QString &mcc);
+    void mobileNetworkCodeChanged(const QString &mnc);
+    void subscriberNumbersChanged(const QStringList &msisdns);
     void setSubscriberNumbersFailed();
-    void serviceNumbersChanged(QMap<QString, QString> sdns);
-    void pinRequiredChanged(QString pintype);
-    void lockedPinsChanged(QStringList pins);
-    void cardIdentifierChanged(QString iccid);
-    void preferredLanguagesChanged(QStringList languages);
+    void serviceNumbersChanged(const QMap<QString, QString> &sdns);
+    void pinRequiredChanged(const QString &pintype);
+    void lockedPinsChanged(const QStringList &pins);
+    void cardIdentifierChanged(const QString &iccid);
+    void preferredLanguagesChanged(const QStringList &languages);
 
     void changePinComplete(bool success);
     void enterPinComplete(bool success);

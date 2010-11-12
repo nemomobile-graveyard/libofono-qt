@@ -46,7 +46,7 @@ private slots:
     void initTestCase()
     {
 //	m = new OfonoPhonebook("/isimodem0", this);
-	m = new OfonoPhonebook(QString(), this);
+	m = new OfonoPhonebook(OfonoModem::AutomaticSelect, QString(), this);
 	connect(m, SIGNAL(validityChanged(bool)), this, SLOT(validityChanged(bool)));
     connect(m, SIGNAL(importComplete(bool, QString)),
 	    this, SLOT(importComplete(bool, QString)));

@@ -41,28 +41,30 @@ QDBusArgument &operator<<(QDBusArgument &argument, const OfonoModemStruct &modem
 // Retrieve the ModemStruct data from the D-Bus argument
 const QDBusArgument &operator>>(const QDBusArgument &argument, OfonoModemStruct &modem);
 
-
-class OfonoInterface;
-
+//! Provides access to the list of available modems and changes in that list.
 class OFONO_QT_EXPORT OfonoModemManager : public QObject {
 
 Q_OBJECT
 
 public:
 
-    OfonoModemManager(QObject *parent);
+    OfonoModemManager(QObject *parent=0);
 
     ~OfonoModemManager();
 
-    QStringList modems();
+    //! Returns a list of d-bus object paths that represent available modems
+    QStringList modems() const;
+
+signals:
+    //! Issued when a modem has been added
+    void modemAdded(const QString &modemPath);
+    
+    //! Issued when a modem has been removed
+    void modemRemoved(const QString &modemPath);
 
 private slots:
-    void onModemAdded(const QDBusObjectPath& path, const QVariantMap& map);
-    void onModemRemoved(const QDBusObjectPath& path);
-    
-signals:
-    void modemAdded(QString modem);
-    void modemRemoved(QString modem);
+    void onModemAdded(const QDBusObjectPath &path, const QVariantMap &map);
+    void onModemRemoved(const QDBusObjectPath &path);
 
 private:
     QStringList m_modems;

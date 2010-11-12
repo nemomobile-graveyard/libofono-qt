@@ -95,7 +95,7 @@ private slots:
 
     void initTestCase()
     {
-	m = new OfonoCallBarring(QString(), this);
+	m = new OfonoCallBarring(OfonoModem::AutomaticSelect, QString(), this);
 	connect(m, SIGNAL(validityChanged(bool)), this, 
 		SLOT(validityChanged(bool)));
 	connect(m, SIGNAL(voiceIncomingComplete(bool, QString)), this, 

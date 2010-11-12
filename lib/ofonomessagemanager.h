@@ -29,12 +29,18 @@
 #include "ofonomodeminterface.h"
 #include "libofono-qt_global.h"
 
+//! This class is used to access oFono message manager API
+/*!
+ * This class is used to access oFono message manager API
+ * oFono message manager API is documented in
+ * http://git.kernel.org/?p=network/ofono/ofono.git;a=blob_plain;f=doc/message-api.txt
+ */
 class OFONO_QT_EXPORT OfonoMessageManager : public OfonoModemInterface
 {
     Q_OBJECT
 
 public:
-    OfonoMessageManager(QString modemId, QObject *parent=0);
+    OfonoMessageManager(OfonoModem::SelectionSetting modemSetting, const QString &modemPath, QObject *parent=0);
     ~OfonoMessageManager();
 
     /* Properties */
@@ -42,15 +48,15 @@ public:
     void setServiceCenterAddress(QString address);
 
 signals:
-    void serviceCenterAddressChanged(QString address);
+    void serviceCenterAddressChanged(const QString &address);
     void setServiceCenterAddressFailed();
     
-    void serviceCenterAddressComplete(bool success, QString address);
+    void serviceCenterAddressComplete(bool success, const QString &address);
 
 private slots:
-    void propertyChanged(const QString& property, const QVariant& value);
-    void setPropertyFailed(const QString& property);
-    void requestPropertyComplete(bool success, const QString& property, const QVariant& value);
+    void propertyChanged(const QString &property, const QVariant &value);
+    void setPropertyFailed(const QString &property);
+    void requestPropertyComplete(bool success, const QString &property, const QVariant &value);
 };
 
 #endif  /* !OFONOMESSAGEMANAGER_H */

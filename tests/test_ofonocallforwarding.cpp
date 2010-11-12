@@ -89,7 +89,7 @@ private slots:
 
     void initTestCase()
     {
-	m = new OfonoCallForwarding(QString(), this);
+	m = new OfonoCallForwarding(OfonoModem::AutomaticSelect, QString(), this);
 	connect(m, SIGNAL(validityChanged(bool)), this, 
 		SLOT(validityChanged(bool)));
 	connect(m, SIGNAL(voiceUnconditionalChanged(QString)), this, 

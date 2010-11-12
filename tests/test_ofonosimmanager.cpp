@@ -111,7 +111,7 @@ private slots:
 
     void initTestCase()
     {
-	m = new OfonoSimManager(QString(), this);
+	m = new OfonoSimManager(OfonoModem::AutomaticSelect, QString(), this);
 	connect(m, SIGNAL(validityChanged(bool)), this, 
 		SLOT(validityChanged(bool)));
 	connect(m, SIGNAL(presenceChanged(bool)), 

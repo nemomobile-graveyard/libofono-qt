@@ -36,13 +36,13 @@ private slots:
     void validityChanged(bool validity)
     {
     qDebug() << "ValidityChanged" << validity;
-	qDebug() << "validity" << m->isValid() << "modemid" << m->modemId();
+	qDebug() << "validity" << m->isValid() << "modemPath" << m->modemPath();
     }
 
-    void modemIdChanged(QString modemId)
+    void modemPathChanged(QString modemPath)
     {
-    qDebug() << "ModemIdChanged" << modemId;
-	qDebug() << "validity" << m->isValid() << "modemid" << m->modemId();
+    qDebug() << "ModemPathChanged" << modemPath;
+	qDebug() << "validity" << m->isValid() << "modemPath" << m->modemPath();
     }
 
     void poweredChanged(bool powered)
@@ -92,11 +92,11 @@ private slots:
 
     void initTestCase()
     {
-	m = new OfonoModem("/isimodem0", this);
+	m = new OfonoModem(OfonoModem::ManualSelect, "/isimodem0", this);
 //	m = new OfonoModem(this);
 	connect(m, SIGNAL(validityChanged(bool)), this, SLOT(validityChanged(bool)));
-    connect(m, SIGNAL(modemIdChanged(QString)),
-	    this, SLOT(modemIdChanged(QString)));
+    connect(m, SIGNAL(modemPathChanged(QString)),
+	    this, SLOT(modemPathChanged(QString)));
 	connect(m, SIGNAL(poweredChanged(bool)), this, SLOT(poweredChanged(bool)));
  	connect(m, SIGNAL(onlineChanged(bool)), this, SLOT(onlineChanged(bool)));
    connect(m, SIGNAL(nameChanged(QString)),
@@ -115,7 +115,7 @@ private slots:
 
     void testOfonoModem()
     {
-	qDebug() << "validity" << m->isValid() << "modemid" << m->modemId();
+	qDebug() << "validity" << m->isValid() << "modemPath" << m->modemPath();
     qDebug() << m->powered() << m->online() << m->manufacturer() << m->model() << m->revision() << m->serial() << m->features() << m->interfaces();
     m->setOnline(true);
     QTest::qWait(120000);

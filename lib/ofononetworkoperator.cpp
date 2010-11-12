@@ -67,32 +67,32 @@ void OfonoNetworkOperator::registerErr(const QDBusError& error)
     emit registerComplete(FALSE);
 }
 
-QString OfonoNetworkOperator::name()
+QString OfonoNetworkOperator::name() const
 {
     return properties()["Name"].value<QString>();
 }
 
-QString OfonoNetworkOperator::status()
+QString OfonoNetworkOperator::status() const
 {
     return properties()["Status"].value<QString>();
 }
 
-QString OfonoNetworkOperator::mcc()
+QString OfonoNetworkOperator::mcc() const
 {
     return properties()["MobileCountryCode"].value<QString>();
 }
 
-QString OfonoNetworkOperator::mnc()
+QString OfonoNetworkOperator::mnc() const
 {
     return properties()["MobileNetworkCode"].value<QString>();
 }
 
-QStringList OfonoNetworkOperator::technologies()
+QStringList OfonoNetworkOperator::technologies() const
 {
     return properties()["Technologies"].value<QStringList>();
 }
 
-QString OfonoNetworkOperator::additionalInfo()
+QString OfonoNetworkOperator::additionalInfo() const
 {
     return properties()["AdditionalInformation"].value<QString>();
 }

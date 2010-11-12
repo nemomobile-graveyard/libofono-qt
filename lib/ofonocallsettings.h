@@ -29,12 +29,18 @@
 #include "ofonomodeminterface.h"
 #include "libofono-qt_global.h"
 
+//! This class is used to access oFono call settings API
+/*!
+ * This class is used to access oFono call settings API.
+ * The API is documented in
+ * http://git.kernel.org/?p=network/ofono/ofono.git;a=blob_plain;f=doc/call-settings-api.txt
+ */
 class OFONO_QT_EXPORT OfonoCallSettings : public OfonoModemInterface
 {
     Q_OBJECT
 
 public:
-    OfonoCallSettings(QString modemId, QObject *parent=0);
+    OfonoCallSettings(OfonoModem::SelectionSetting modemSetting, const QString &modemPath, QObject *parent=0);
     ~OfonoCallSettings();
 
     /* Properties */
@@ -43,24 +49,24 @@ public:
     void requestCalledLineRestriction();
     void requestCallingLineRestriction();
     void requestHideCallerId();
-    void setHideCallerId(QString setting);
+    void setHideCallerId(const QString &setting);
     void requestVoiceCallWaiting();
-    void setVoiceCallWaiting(QString setting);
+    void setVoiceCallWaiting(const QString &setting);
     
 signals:
-    void callingLinePresentationComplete(bool success, QString setting);
-    void calledLinePresentationComplete(bool success, QString setting);
-    void calledLineRestrictionComplete(bool success, QString setting);
-    void callingLineRestrictionComplete(bool success, QString setting);
-    void hideCallerIdComplete(bool success, QString setting);
-    void voiceCallWaitingComplete(bool success, QString setting);
+    void callingLinePresentationComplete(bool success, const QString &setting);
+    void calledLinePresentationComplete(bool success, const QString &setting);
+    void calledLineRestrictionComplete(bool success, const QString &setting);
+    void callingLineRestrictionComplete(bool success, const QString &setting);
+    void hideCallerIdComplete(bool success, const QString &setting);
+    void voiceCallWaitingComplete(bool success, const QString &setting);
 
-    void callingLinePresentationChanged(QString setting);
-    void calledLinePresentationChanged(QString setting);
-    void calledLineRestrictionChanged(QString setting);
-    void callingLineRestrictionChanged(QString setting);
-    void hideCallerIdChanged(QString setting);
-    void voiceCallWaitingChanged(QString setting);
+    void callingLinePresentationChanged(const QString &setting);
+    void calledLinePresentationChanged(const QString &setting);
+    void calledLineRestrictionChanged(const QString &setting);
+    void callingLineRestrictionChanged(const QString &setting);
+    void hideCallerIdChanged(const QString &setting);
+    void voiceCallWaitingChanged(const QString &setting);
 
     void setHideCallerIdFailed();
     void setVoiceCallWaitingFailed();

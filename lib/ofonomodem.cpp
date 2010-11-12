@@ -28,30 +28,27 @@
 #include "ofonointerface.h"
 #include "ofonomodemmanager.h"
 
-OfonoModem::OfonoModem(QString modemId, QObject *parent)
-    : OfonoInterface("/", "org.ofono.Modem", OfonoInterface::GetAllOnStartup, parent)
+OfonoModem::OfonoModem(SelectionSetting setting, const QString &modemPath, QObject *parent)
+    : OfonoInterface("/", "org.ofono.Modem", OfonoInterface::GetAllOnStartup, parent), m_selectionSetting(setting)
 {
+    QString finalModemPath = modemPath;
+    
     m_mm = new OfonoModemManager(this);
     connect(m_mm, SIGNAL(modemAdded(QString)), this, SLOT(modemAdded(QString)));
     connect(m_mm, SIGNAL(modemRemoved(QString)), this, SLOT(modemRemoved(QString)));
 
-    if (modemId.isEmpty())
-        m_autoChoose = true;
-    else
-        m_autoChoose = false;
-
-    if (m_autoChoose == true)    
-        modemId = m_mm->modems().value(0);
+    if (setting == AutomaticSelect)
+        finalModemPath = m_mm->modems().value(0);
     
-    if (modemId.isEmpty()) {
-        modemId = "/";
+    if (finalModemPath.isEmpty()) {
+        finalModemPath = "/";
     } 
     connect(this, SIGNAL(propertyChanged(const QString&, const QVariant&)), 
             this, SLOT(propertyChanged(const QString&, const QVariant&)));
     connect(this, SIGNAL(setPropertyFailed(const QString&)), 
             this, SLOT(setPropertyFailed(const QString&)));
-    setPath(modemId);
-    m_isValid = m_mm->modems().contains(modemId);
+    setPath(finalModemPath);
+    m_isValid = m_mm->modems().contains(finalModemPath);
 }
 
 OfonoModem::~OfonoModem()
@@ -90,12 +87,12 @@ void OfonoModem::setPropertyFailed(const QString& property)
         emit setPoweredFailed();
 }
 
-void OfonoModem::modemAdded(QString /*modem*/)
+void OfonoModem::modemAdded(const QString& /*modem*/)
 {
     modemsChanged();
 }
 
-void OfonoModem::modemRemoved(QString /*modem*/)
+void OfonoModem::modemRemoved(const QString& /*modem*/)
 {
     modemsChanged();
 }
@@ -103,23 +100,23 @@ void OfonoModem::modemRemoved(QString /*modem*/)
 void OfonoModem::modemsChanged()
 {
     // validity has changed
-    if (isValid() != m_mm->modems().contains(modemId())) {
-        m_isValid = m_mm->modems().contains(modemId());
+    if (isValid() != m_mm->modems().contains(modemPath())) {
+        m_isValid = m_mm->modems().contains(modemPath());
         emit validityChanged(isValid());
     }
-    if (!m_mm->modems().contains(modemId())) {
-        if (m_autoChoose == true) {
-            QString modemId = m_mm->modems().value(0);
-            if (modemId.isEmpty()) {
-                modemId = "/";
+    if (!m_mm->modems().contains(modemPath())) {
+        if (m_selectionSetting == AutomaticSelect) {
+            QString modemPath = m_mm->modems().value(0);
+            if (modemPath.isEmpty()) {
+                modemPath = "/";
             }
-            setPath(modemId);
-            emit modemIdChanged(modemId);
+            setPath(modemPath);
+            emit modemPathChanged(modemPath);
         }
     }
     // validity has changed
-    if (isValid() != m_mm->modems().contains(modemId())) {
-        m_isValid = m_mm->modems().contains(modemId());
+    if (isValid() != m_mm->modems().contains(modemPath())) {
+        m_isValid = m_mm->modems().contains(modemPath());
         emit validityChanged(isValid());
     }
 }
@@ -130,7 +127,7 @@ bool OfonoModem::isValid() const
     return m_isValid;
 }
 
-QString OfonoModem::modemId() const
+QString OfonoModem::modemPath() const
 {
     return path();
 }

@@ -44,26 +44,31 @@ QDBusArgument &operator<<(QDBusArgument &argument, const OfonoOperatorStruct &mo
 // Retrieve the ModemStruct data from the D-Bus argument
 const QDBusArgument &operator>>(const QDBusArgument &argument, OfonoOperatorStruct &modem);
 
-
+//! This class is used to access oFono network registration API
+/*!
+ * This class is used to access oFono network registration API.
+ * The API is documented in
+ * http://git.kernel.org/?p=network/ofono/ofono.git;a=blob_plain;f=doc/network-api.txt
+ */
 class OFONO_QT_EXPORT OfonoNetworkRegistration : public OfonoModemInterface
 {
     Q_OBJECT
 
 public:
-    OfonoNetworkRegistration(QString modemId, QObject *parent=0);
+    OfonoNetworkRegistration(OfonoModem::SelectionSetting modemSetting, const QString &modemPath, QObject *parent=0);
     ~OfonoNetworkRegistration();
     
     /* Properties */
-    QString mode();
-    QString status();
-    uint locationAreaCode();
-    uint cellId();
-    QString mcc();
-    QString mnc();
-    QString technology();
-    QString name();
-    uint strength();
-    QString baseStation();
+    QString mode() const;
+    QString status() const;
+    uint locationAreaCode() const;
+    uint cellId() const;
+    QString mcc() const;
+    QString mnc() const;
+    QString technology() const;
+    QString name() const;
+    uint strength() const;
+    QString baseStation() const;
     
     void requestRegister();
     void requestDeregister();
@@ -71,21 +76,21 @@ public:
     void requestScan();
     
 signals:
-    void modeChanged(QString mode);
-    void statusChanged(QString status);
+    void modeChanged(const QString &mode);
+    void statusChanged(const QString &status);
     void locationAreaCodeChanged(uint locationAreaCode);
     void cellIdChanged(uint cellId);
-    void mccChanged(QString mcc);
-    void mncChanged(QString mnc);
-    void technologyChanged(QString technology);
-    void nameChanged(QString name);
+    void mccChanged(const QString &mcc);
+    void mncChanged(const QString &mnc);
+    void technologyChanged(const QString &technology);
+    void nameChanged(const QString &name);
     void strengthChanged(uint strength);
-    void baseStationChanged(QString baseStation);
+    void baseStationChanged(const QString &baseStation);
 
     void registerComplete(bool success);
     void deregisterComplete(bool success);
-    void getOperatorsComplete(bool success, QStringList operatorIds);
-    void scanComplete(bool success, QStringList operatorIds);
+    void getOperatorsComplete(bool success, const QStringList &operatorIds);
+    void scanComplete(bool success, const QStringList &operatorIds);
 
 private slots:
     void propertyChanged(const QString& property, const QVariant& value);

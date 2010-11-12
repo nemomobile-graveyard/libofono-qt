@@ -28,8 +28,8 @@
 
 #define IMPORT_TIMEOUT 300000
 
-OfonoPhonebook::OfonoPhonebook(QString modemId, QObject *parent)
-    : OfonoModemInterface(modemId, "org.ofono.Phonebook", OfonoInterface::GetAllOnFirstRequest, parent)
+OfonoPhonebook::OfonoPhonebook(OfonoModem::SelectionSetting modemSetting, const QString &modemPath, QObject *parent)
+    : OfonoModemInterface(modemSetting, modemPath, "org.ofono.Phonebook", OfonoInterface::GetAllOnFirstRequest, parent)
 {
 
 }
@@ -53,7 +53,7 @@ void OfonoPhonebook::requestImport()
 					IMPORT_TIMEOUT);
 }
 
-void OfonoPhonebook::importResp(QString entries)
+void OfonoPhonebook::importResp(const QString &entries)
 {
     emit importComplete(true, entries);
 }

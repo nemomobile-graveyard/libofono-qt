@@ -32,6 +32,12 @@
 
 class OfonoModemManager;
 
+//! This class is used to access an oFono modem object and its properties
+/*!
+ * This class is used to access an oFono modem object and its properties.
+ * oFono modem properties are documented in
+ * http://git.kernel.org/?p=network/ofono/ofono.git;a=blob_plain;f=doc/modem-api.txt
+ */
 class OFONO_QT_EXPORT OfonoModem : public OfonoInterface 
 {
 
@@ -39,13 +45,32 @@ Q_OBJECT
 
 public:
 
-    OfonoModem(QString modemId, QObject *parent);
+    //! How the modem object should select a modem
+    enum SelectionSetting {
+    	AutomaticSelect,	/*!< Select the first available modem automatically;
+    				 * if that modem becomes unavailable, select the first available
+    				 * modem again. */
+    	ManualSelect 	/*!< Do not select a modem automatically,
+    			 * use the modem path provided in the constructor, and do not
+    			 * attempt to select another modem if the first one becomes 
+    			 * unavailable. */
+    };
+
+    /*!
+     * \param setting sets the modem selection policy for the object
+     * \param modemPath if modem selection policy is ManualSelect, then this contains
+     * the D-Bus path to the modem object. Otherwise, it is ignored.
+     */
+    OfonoModem(SelectionSetting setting, const QString& modemPath, QObject *parent=0);
 
     ~OfonoModem();
 
+    //! Returns true if D-Bus modem object exists.
     bool isValid() const;
-    QString modemId() const;
     
+    //! Returns the D-Bus object path of the modem
+    QString modemPath() const;
+
     bool powered() const;
     void setPowered(bool powered);
     bool online() const;
@@ -62,8 +87,10 @@ public:
     QStringList interfaces() const;
 
 signals:
+    //! Issued when a modem becomes unavailable or available again
     void validityChanged(bool validity);
-    void modemIdChanged(QString modemId);
+    //! Issued when the object has switched to another modem
+    void modemPathChanged(QString modemPath);
     
     void poweredChanged(bool powered);
     void setPoweredFailed();
@@ -71,28 +98,28 @@ signals:
     void setOnlineFailed();
     void emergencyChanged(bool emergency);
 
-    void nameChanged(QString name);
-    void manufacturerChanged(QString manufacturer);
-    void modelChanged(QString model);
-    void revisionChanged(QString revision);
-    void serialChanged(QString serial);
+    void nameChanged(const QString &name);
+    void manufacturerChanged(const QString &manufacturer);
+    void modelChanged(const QString &model);
+    void revisionChanged(const QString &revision);
+    void serialChanged(const QString &serial);
 
-    void featuresChanged(QStringList features);
-    void interfacesChanged(QStringList interfaces);
+    void featuresChanged(const QStringList &features);
+    void interfacesChanged(const QStringList &interfaces);
 
 
 private slots:
-    void propertyChanged(const QString& property, const QVariant& value);
+    void propertyChanged(const QString &property, const QVariant &value);
     void setPropertyFailed(const QString& property);
-    void modemAdded(QString modem);
-    void modemRemoved(QString modem);
+    void modemAdded(const QString &modem);
+    void modemRemoved(const QString &modem);
 
 private:
     void modemsChanged();
 
 private:
     OfonoModemManager *m_mm;
-    bool m_autoChoose;
+    SelectionSetting m_selectionSetting;
     bool m_isValid;
 };
 #endif

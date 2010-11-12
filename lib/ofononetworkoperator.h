@@ -33,6 +33,12 @@
 #include "ofonointerface.h"
 #include "libofono-qt_global.h"
 
+//! This class is used to access oFono network operator API
+/*!
+ * This class is used to access oFono network operator API.
+ * The API is documented in
+ * http://git.kernel.org/?p=network/ofono/ofono.git;a=blob_plain;f=doc/network-api.txt
+ */
 class OFONO_QT_EXPORT OfonoNetworkOperator : public OfonoInterface
 {
     Q_OBJECT
@@ -42,22 +48,22 @@ public:
 
     void requestRegister();
     
-    QString name();
-    QString status();
-    QString mcc();
-    QString mnc();
-    QStringList technologies();
-    QString additionalInfo();
+    QString name() const;
+    QString status() const;
+    QString mcc() const;
+    QString mnc() const;
+    QStringList technologies() const;
+    QString additionalInfo() const;
     
 signals:
     void registerComplete(bool success);
     
-    void nameChanged(QString name);
-    void statusChanged(QString status);
-    void mccChanged(QString mcc);
-    void mncChanged(QString mnc);
-    void technologiesChanged(QStringList technologies);
-    void additionalInfoChanged(QString additionalInfo);
+    void nameChanged(const QString &name);
+    void statusChanged(const QString &status);
+    void mccChanged(const QString &mcc);
+    void mncChanged(const QString &mnc);
+    void technologiesChanged(const QStringList &technologies);
+    void additionalInfoChanged(const QString &additionalInfo);
 
 private:
 

@@ -56,7 +56,7 @@ private slots:
 
     void initTestCase()
     {
-	m = new OfonoMessageWaiting(QString(), this);
+	m = new OfonoMessageWaiting(OfonoModem::AutomaticSelect, QString(), this);
 	connect(m, SIGNAL(validityChanged(bool)), this, 
 		SLOT(validityChanged(bool)));
 	connect(m, SIGNAL(voicemailWaitingChanged(bool)), this, 
