@@ -25,6 +25,7 @@
 #include <QtCore/QObject>
 
 #include <ofonomodemmanager.h>
+#include <ofonomodem.h>
 
 #include <QtDebug>
 
@@ -34,29 +35,35 @@ class TestOfonoModemManager : public QObject
     Q_OBJECT
 
 private slots:
-    void modemAdded(QString modem)
-    {
-    qDebug() << "Modem added" << modem;
-    }
-
-    void modemRemoved(QString modem)
-    {
-    qDebug() << "Modem removed" << modem;
-    }
-
     void initTestCase()
     {
 	mm = new OfonoModemManager(this);
-	connect(mm, SIGNAL(modemAdded(QString)), this, SLOT(modemAdded(QString)));
-	connect(mm, SIGNAL(modemRemoved(QString)), this, SLOT(modemRemoved(QString)));
     }
 
     void testOfonoModemManager()
     {
-    qDebug() << mm->modems();
-    QTest::qWait(30000);
+        QVERIFY(mm->modems().contains("/phonesim") == true);
     }
 
+    void testOfonoModemManagerAddRemove()
+    {
+        QSignalSpy add(mm, SIGNAL(modemAdded(const QString &)));
+        QSignalSpy remove(mm, SIGNAL(modemRemoved(const QString &)));
+        qDebug() << "Please stop oFono and then start it again";
+	for (int i=0; i<30; i++) {
+	    if (add.count() > 0 && remove.count() > 0)
+	        break;
+	    QTest::qWait(1000);
+	}
+        QVERIFY(mm->modems().contains("/phonesim") == true);
+        OfonoModem *m = new OfonoModem(OfonoModem::ManualSelect, "/phonesim", this);
+        m->setPowered(true);
+        QTest::qWait(5000);
+        m->setOnline(true);
+        QTest::qWait(5000);
+        QVERIFY(remove.count() > 0);
+	QVERIFY(add.count() > 0);
+    }    
 
     void cleanupTestCase()
     {
