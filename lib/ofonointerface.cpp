@@ -95,7 +95,7 @@ void OfonoInterface::requestProperty(const QString& name)
     if (m_pendingProperty.length() > 0) {
         // FIXME: should indicate that a get/setProperty is already in progress
         m_errorName = QString();
-        m_errorMessage = QString();
+        m_errorMessage = QString("Already in progress");
         emit requestPropertyComplete(false, name, QVariant());
         return;
     }
@@ -118,7 +118,7 @@ void OfonoInterface::requestProperty(const QString& name)
     if (!result) {
         // FIXME: should indicate that sending a message failed
         m_errorName = QString();
-        m_errorMessage = QString();
+        m_errorMessage = QString("Sending a message failed");
         emit requestPropertyComplete(false, name, QVariant());
     	return;
     }
@@ -130,7 +130,14 @@ void OfonoInterface::getPropertiesAsyncResp(QVariantMap properties)
     QString prop = m_pendingProperty;
     m_properties = properties;
     m_pendingProperty = QString();
-    emit requestPropertyComplete(true, prop, properties[prop]);
+    if (m_properties.keys().contains(prop)) {
+        emit requestPropertyComplete(true, prop, m_properties[prop]);
+    } else {
+        // FIXME: should indicate that property is not available
+        m_errorName = QString();
+        m_errorMessage = QString("Property not available");
+        emit requestPropertyComplete(false, prop, QVariant());
+    }
     foreach (QString property, properties.keys()) {
         emit propertyChanged(property, properties[property]);
     }
@@ -156,7 +163,7 @@ void OfonoInterface::setProperty(const QString& name, const QVariant& property)
     if (m_pendingProperty.length() > 0) {
         // FIXME: should indicate that a get/setProperty is already in progress
         m_errorName = QString();
-        m_errorMessage = QString();
+        m_errorMessage = QString("Already in progress");
         emit setPropertyFailed(name);
         return;
     }

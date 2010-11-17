@@ -34,23 +34,117 @@ class TestOfonoInterface : public QObject
 
 private slots:
 
-    void onPropertyChanged(const QString& name, const QVariant& property)
-    {
-    qDebug() << name << property;
-    qDebug () << oi->properties();
-    }
-
     void initTestCase()
     {
-	oi = new OfonoInterface("/isimodem1", "org.ofono.Modem", OfonoInterface::GetAllOnStartup, this);
-	connect(oi, SIGNAL(propertyChanged(const QString&, const QVariant&)), this, SLOT(onPropertyChanged(const QString&, const QVariant&)));
+	oi = new OfonoInterface("/phonesim", "org.ofono.Modem", OfonoInterface::GetAllOnStartup, this);
+	oi_async = new OfonoInterface("/phonesim", "org.ofono.Modem", OfonoInterface::GetAllOnFirstRequest, this);
+
     }
 
-    void testOfonoInterface()
+    void testGetProperties()
     {
-    oi->setProperty("Online", qVariantFromValue(true));
-    QTest::qWait(30000);
-//    qDebug() << oi->properties();
+        QCOMPARE(oi->properties()["Manufacturer"].toString(), QString("MeeGo"));
+
+        QCOMPARE(oi_async->properties().count(), 0);
+
+        QSignalSpy spy_request(oi_async, SIGNAL(requestPropertyComplete(bool, const QString &, const QVariant &)));
+        oi_async->requestProperty("Manufacturer");
+        oi_async->requestProperty("Model");
+
+        QCOMPARE(spy_request.count(), 1);
+        QVariantList list = spy_request.takeFirst();
+        QCOMPARE(list[0].toBool(), false);
+        QCOMPARE(list[1].toString(), QString("Model"));
+        QCOMPARE(oi_async->errorMessage(), QString("Already in progress"));
+
+        while (spy_request.count() != 1) {
+            QTest::qWait(100);
+        }
+        list = spy_request.takeFirst();
+        QCOMPARE(list[0].toBool(), true);
+        QCOMPARE(list[1].toString(), QString("Manufacturer"));
+        QCOMPARE(list[2].value<QVariant>().toString(), QString("MeeGo"));
+
+        oi_async->requestProperty("Model");
+        QCOMPARE(spy_request.count(), 1);
+        list = spy_request.takeFirst();
+        QCOMPARE(list[0].toBool(), true);
+        QCOMPARE(list[1].toString(), QString("Model"));
+        QCOMPARE(list[2].value<QVariant>().toString(), QString("Synthetic Device"));
+        
+        oi_async->requestProperty("UnknownProperty");
+        while (spy_request.count() != 1) {
+            QTest::qWait(100);
+        }
+        QCOMPARE(spy_request.count(), 1);
+        list = spy_request.takeFirst();
+        QCOMPARE(list[0].toBool(), false);
+        QCOMPARE(list[1].toString(), QString("UnknownProperty"));
+        QCOMPARE(oi_async->errorMessage(), QString("Property not available"));
+    }
+    
+    void testSetProperty()
+    {
+        QSignalSpy spy_changed(oi, SIGNAL(propertyChanged(const QString &, const QVariant &)));
+        QSignalSpy spy_failed(oi, SIGNAL(setPropertyFailed(const QString &)));
+        QVariantList list;
+        bool online;
+        bool online_found;
+    
+        oi->setProperty("Online", qVariantFromValue(false));
+        while (spy_changed.count() != 3 && spy_failed.count() == 0) {
+            QTest::qWait(100);
+        }
+        QCOMPARE(spy_changed.count(), 3);
+        QCOMPARE(spy_failed.count(), 0);
+        online = false;
+        online_found = false;
+        while (spy_changed.count() > 0) {
+            list = spy_changed.takeFirst();
+            if (list[0] == "Online") {
+                online = list[1].value<QVariant>().toBool();
+                online_found = true;
+            }
+        }
+        QCOMPARE(online_found, true);
+        QCOMPARE(online, false);
+        
+        oi->setProperty("Online", qVariantFromValue(true));
+        while (spy_changed.count() < 3 && spy_failed.count() == 0) {
+            QTest::qWait(100);
+        }
+        QVERIFY(spy_changed.count() > 3);
+        QCOMPARE(spy_failed.count(), 0);
+        online = false;
+        online_found = false;
+        while (spy_changed.count() > 0) {
+            list = spy_changed.takeFirst();
+            if (list[0] == "Online") {
+                online = list[1].value<QVariant>().toBool();
+                online_found = true;
+            }
+        }
+        QCOMPARE(online_found, true);
+        QCOMPARE(online, true);
+        QTest::qWait(5000);
+    }
+
+    void testSetPropertyFailed()
+    {
+        QSignalSpy spy_changed(oi, SIGNAL(propertyChanged(const QString &, const QVariant &)));
+        QSignalSpy spy_failed(oi, SIGNAL(setPropertyFailed(const QString &)));
+        QVariantList list;
+    
+        oi->setProperty("Manufacturer", qVariantFromValue(QString("Nokia")));
+        while (spy_changed.count() == 0 && spy_failed.count() == 0) {
+            QTest::qWait(100);
+        }
+        QCOMPARE(spy_changed.count(), 0);
+        QCOMPARE(spy_failed.count(), 1);
+        list = spy_failed.takeFirst();
+        QCOMPARE(list[0].toString(), QString("Manufacturer"));
+        QCOMPARE(oi->errorName(), QString("org.ofono.Error.InvalidArguments"));
+        QCOMPARE(oi->errorMessage(), QString("Invalid arguments in method call"));
     }
 
 
@@ -62,6 +156,7 @@ private slots:
 
 private:
     OfonoInterface *oi;
+    OfonoInterface *oi_async;
 };
 
 QTEST_MAIN(TestOfonoInterface)
