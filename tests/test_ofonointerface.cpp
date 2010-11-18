@@ -37,14 +37,22 @@ private slots:
     void initTestCase()
     {
 	oi = new OfonoInterface("/phonesim", "org.ofono.Modem", OfonoInterface::GetAllOnStartup, this);
-	oi_async = new OfonoInterface("/phonesim", "org.ofono.Modem", OfonoInterface::GetAllOnFirstRequest, this);
 
+        if (oi->properties()["Powered"].toBool() == false) {
+            oi->setProperty("Powered", qVariantFromValue(true));
+            QTest::qWait(5000);
+        }
+        if (oi->properties()["Online"].toBool() == false) {
+            oi->setProperty("Online", qVariantFromValue(true));
+            QTest::qWait(5000);
+        }
     }
 
     void testGetProperties()
     {
         QCOMPARE(oi->properties()["Manufacturer"].toString(), QString("MeeGo"));
 
+	oi_async = new OfonoInterface("/phonesim", "org.ofono.Modem", OfonoInterface::GetAllOnFirstRequest, this);
         QCOMPARE(oi_async->properties().count(), 0);
 
         QSignalSpy spy_request(oi_async, SIGNAL(requestPropertyComplete(bool, const QString &, const QVariant &)));
