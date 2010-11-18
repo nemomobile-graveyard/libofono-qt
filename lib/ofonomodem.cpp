@@ -31,14 +31,18 @@
 OfonoModem::OfonoModem(SelectionSetting setting, const QString &modemPath, QObject *parent)
     : OfonoInterface("/", "org.ofono.Modem", OfonoInterface::GetAllOnStartup, parent), m_selectionSetting(setting)
 {
-    QString finalModemPath = modemPath;
     
     m_mm = new OfonoModemManager(this);
     connect(m_mm, SIGNAL(modemAdded(QString)), this, SLOT(modemAdded(QString)));
     connect(m_mm, SIGNAL(modemRemoved(QString)), this, SLOT(modemRemoved(QString)));
 
+    QString finalModemPath;
+
     if (setting == AutomaticSelect)
         finalModemPath = m_mm->modems().value(0);
+    else if (setting == ManualSelect)
+        if (m_mm->modems().contains(modemPath))
+            finalModemPath = modemPath;
     
     if (finalModemPath.isEmpty()) {
         finalModemPath = "/";
@@ -112,6 +116,8 @@ void OfonoModem::modemsChanged()
             }
             setPath(modemPath);
             emit modemPathChanged(modemPath);
+        } else if (m_selectionSetting == ManualSelect) {
+            setPath("/");
         }
     }
     // validity has changed
