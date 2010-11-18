@@ -33,94 +33,187 @@ class TestOfonoModem : public QObject
     Q_OBJECT
 
 private slots:
-    void validityChanged(bool validity)
-    {
-    qDebug() << "ValidityChanged" << validity;
-	qDebug() << "validity" << m->isValid() << "modemPath" << m->modemPath();
-    }
-
-    void modemPathChanged(QString modemPath)
-    {
-    qDebug() << "ModemPathChanged" << modemPath;
-	qDebug() << "validity" << m->isValid() << "modemPath" << m->modemPath();
-    }
-
-    void poweredChanged(bool powered)
-    {
-    qDebug() << "PoweredChanged" << powered;
-    }
-
-    void onlineChanged(bool online)
-    {
-    qDebug() << "OnlineChanged" << online;
-    }
-
-    void nameChanged(QString name)
-    {
-    qDebug() << "nameChanged" << name;
-    }
-    
-    void manufacturerChanged(QString manufacturer)
-    {
-    qDebug() << "manufacturerChanged" << manufacturer;
-    }
-
-    void modelChanged(QString model)
-    {
-    qDebug() << "modelChanged" << model;
-    }
-
-    void revisionChanged(QString revision)
-    {
-    qDebug() << "revisionChanged" << revision;
-    }
-
-    void serialChanged(QString serial)
-    {
-    qDebug() << "serialChanged" << serial;
-    }
-
-    void featuresChanged(QStringList features)
-    {
-    qDebug() << "FeaturesChanged" << features;
-    }
-
-    void interfacesChanged(QStringList interfaces)
-    {
-    qDebug() << "InterfacesChanged" << interfaces;
-    }
 
     void initTestCase()
     {
-	m = new OfonoModem(OfonoModem::ManualSelect, "/isimodem0", this);
-//	m = new OfonoModem(this);
-	connect(m, SIGNAL(validityChanged(bool)), this, SLOT(validityChanged(bool)));
-    connect(m, SIGNAL(modemPathChanged(QString)),
-	    this, SLOT(modemPathChanged(QString)));
-	connect(m, SIGNAL(poweredChanged(bool)), this, SLOT(poweredChanged(bool)));
- 	connect(m, SIGNAL(onlineChanged(bool)), this, SLOT(onlineChanged(bool)));
-   connect(m, SIGNAL(nameChanged(QString)),
-	    this, SLOT(nameChanged(QString)));
-    connect(m, SIGNAL(manufacturerChanged(QString)),
-	    this, SLOT(manufacturerChanged(QString)));
-    connect(m, SIGNAL(modelChanged(QString)),
-	    this, SLOT(modelChanged(QString)));
-    connect(m, SIGNAL(revisionChanged(QString)),
-	    this, SLOT(revisionChanged(QString)));
-    connect(m, SIGNAL(serialChanged(QString)),
-	    this, SLOT(serialChanged(QString)));
-	connect(m, SIGNAL(featuresChanged(QStringList)), this, SLOT(featuresChanged(QStringList)));
-	connect(m, SIGNAL(interfacesChanged(QStringList)), this, SLOT(interfacesChanged(QStringList)));
+	mm = new OfonoModem(OfonoModem::ManualSelect, "/phonesim", this);
+	ma = new OfonoModem(OfonoModem::AutomaticSelect, QString(), this);
+	
+	if (!mm->powered()) {
+  	    mm->setPowered(true);
+            QTest::qWait(5000);
+        }
+        if (!mm->online()) {
+  	    mm->setOnline(true);
+            QTest::qWait(5000);
+        }
+
     }
 
-    void testOfonoModem()
+    void testOfonoModemManual()
     {
-	qDebug() << "validity" << m->isValid() << "modemPath" << m->modemPath();
-    qDebug() << m->powered() << m->online() << m->manufacturer() << m->model() << m->revision() << m->serial() << m->features() << m->interfaces();
-    m->setOnline(true);
-    QTest::qWait(120000);
+        QVERIFY(mm->isValid());
+        QVERIFY(mm->powered());
+        QVERIFY(mm->online());
+        QVERIFY(!mm->emergency());
+        QVERIFY(mm->features().count() > 0);
+        QVERIFY(mm->interfaces().count() > 0);
+
+        QCOMPARE(mm->modemPath(), QString("/phonesim"));
+        QCOMPARE(mm->name(), QString());
+        QCOMPARE(mm->manufacturer(), QString("MeeGo"));
+        QCOMPARE(mm->model(), QString("Synthetic Device"));
+        QCOMPARE(mm->revision(), QString("REV1"));
+        QCOMPARE(mm->serial(), QString("1234567890"));
     }
 
+    void testOfonoModemAutomatic()
+    {
+        QVERIFY(ma->isValid());
+        QVERIFY(ma->modemPath().length() > 1);
+    }
+
+    void testOfonoModemAddRemove()
+    {
+        QSignalSpy avalid(ma, SIGNAL(validityChanged(bool)));
+        QSignalSpy valid(mm, SIGNAL(validityChanged(bool)));
+        QSignalSpy amodemPath(ma, SIGNAL(modemPathChanged(QString)));
+        QSignalSpy modemPath(mm, SIGNAL(modemPathChanged(QString)));
+        
+        qDebug() << "Please stop oFono and then start it again";
+    
+        for (int i=0; i<30; i++) {
+            if (avalid.count() == 2 &&
+                valid.count() == 1 &&
+                amodemPath.count() == 2 &&
+                modemPath.count() == 0)
+                break;
+            QTest::qWait(1000);
+        }
+        QCOMPARE(avalid.count(), 2);
+        QCOMPARE(valid.count(), 1);
+        QCOMPARE(amodemPath.count(), 2);
+        QCOMPARE(modemPath.count(), 0);
+        QCOMPARE(avalid.takeFirst().at(0).toBool(), false);
+        QCOMPARE(avalid.takeFirst().at(0).toBool(), true);        
+        QCOMPARE(valid.takeFirst().at(0).toBool(), false);
+        amodemPath.takeFirst();
+        QVERIFY(amodemPath.takeFirst().at(0).toString().length() > 1);
+
+        QVERIFY(!mm->isValid());
+        QVERIFY(ma->isValid());
+        QVERIFY(ma->modemPath().length() > 1);
+        delete mm;
+      	mm = new OfonoModem(OfonoModem::ManualSelect, "/phonesim", this);
+	if (!mm->powered()) {
+  	    mm->setPowered(true);
+            QTest::qWait(5000);
+        }
+        if (!mm->online()) {
+  	    mm->setOnline(true);
+            QTest::qWait(5000);
+        }
+    }
+
+    void testOfonoModemPowercycle()
+    {
+        QSignalSpy powered(mm, SIGNAL(poweredChanged(bool)));
+        QSignalSpy poweredFailed(mm, SIGNAL(setPoweredFailed()));
+        QSignalSpy online(mm, SIGNAL(onlineChanged(bool)));
+        QSignalSpy onlineFailed(mm, SIGNAL(setOnlineFailed()));
+        QSignalSpy emergency(mm, SIGNAL(emergencyChanged(bool)));
+        QSignalSpy name(mm, SIGNAL(nameChanged(const QString &)));
+        QSignalSpy manufacturer(mm, SIGNAL(manufacturerChanged(const QString &)));
+        QSignalSpy model(mm, SIGNAL(modelChanged(const QString &)));
+        QSignalSpy revision(mm, SIGNAL(revisionChanged(const QString &)));
+        QSignalSpy serial(mm, SIGNAL(serialChanged(const QString &)));
+        QSignalSpy features(mm, SIGNAL(featuresChanged(const QStringList &)));
+        QSignalSpy interfaces(mm, SIGNAL(interfacesChanged(const QStringList &)));
+        
+        mm->setOnline(false);
+        QTest::qWait(5000);
+        QCOMPARE(powered.count(), 0);
+        QCOMPARE(poweredFailed.count(), 0);
+        QCOMPARE(online.count(), 1);
+        QCOMPARE(online.takeFirst().at(0).toBool(), false);
+        QCOMPARE(onlineFailed.count(), 0);
+        QCOMPARE(emergency.count(), 0);
+        QCOMPARE(name.count(), 0);
+        QCOMPARE(manufacturer.count(), 0);
+        QCOMPARE(model.count(), 0);
+        QCOMPARE(revision.count(), 0);
+        QCOMPARE(serial.count(), 0);
+        QCOMPARE(features.count(), 1);
+        QVERIFY(features.takeFirst().at(0).toStringList().count() > 0);
+        QCOMPARE(interfaces.count(), 1);
+        QVERIFY(interfaces.takeFirst().at(0).toStringList().count() > 0);
+
+        mm->setPowered(false);
+        QTest::qWait(5000);
+        QCOMPARE(powered.count(), 1);
+        QCOMPARE(powered.takeFirst().at(0).toBool(), false);
+        QCOMPARE(poweredFailed.count(), 0);
+        QCOMPARE(online.count(), 0);
+        QCOMPARE(onlineFailed.count(), 0);
+        QCOMPARE(emergency.count(), 0);
+        QCOMPARE(name.count(), 0);
+        QCOMPARE(manufacturer.count(), 0);
+        QCOMPARE(model.count(), 0);
+        QCOMPARE(revision.count(), 0);
+        QCOMPARE(serial.count(), 0);
+        QCOMPARE(features.count(), 1);
+        QCOMPARE(features.takeFirst().at(0).toStringList().count(), 0);
+        QCOMPARE(interfaces.count(), 1);
+        QCOMPARE(interfaces.takeFirst().at(0).toStringList().count(), 0);
+
+	mm->setOnline(true);
+        QTest::qWait(5000);
+        QCOMPARE(onlineFailed.count(), 1);
+        onlineFailed.takeFirst();
+
+        mm->setPowered(true);
+        QTest::qWait(5000);
+        QCOMPARE(powered.count(), 1);
+        QCOMPARE(powered.takeFirst().at(0).toBool(), true);
+        QCOMPARE(poweredFailed.count(), 0);
+        QCOMPARE(online.count(), 0);
+        QCOMPARE(onlineFailed.count(), 0);
+        QCOMPARE(emergency.count(), 0);
+        QCOMPARE(name.count(), 0);
+        QCOMPARE(manufacturer.count(), 1);
+        manufacturer.takeFirst();
+        QCOMPARE(model.count(), 1);
+        model.takeFirst();
+        QCOMPARE(revision.count(), 1);
+        revision.takeFirst();
+        QCOMPARE(serial.count(), 1);
+        serial.takeFirst();
+        QVERIFY(features.count() > 0);
+        QVERIFY(features.takeLast().at(0).toStringList().count() > 0);
+        features.clear();
+        QVERIFY(interfaces.count() > 0);
+        QVERIFY(interfaces.takeLast().at(0).toStringList().count() > 0);
+        interfaces.clear();
+
+	mm->setOnline(true);
+        QTest::qWait(5000);
+        QCOMPARE(powered.count(), 0);
+        QCOMPARE(poweredFailed.count(), 0);
+        QCOMPARE(online.count(), 1);
+        QCOMPARE(online.takeFirst().at(0).toBool(), true);
+        QCOMPARE(onlineFailed.count(), 0);
+        QCOMPARE(emergency.count(), 0);
+        QCOMPARE(name.count(), 0);
+        QCOMPARE(manufacturer.count(), 0);
+        QCOMPARE(model.count(), 0);
+        QCOMPARE(revision.count(), 0);
+        QCOMPARE(serial.count(), 0);
+        QVERIFY(features.count() > 0);
+        QVERIFY(features.takeLast().at(0).toStringList().count() > 0);
+        QVERIFY(interfaces.count() > 0);
+        QVERIFY(interfaces.takeLast().at(0).toStringList().count() > 0);
+
+    }    
 
     void cleanupTestCase()
     {
@@ -129,7 +222,8 @@ private slots:
 
 
 private:
-    OfonoModem *m;
+    OfonoModem *mm;
+    OfonoModem *ma;
 };
 
 QTEST_MAIN(TestOfonoModem)
