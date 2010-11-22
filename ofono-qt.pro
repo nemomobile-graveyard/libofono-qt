@@ -6,7 +6,7 @@ SUBDIRS += lib tests
 dox.target = doc
 dox.commands = sed 's/@VERSION@/'$$VERSION'/' doxygen.cfg.in > doxygen.cfg; \
                doxygen doxygen.cfg
-dox.path = $$[QT_INSTALL_PREFIX]/share/doc/libofono-qt
+dox.path = $$[QT_INSTALL_PREFIX]/share/doc/ofono-qt
 dox.files = doc/html
 dox.CONFIG = no_link
 dox.depends = FORCE
