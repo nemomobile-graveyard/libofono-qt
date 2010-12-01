@@ -25,7 +25,6 @@
 #define OFONOSUPPLEMENTARYSERVICES_H
 
 #include <QtCore/QObject>
-#include <QtDBus/QtDBus>
 #include <QStringList>
 #include <QDBusError>
 #include "ofonomodeminterface.h"

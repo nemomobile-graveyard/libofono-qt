@@ -25,7 +25,6 @@
 #define OFONOCALLFORWARDING_H
  
 #include <QtCore/QObject>
-#include <QtDBus/QtDBus>
 #include "ofonomodeminterface.h"
 #include "libofono-qt_global.h"
 

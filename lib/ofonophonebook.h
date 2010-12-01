@@ -24,7 +24,6 @@
 #ifndef OFONOPHONEBOOK_H
 #define OFONOPHONEBOOK_H
 
-#include <QtDBus/QtDBus>
 #include <QtCore/QObject>
 #include "ofonomodeminterface.h"
 #include "libofono-qt_global.h"

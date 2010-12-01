@@ -24,8 +24,10 @@
 #ifndef OFONOMODEMMANAGER_H
 #define OFONOMODEMMANAGER_H
 
-#include <QtDBus/QtDBus>
 #include <QtCore/QObject>
+#include <QVariant>
+#include <QDBusObjectPath>
+#include <QStringList>
 #include "libofono-qt_global.h"
 
 struct OfonoModemStruct {
@@ -35,11 +37,6 @@ struct OfonoModemStruct {
 typedef QList<OfonoModemStruct> OfonoModemList;
 Q_DECLARE_METATYPE(OfonoModemStruct)
 Q_DECLARE_METATYPE(OfonoModemList)
-// Marshall the ModemStruct data into a D-Bus argument
-QDBusArgument &operator<<(QDBusArgument &argument, const OfonoModemStruct &modem);
-    
-// Retrieve the ModemStruct data from the D-Bus argument
-const QDBusArgument &operator>>(const QDBusArgument &argument, OfonoModemStruct &modem);
 
 //! Provides access to the list of available modems and changes in that list.
 class OFONO_QT_EXPORT OfonoModemManager : public QObject {

@@ -26,9 +26,7 @@
 #define OFONONETWORKOPERATOR_H
 
 #include <QtCore/QObject>
-#include <QtDBus/QtDBus>
 #include <QVariant>
-#include <QDBusVariant>
 #include <QStringList>
 #include "ofonointerface.h"
 #include "libofono-qt_global.h"

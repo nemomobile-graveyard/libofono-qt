@@ -25,7 +25,6 @@
 #define OFONONETWORKREGISTRATION_H
 
 #include <QtCore/QObject>
-#include <QtDBus/QtDBus>
 #include <QStringList>
 #include <QDBusError>
 #include "ofonomodeminterface.h"
@@ -38,11 +37,6 @@ struct OfonoOperatorStruct {
 typedef QList<OfonoOperatorStruct> OfonoOperatorList;
 Q_DECLARE_METATYPE(OfonoOperatorStruct)
 Q_DECLARE_METATYPE(OfonoOperatorList)
-// Marshall the ModemStruct data into a D-Bus argument
-QDBusArgument &operator<<(QDBusArgument &argument, const OfonoOperatorStruct &modem);
-    
-// Retrieve the ModemStruct data from the D-Bus argument
-const QDBusArgument &operator>>(const QDBusArgument &argument, OfonoOperatorStruct &modem);
 
 //! This class is used to access oFono network registration API
 /*!

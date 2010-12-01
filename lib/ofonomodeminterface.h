@@ -25,8 +25,6 @@
 #define OFONOMODEMINTERFACE_H
 
 #include <QtCore/QObject>
-#include <QVariant>
-#include <QDBusVariant>
 #include <QStringList>
 #include "ofonointerface.h"
 #include "ofonomodem.h"
