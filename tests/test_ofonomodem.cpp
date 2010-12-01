@@ -59,7 +59,7 @@ private slots:
         QVERIFY(mm->features().count() > 0);
         QVERIFY(mm->interfaces().count() > 0);
 
-        QCOMPARE(mm->modemPath(), QString("/phonesim"));
+        QCOMPARE(mm->path(), QString("/phonesim"));
         QCOMPARE(mm->name(), QString());
         QCOMPARE(mm->manufacturer(), QString("MeeGo"));
         QCOMPARE(mm->model(), QString("Synthetic Device"));
@@ -70,15 +70,15 @@ private slots:
     void testOfonoModemAutomatic()
     {
         QVERIFY(ma->isValid());
-        QVERIFY(ma->modemPath().length() > 1);
+        QVERIFY(ma->path().length() > 1);
     }
 
     void testOfonoModemAddRemove()
     {
         QSignalSpy avalid(ma, SIGNAL(validityChanged(bool)));
         QSignalSpy valid(mm, SIGNAL(validityChanged(bool)));
-        QSignalSpy amodemPath(ma, SIGNAL(modemPathChanged(QString)));
-        QSignalSpy modemPath(mm, SIGNAL(modemPathChanged(QString)));
+        QSignalSpy amodemPath(ma, SIGNAL(pathChanged(QString)));
+        QSignalSpy modemPath(mm, SIGNAL(pathChanged(QString)));
         
         qDebug() << "Please stop oFono and then start it again";
     
@@ -102,7 +102,7 @@ private slots:
 
         QVERIFY(!mm->isValid());
         QVERIFY(ma->isValid());
-        QVERIFY(ma->modemPath().length() > 1);
+        QVERIFY(ma->path().length() > 1);
         delete mm;
       	mm = new OfonoModem(OfonoModem::ManualSelect, "/phonesim", this);
 	if (!mm->powered()) {

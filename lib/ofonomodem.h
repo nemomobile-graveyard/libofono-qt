@@ -26,17 +26,17 @@
 #define OFONOMODEM_H
 
 #include <QtCore/QObject>
-#include "ofonointerface.h"
 #include "libofono-qt_global.h"
 
 class OfonoModemManager;
+class OfonoInterface;
 
 //! This class is used to access an oFono modem object and its properties
 /*!
  * oFono modem properties are documented in
  * http://git.kernel.org/?p=network/ofono/ofono.git;a=blob_plain;f=doc/modem-api.txt
  */
-class OFONO_QT_EXPORT OfonoModem : public OfonoInterface 
+class OFONO_QT_EXPORT OfonoModem : public QObject 
 {
 
 Q_OBJECT
@@ -67,7 +67,21 @@ public:
     bool isValid() const;
     
     //! Returns the D-Bus object path of the modem
-    QString modemPath() const;
+    QString path() const;
+    
+    //! Get the D-Bus error name of the last operation.
+    /*!
+     * Returns the D-Bus error name of the last operation (setting a property
+     * or calling a method) if it has failed
+     */
+    QString errorName() const;
+
+    //! Get the D-Bus error message of the last operation.
+    /*!
+     * Returns the D-Bus error message of the last operation (setting a property
+     * or calling a method) if it has failed
+     */
+    QString errorMessage() const;
 
     bool powered() const;
     void setPowered(bool powered);
@@ -88,7 +102,7 @@ signals:
     //! Issued when a modem becomes unavailable or available again
     void validityChanged(bool validity);
     //! Issued when the object has switched to another modem
-    void modemPathChanged(QString modemPath);
+    void pathChanged(QString modemPath);
     
     void poweredChanged(bool powered);
     void setPoweredFailed();
@@ -117,6 +131,7 @@ private:
 
 private:
     OfonoModemManager *m_mm;
+    OfonoInterface *m_if;
     SelectionSetting m_selectionSetting;
     bool m_isValid;
 };

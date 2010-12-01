@@ -29,7 +29,7 @@
 #include "ofonomodemmanager.h"
 
 OfonoModem::OfonoModem(SelectionSetting setting, const QString &modemPath, QObject *parent)
-    : OfonoInterface("/", "org.ofono.Modem", OfonoInterface::GetAllOnStartup, parent), m_selectionSetting(setting)
+	: QObject(parent), m_selectionSetting(setting)
 {
     
     m_mm = new OfonoModemManager(this);
@@ -47,11 +47,11 @@ OfonoModem::OfonoModem(SelectionSetting setting, const QString &modemPath, QObje
     if (finalModemPath.isEmpty()) {
         finalModemPath = "/";
     } 
-    connect(this, SIGNAL(propertyChanged(const QString&, const QVariant&)), 
+    m_if = new OfonoInterface(finalModemPath, "org.ofono.Modem", OfonoInterface::GetAllOnStartup, this);
+    connect(m_if, SIGNAL(propertyChanged(const QString&, const QVariant&)), 
             this, SLOT(propertyChanged(const QString&, const QVariant&)));
-    connect(this, SIGNAL(setPropertyFailed(const QString&)), 
+    connect(m_if, SIGNAL(setPropertyFailed(const QString&)), 
             this, SLOT(setPropertyFailed(const QString&)));
-    setPath(finalModemPath);
     m_isValid = m_mm->modems().contains(finalModemPath);
 }
 
@@ -104,25 +104,25 @@ void OfonoModem::modemRemoved(const QString& /*modem*/)
 void OfonoModem::modemsChanged()
 {
     // validity has changed
-    if (isValid() != m_mm->modems().contains(modemPath())) {
-        m_isValid = m_mm->modems().contains(modemPath());
+    if (isValid() != m_mm->modems().contains(path())) {
+        m_isValid = m_mm->modems().contains(path());
         emit validityChanged(isValid());
     }
-    if (!m_mm->modems().contains(modemPath())) {
+    if (!m_mm->modems().contains(path())) {
         if (m_selectionSetting == AutomaticSelect) {
             QString modemPath = m_mm->modems().value(0);
             if (modemPath.isEmpty()) {
                 modemPath = "/";
             }
-            setPath(modemPath);
-            emit modemPathChanged(modemPath);
+            m_if->setPath(modemPath);
+            emit pathChanged(modemPath);
         } else if (m_selectionSetting == ManualSelect) {
-            setPath("/");
+            m_if->setPath("/");
         }
     }
     // validity has changed
-    if (isValid() != m_mm->modems().contains(modemPath())) {
-        m_isValid = m_mm->modems().contains(modemPath());
+    if (isValid() != m_mm->modems().contains(path())) {
+        m_isValid = m_mm->modems().contains(path());
         emit validityChanged(isValid());
     }
 }
@@ -133,69 +133,79 @@ bool OfonoModem::isValid() const
     return m_isValid;
 }
 
-QString OfonoModem::modemPath() const
+QString OfonoModem::path() const
 {
-    return path();
+    return m_if->path();
+}
+
+QString OfonoModem::errorName() const
+{
+    return m_if->errorMessage();
+}
+
+QString OfonoModem::errorMessage() const
+{
+    return m_if->errorMessage();
 }
 
 bool OfonoModem::powered() const
 {
-    return properties()["Powered"].value<bool>();
+    return m_if->properties()["Powered"].value<bool>();
 }
 
 void OfonoModem::setPowered(bool powered)
 {
-    setProperty("Powered", qVariantFromValue(powered));
+    m_if->setProperty("Powered", qVariantFromValue(powered));
 }
 
 bool OfonoModem::online() const
 {
-    return properties()["Online"].value<bool>();
+    return m_if->properties()["Online"].value<bool>();
 }
 
 void OfonoModem::setOnline(bool online)
 {
-    setProperty("Online", qVariantFromValue(online));
+    m_if->setProperty("Online", qVariantFromValue(online));
 }
 
 bool OfonoModem::emergency() const
 {
-    return properties()["Emergency"].value<bool>();
+    return m_if->properties()["Emergency"].value<bool>();
 }
 
 QString OfonoModem::name() const
 {
-    return properties()["Name"].value<QString>();
+    return m_if->properties()["Name"].value<QString>();
 }
 
 QString OfonoModem::manufacturer() const
 {
-    return properties()["Manufacturer"].value<QString>();
+    return m_if->properties()["Manufacturer"].value<QString>();
 }
 
 QString OfonoModem::model() const
 {
-    return properties()["Model"].value<QString>();
+    return m_if->properties()["Model"].value<QString>();
 }
 
 QString OfonoModem::revision() const
 {
-    return properties()["Revision"].value<QString>();
+    return m_if->properties()["Revision"].value<QString>();
 }
 
 QString OfonoModem::serial() const
 {
-    return properties()["Serial"].value<QString>();
+    return m_if->properties()["Serial"].value<QString>();
 }
 
 QStringList OfonoModem::features() const
 {
-    return properties()["Features"].value<QStringList>();
+    return m_if->properties()["Features"].value<QStringList>();
 }
 
 QStringList OfonoModem::interfaces() const
 {
-    return properties()["Interfaces"].value<QStringList>();
+    return m_if->properties()["Interfaces"].value<QStringList>();
 }
 
 

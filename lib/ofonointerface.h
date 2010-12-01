@@ -102,6 +102,14 @@ public:
      */
     QString errorMessage() const {return m_errorMessage;}
 
+    //! Changes the interface path
+    /*!
+     * This method changes the D-Bus path to the interface.
+     * Properties are updated immediately if property setting is set to
+     * GetAllOnStartup or reset otherwise.
+     */
+    void setPath(const QString &path);
+
 signals:
     //! Issued when a property has changed
     /*!
@@ -131,7 +139,6 @@ private slots:
     void setPropertyResp();
     void setPropertyErr(const QDBusError& error);
 protected slots:
-    void setPath(const QString &path);
 private:
     QVariantMap getAllPropertiesSync();
     
