@@ -36,12 +36,29 @@
  * The API is documented in
  * http://git.kernel.org/?p=network/ofono/ofono.git;a=blob_plain;f=doc/network-api.txt
  */
-class OFONO_QT_EXPORT OfonoNetworkOperator : public OfonoInterface
+class OFONO_QT_EXPORT OfonoNetworkOperator : public QObject
 {
     Q_OBJECT
 public:
     OfonoNetworkOperator(const QString& operatorId, QObject *parent=0);
     ~OfonoNetworkOperator();
+
+    //! Returns the D-Bus object path of the network operator object
+    QString path() const;
+    
+    //! Get the D-Bus error name of the last operation.
+    /*!
+     * Returns the D-Bus error name of the last operation (setting a property
+     * or calling a method) if it has failed
+     */
+    QString errorName() const;
+
+    //! Get the D-Bus error message of the last operation.
+    /*!
+     * Returns the D-Bus error message of the last operation (setting a property
+     * or calling a method) if it has failed
+     */
+    QString errorMessage() const;
 
     void requestRegister();
     
@@ -72,7 +89,7 @@ private slots:
 
 
 private:
-
+    OfonoInterface *m_if;
 
 };
 #endif

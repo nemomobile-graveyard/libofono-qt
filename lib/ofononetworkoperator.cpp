@@ -30,9 +30,10 @@
 #define REGISTER_TIMEOUT 300000
 
 OfonoNetworkOperator::OfonoNetworkOperator(const QString& operatorId, QObject *parent)
-    : OfonoInterface(operatorId, "org.ofono.NetworkOperator", OfonoGetAllOnStartup, parent)
+    : QObject(parent)
 {
-    connect(this, SIGNAL(propertyChanged(const QString&, const QVariant&)), 
+    m_if = new OfonoInterface(operatorId, "org.ofono.NetworkOperator", OfonoGetAllOnStartup, this);
+    connect(m_if, SIGNAL(propertyChanged(const QString&, const QVariant&)), 
             this, SLOT(propertyChanged(const QString&, const QVariant&)));
 }
 
@@ -45,7 +46,7 @@ void OfonoNetworkOperator::requestRegister()
     QDBusMessage request;
 
     request = QDBusMessage::createMethodCall("org.ofono",
-					     path(), ifname(),
+					     path(), m_if->ifname(),
 					     "Register");
 
     QDBusConnection::systemBus().callWithCallback(request, this,
@@ -62,39 +63,38 @@ void OfonoNetworkOperator::registerResp()
 void OfonoNetworkOperator::registerErr(const QDBusError& error)
 {
     qDebug() << "Register failed" << error;
-    m_errorName = error.name();
-    m_errorMessage = error.message();
+    m_if->setError(error.name(), error.message());
     emit registerComplete(FALSE);
 }
 
 QString OfonoNetworkOperator::name() const
 {
-    return properties()["Name"].value<QString>();
+    return m_if->properties()["Name"].value<QString>();
 }
 
 QString OfonoNetworkOperator::status() const
 {
-    return properties()["Status"].value<QString>();
+    return m_if->properties()["Status"].value<QString>();
 }
 
 QString OfonoNetworkOperator::mcc() const
 {
-    return properties()["MobileCountryCode"].value<QString>();
+    return m_if->properties()["MobileCountryCode"].value<QString>();
 }
 
 QString OfonoNetworkOperator::mnc() const
 {
-    return properties()["MobileNetworkCode"].value<QString>();
+    return m_if->properties()["MobileNetworkCode"].value<QString>();
 }
 
 QStringList OfonoNetworkOperator::technologies() const
 {
-    return properties()["Technologies"].value<QStringList>();
+    return m_if->properties()["Technologies"].value<QStringList>();
 }
 
 QString OfonoNetworkOperator::additionalInfo() const
 {
-    return properties()["AdditionalInformation"].value<QString>();
+    return m_if->properties()["AdditionalInformation"].value<QString>();
 }
 
 void OfonoNetworkOperator::propertyChanged(const QString& property, const QVariant& value)
@@ -113,3 +113,19 @@ void OfonoNetworkOperator::propertyChanged(const QString& property, const QVaria
         emit additionalInfoChanged(value.value<QString>());
     }
 }
+
+QString OfonoNetworkOperator::path() const
+{
+    return m_if->path();
+}
+    
+QString OfonoNetworkOperator::errorName() const
+{
+    return m_if->errorName();
+}
+
+QString OfonoNetworkOperator::errorMessage() const
+{
+    return m_if->errorMessage();
+}
+
