@@ -30,14 +30,14 @@
 #define GET_PROPERTIES_TIMEOUT 300000
 #define SET_PROPERTY_TIMEOUT 300000
 
-OfonoInterface::OfonoInterface(const QString& path, const QString& ifname, GetPropertySetting setting, QObject *parent)
+OfonoInterface::OfonoInterface(const QString& path, const QString& ifname, OfonoGetPropertySetting setting, QObject *parent)
     : QObject(parent) , m_path(path), m_ifname(ifname), m_getpropsetting(setting)
 {
     QDBusConnection::systemBus().connect("org.ofono", path, ifname, 
 					     "PropertyChanged",
 					     this,
 					     SLOT(onPropertyChanged(QString, QDBusVariant)));
-    if (setting == GetAllOnStartup && path != "/")
+    if (setting == OfonoGetAllOnStartup && path != "/")
         m_properties = getAllPropertiesSync();
 }
 
@@ -57,7 +57,7 @@ void OfonoInterface::setPath(const QString& path)
 					     this,
 					     SLOT(onPropertyChanged(QString, QDBusVariant)));
 
-    if (m_getpropsetting == GetAllOnStartup)
+    if (m_getpropsetting == OfonoGetAllOnStartup)
         m_properties = getAllPropertiesSync();
     else
     	resetProperties();
@@ -94,8 +94,7 @@ void OfonoInterface::requestProperty(const QString& name)
 {
     if (m_pendingProperty.length() > 0) {
         // FIXME: should indicate that a get/setProperty is already in progress
-        m_errorName = QString();
-        m_errorMessage = QString("Already in progress");
+        setError(QString(), QString("Already in progress"));
         emit requestPropertyComplete(false, name, QVariant());
         return;
     }
@@ -117,8 +116,7 @@ void OfonoInterface::requestProperty(const QString& name)
 					GET_PROPERTIES_TIMEOUT);
     if (!result) {
         // FIXME: should indicate that sending a message failed
-        m_errorName = QString();
-        m_errorMessage = QString("Sending a message failed");
+        setError(QString(), QString("Sending a message failed"));
         emit requestPropertyComplete(false, name, QVariant());
     	return;
     }
@@ -134,8 +132,7 @@ void OfonoInterface::getPropertiesAsyncResp(QVariantMap properties)
         emit requestPropertyComplete(true, prop, m_properties[prop]);
     } else {
         // FIXME: should indicate that property is not available
-        m_errorName = QString();
-        m_errorMessage = QString("Property not available");
+        setError(QString(), QString("Property not available"));
         emit requestPropertyComplete(false, prop, QVariant());
     }
     foreach (QString property, properties.keys()) {
@@ -146,8 +143,7 @@ void OfonoInterface::getPropertiesAsyncResp(QVariantMap properties)
 void OfonoInterface::getPropertiesAsyncErr(const QDBusError& error)
 {
     QString prop = m_pendingProperty;
-    m_errorName = error.name();
-    m_errorMessage = error.message();
+    setError(error.name(), error.message());
     m_pendingProperty = QString();
     emit requestPropertyComplete(false, prop, QVariant());
 }
@@ -162,8 +158,7 @@ void OfonoInterface::setProperty(const QString& name, const QVariant& property)
 {
     if (m_pendingProperty.length() > 0) {
         // FIXME: should indicate that a get/setProperty is already in progress
-        m_errorName = QString();
-        m_errorMessage = QString("Already in progress");
+        setError(QString(), QString("Already in progress"));
         emit setPropertyFailed(name);
         return;
     }
@@ -182,8 +177,7 @@ void OfonoInterface::setProperty(const QString& name, const QVariant& property)
     					SET_PROPERTY_TIMEOUT);
     if (!result) {
         // FIXME: should indicate that sending a message failed
-        m_errorName = QString();
-        m_errorMessage = QString();
+        setError(QString(), QString("Sending a message failed"));
     	emit setPropertyFailed(name);
     	return;
     }
@@ -199,9 +193,13 @@ void OfonoInterface::setPropertyResp()
 void OfonoInterface::setPropertyErr(const QDBusError& error)
 {
     QString prop = m_pendingProperty;
-    m_errorName = error.name();
-    m_errorMessage = error.message();
+    setError(error.name(), error.message());
     m_pendingProperty = QString();
     emit setPropertyFailed(prop);
 }
 
+void OfonoInterface::setError(const QString& errorName, const QString& errorMessage)
+{
+    m_errorName = errorName;
+    m_errorMessage = errorMessage;
+}

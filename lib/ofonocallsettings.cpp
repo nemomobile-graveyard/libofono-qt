@@ -25,15 +25,16 @@
 #include <QtCore/QObject>
 
 #include "ofonocallsettings.h"
+#include "ofonointerface.h"
 
 OfonoCallSettings::OfonoCallSettings(OfonoModem::SelectionSetting modemSetting, const QString &modemPath, QObject *parent)
-    : OfonoModemInterface(modemSetting, modemPath, "org.ofono.CallSettings", OfonoInterface::GetAllOnFirstRequest, parent)
+    : OfonoModemInterface(modemSetting, modemPath, "org.ofono.CallSettings", OfonoGetAllOnFirstRequest, parent)
 {
-    connect(this, SIGNAL(propertyChanged(const QString&, const QVariant&)), 
+    connect(m_if, SIGNAL(propertyChanged(const QString&, const QVariant&)), 
             this, SLOT(propertyChanged(const QString&, const QVariant&)));
-    connect(this, SIGNAL(setPropertyFailed(const QString&)), 
+    connect(m_if, SIGNAL(setPropertyFailed(const QString&)), 
             this, SLOT(setPropertyFailed(const QString&)));
-    connect(this, SIGNAL(requestPropertyComplete(bool, const QString&, const QVariant&)),
+    connect(m_if, SIGNAL(requestPropertyComplete(bool, const QString&, const QVariant&)),
     	    this, SLOT(requestPropertyComplete(bool, const QString&, const QVariant&)));
 }
 
@@ -43,42 +44,42 @@ OfonoCallSettings::~OfonoCallSettings()
 
 void OfonoCallSettings::requestCallingLinePresentation()
 {
-    requestProperty("CallingLinePresentation");
+    m_if->requestProperty("CallingLinePresentation");
 }
 
 void OfonoCallSettings::requestCalledLinePresentation()
 {
-    requestProperty("CalledLinePresentation");
+    m_if->requestProperty("CalledLinePresentation");
 }
 
 void OfonoCallSettings::requestCalledLineRestriction()
 {
-    requestProperty("CalledLineRestriction");
+    m_if->requestProperty("CalledLineRestriction");
 }
 
 void OfonoCallSettings::requestCallingLineRestriction()
 {
-    requestProperty("CallingLineRestriction");
+    m_if->requestProperty("CallingLineRestriction");
 }
 
 void OfonoCallSettings::requestHideCallerId()
 {
-    requestProperty("HideCallerId");
+    m_if->requestProperty("HideCallerId");
 }
 
 void OfonoCallSettings::requestVoiceCallWaiting()
 {
-    requestProperty("VoiceCallWaiting");
+    m_if->requestProperty("VoiceCallWaiting");
 }
 
 void OfonoCallSettings::setHideCallerId(const QString &preference)
 {
-    return setProperty("HideCallerId", qVariantFromValue(preference));
+    return m_if->setProperty("HideCallerId", qVariantFromValue(preference));
 }
 
 void OfonoCallSettings::setVoiceCallWaiting(const QString &preference)
 {
-    return setProperty("VoiceCallWaiting", qVariantFromValue(preference));
+    return m_if->setProperty("VoiceCallWaiting", qVariantFromValue(preference));
 }
 
 void OfonoCallSettings::requestPropertyComplete(bool success, const QString& property, const QVariant& value)

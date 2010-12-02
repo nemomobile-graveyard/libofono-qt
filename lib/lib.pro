@@ -11,6 +11,7 @@ QT -= gui
 INCLUDEPATH += ../
 
 PUBLIC_HEADERS += libofono-qt_global.h
+PUBLIC_HEADERS += ofonopropertysetting.h 
 PUBLIC_HEADERS += ofonointerface.h 
 PUBLIC_HEADERS += ofonomodeminterface.h 
 PUBLIC_HEADERS += ofonomodemmanager.h

@@ -24,23 +24,24 @@
 #include <QtCore/QObject>
 #include <QtDBus/QtDBus>
 #include "ofonocallbarring.h"
+#include "ofonointerface.h"
 
 #define SET_PROPERTY_TIMEOUT 300000
 
 OfonoCallBarring::OfonoCallBarring(OfonoModem::SelectionSetting modemSetting, const QString &modemPath, QObject *parent)
-    : OfonoModemInterface(modemSetting, modemPath, "org.ofono.CallBarring", OfonoInterface::GetAllOnFirstRequest, parent)
+    : OfonoModemInterface(modemSetting, modemPath, "org.ofono.CallBarring", OfonoGetAllOnFirstRequest, parent)
 {
-    connect(this, SIGNAL(propertyChanged(const QString&, const QVariant&)), 
+    connect(m_if, SIGNAL(propertyChanged(const QString&, const QVariant&)), 
             this, SLOT(propertyChanged(const QString&, const QVariant&)));
-    connect(this, SIGNAL(setPropertyFailed(const QString&)), 
+    connect(m_if, SIGNAL(setPropertyFailed(const QString&)), 
             this, SLOT(setPropertyFailed(const QString&)));
-    connect(this, SIGNAL(requestPropertyComplete(bool, const QString&, const QVariant&)),
+    connect(m_if, SIGNAL(requestPropertyComplete(bool, const QString&, const QVariant&)),
     	    this, SLOT(requestPropertyComplete(bool, const QString&, const QVariant&)));
-    QDBusConnection::systemBus().connect("org.ofono", path(), ifname(), 
+    QDBusConnection::systemBus().connect("org.ofono", path(), m_if->ifname(), 
 					 "IncomingBarringInEffect",
 					 this,
 					 SIGNAL(incomingBarringInEffect()));
-    QDBusConnection::systemBus().connect("org.ofono", path(), ifname(), 
+    QDBusConnection::systemBus().connect("org.ofono", path(), m_if->ifname(), 
 					 "OutgoingBarringInEffect",
 					 this,
 					 SIGNAL(outgoingBarringInEffect()));
@@ -57,8 +58,7 @@ void OfonoCallBarring::setProperty(const QString& name,
 {
     if (m_pendingProperty.length() > 0) {
         // FIXME: should indicate that a setProperty is already in progress
-        m_errorName = QString();
-        m_errorMessage = QString("Operation already in progress");
+        m_if->setError(QString(), QString("Operation already in progress"));
         emit setPropertyFailed(name);
         return;
     }
@@ -67,7 +67,7 @@ void OfonoCallBarring::setProperty(const QString& name,
     QDBusMessage request;
 
     request = QDBusMessage::createMethodCall("org.ofono",
-					     path(), ifname(),
+					     path(), m_if->ifname(),
 					     "SetProperty");
     request.setArguments(QList<QVariant>() 
 			 << QVariant(name) 
@@ -80,8 +80,7 @@ void OfonoCallBarring::setProperty(const QString& name,
     					SET_PROPERTY_TIMEOUT);
     if (!result) {
         // FIXME: should indicate that sending a message failed
-        m_errorName = QString();
-        m_errorMessage = QString("DBUS sending failed");
+        m_if->setError(QString(), QString("DBUS sending failed"));
     	emit setPropertyFailed(name);
     	return;
     }
@@ -99,8 +98,7 @@ void OfonoCallBarring::setPropertyResp()
 void OfonoCallBarring::setPropertyErr(const QDBusError& error)
 {
     QString prop = m_pendingProperty;
-    m_errorName = error.name();
-    m_errorMessage = error.message();
+    m_if->setError(error.name(), error.message());
     m_pendingProperty = QString();
     emit setPropertyFailed(prop);
 }
@@ -112,7 +110,7 @@ void OfonoCallBarring::requestChangePassword(const QString &old_password,
     QDBusMessage request;
 
     request = QDBusMessage::createMethodCall("org.ofono",
-					     path(), ifname(),
+					     path(), m_if->ifname(),
 					     "ChangePassword");
     request << old_password << new_password;
 
@@ -126,7 +124,7 @@ void OfonoCallBarring::requestDisableAll(const QString &password)
     QDBusMessage request;
 
     request = QDBusMessage::createMethodCall("org.ofono",
-					     path(), ifname(),
+					     path(), m_if->ifname(),
 					     "DisableAll");
     request << password;
 
@@ -140,7 +138,7 @@ void OfonoCallBarring::requestDisableAllIncoming(const QString &password)
     QDBusMessage request;
 
     request = QDBusMessage::createMethodCall("org.ofono",
-					     path(), ifname(),
+					     path(), m_if->ifname(),
 					     "DisableAllIncoming");
     request << password;
 
@@ -154,7 +152,7 @@ void OfonoCallBarring::requestDisableAllOutgoing(const QString &password)
     QDBusMessage request;
 
     request = QDBusMessage::createMethodCall("org.ofono",
-					     path(), ifname(),
+					     path(), m_if->ifname(),
 					     "DisableAllOutgoing");
     request << password;
 
@@ -166,7 +164,7 @@ void OfonoCallBarring::requestDisableAllOutgoing(const QString &password)
 
 void OfonoCallBarring::requestVoiceIncoming()
 {
-    requestProperty("VoiceIncoming");
+    m_if->requestProperty("VoiceIncoming");
 }
 
 void OfonoCallBarring::setVoiceIncoming(const QString &barrings, const QString &password)
@@ -176,7 +174,7 @@ void OfonoCallBarring::setVoiceIncoming(const QString &barrings, const QString &
 
 void OfonoCallBarring::requestVoiceOutgoing()
 {
-    requestProperty("VoiceOutgoing");
+    m_if->requestProperty("VoiceOutgoing");
 }
 
 void OfonoCallBarring::setVoiceOutgoing(const QString &barrings, const QString &password)
@@ -219,8 +217,7 @@ void OfonoCallBarring::changePasswordResp()
 void OfonoCallBarring::changePasswordErr(QDBusError error)
 {
     qDebug() << "ChangePassword failed" << error;
-    m_errorName = error.name();
-    m_errorMessage = error.message();
+    m_if->setError(error.name(), error.message());
     emit changePasswordComplete(FALSE);
 }
 
@@ -232,8 +229,7 @@ void OfonoCallBarring::disableAllResp()
 void OfonoCallBarring::disableAllErr(QDBusError error)
 {
     qDebug() << "DisableAll failed" << error;
-    m_errorName = error.name();
-    m_errorMessage = error.message();
+    m_if->setError(error.name(), error.message());
     emit disableAllComplete(FALSE);
 }
 
@@ -245,8 +241,7 @@ void OfonoCallBarring::disableAllIncomingResp()
 void OfonoCallBarring::disableAllIncomingErr(QDBusError error)
 {
     qDebug() << "DisableAllIncoming failed" << error;
-    m_errorName = error.name();
-    m_errorMessage = error.message();
+    m_if->setError(error.name(), error.message());
     emit disableAllIncomingComplete(FALSE);
 }
 
@@ -258,7 +253,6 @@ void OfonoCallBarring::disableAllOutgoingResp()
 void OfonoCallBarring::disableAllOutgoingErr(QDBusError error)
 {
     qDebug() << "DisableAllOutgoing failed" << error;
-    m_errorName = error.name();
-    m_errorMessage = error.message();
+    m_if->setError(error.name(), error.message());
     emit disableAllOutgoingComplete(FALSE);
 }

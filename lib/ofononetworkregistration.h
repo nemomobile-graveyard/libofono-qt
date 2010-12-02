@@ -27,6 +27,7 @@
 #include <QtCore/QObject>
 #include <QStringList>
 #include <QDBusError>
+#include <QDBusObjectPath>
 #include "ofonomodeminterface.h"
 #include "libofono-qt_global.h"
 

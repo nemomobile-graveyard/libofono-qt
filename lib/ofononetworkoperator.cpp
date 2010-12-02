@@ -30,7 +30,7 @@
 #define REGISTER_TIMEOUT 300000
 
 OfonoNetworkOperator::OfonoNetworkOperator(const QString& operatorId, QObject *parent)
-    : OfonoInterface(operatorId, "org.ofono.NetworkOperator", OfonoInterface::GetAllOnStartup, parent)
+    : OfonoInterface(operatorId, "org.ofono.NetworkOperator", OfonoGetAllOnStartup, parent)
 {
     connect(this, SIGNAL(propertyChanged(const QString&, const QVariant&)), 
             this, SLOT(propertyChanged(const QString&, const QVariant&)));

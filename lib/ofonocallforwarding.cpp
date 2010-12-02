@@ -24,16 +24,17 @@
 #include <QtCore/QObject>
 #include <QtDBus/QtDBus>
 #include "ofonocallforwarding.h"
+#include "ofonointerface.h"
 
 
 OfonoCallForwarding::OfonoCallForwarding(OfonoModem::SelectionSetting modemSetting, const QString &modemPath, QObject *parent)
-    : OfonoModemInterface(modemSetting, modemPath, "org.ofono.CallForwarding", OfonoInterface::GetAllOnFirstRequest, parent)
+    : OfonoModemInterface(modemSetting, modemPath, "org.ofono.CallForwarding", OfonoGetAllOnFirstRequest, parent)
 {
-    connect(this, SIGNAL(propertyChanged(const QString&, const QVariant&)), 
+    connect(m_if, SIGNAL(propertyChanged(const QString&, const QVariant&)), 
             this, SLOT(propertyChanged(const QString&, const QVariant&)));
-    connect(this, SIGNAL(setPropertyFailed(const QString&)), 
+    connect(m_if, SIGNAL(setPropertyFailed(const QString&)), 
             this, SLOT(setPropertyFailed(const QString&)));
-    connect(this, SIGNAL(requestPropertyComplete(bool, const QString&, const QVariant&)),
+    connect(m_if, SIGNAL(requestPropertyComplete(bool, const QString&, const QVariant&)),
     	    this, SLOT(requestPropertyComplete(bool, const QString&, const QVariant&)));
 }
 
@@ -47,7 +48,7 @@ void OfonoCallForwarding::requestDisableAll(const QString &type)
     QDBusMessage request;
 
     request = QDBusMessage::createMethodCall("org.ofono",
-					     path(), ifname(),
+					     path(), m_if->ifname(),
 					     "DisableAll");
     request << type;
 
@@ -59,52 +60,52 @@ void OfonoCallForwarding::requestDisableAll(const QString &type)
 
 void OfonoCallForwarding::requestVoiceUnconditional()
 {
-    requestProperty("VoiceUnconditional");
+    m_if->requestProperty("VoiceUnconditional");
 }
 
 void OfonoCallForwarding::setVoiceUnconditional(const QString &property)
 {
-    setProperty("VoiceUnconditional", qVariantFromValue(property));
+    m_if->setProperty("VoiceUnconditional", qVariantFromValue(property));
 }
 
 void OfonoCallForwarding::requestVoiceBusy()
 {
-    requestProperty("VoiceBusy");
+    m_if->requestProperty("VoiceBusy");
 }
 
 void OfonoCallForwarding::setVoiceBusy(const QString &property)
 {
-    return setProperty("VoiceBusy", qVariantFromValue(property));
+    return m_if->setProperty("VoiceBusy", qVariantFromValue(property));
 }
 
 void OfonoCallForwarding::requestVoiceNoReply()
 {
-    requestProperty("VoiceNoReply");
+    m_if->requestProperty("VoiceNoReply");
 }
 
 void OfonoCallForwarding::setVoiceNoReply(const QString &property)
 {
-    return setProperty("VoiceNoReply", qVariantFromValue(property));
+    return m_if->setProperty("VoiceNoReply", qVariantFromValue(property));
 }
 
 void OfonoCallForwarding::requestVoiceNoReplyTimeout()
 {
-    requestProperty("VoiceNoReplyTimeout");
+    m_if->requestProperty("VoiceNoReplyTimeout");
 }
 
 void OfonoCallForwarding::setVoiceNoReplyTimeout(ushort timeout)
 {
-    return setProperty("VoiceNoReplyTimeout", qVariantFromValue(timeout));
+    return m_if->setProperty("VoiceNoReplyTimeout", qVariantFromValue(timeout));
 }
 
 void OfonoCallForwarding::requestVoiceNotReachable()
 {
-    requestProperty("VoiceNotReachable");
+    m_if->requestProperty("VoiceNotReachable");
 }
 
 void OfonoCallForwarding::setVoiceNotReachable(const QString &property)
 {
-    return setProperty("VoiceNotReachable", qVariantFromValue(property));
+    return m_if->setProperty("VoiceNotReachable", qVariantFromValue(property));
 }
 
 
@@ -161,8 +162,7 @@ void OfonoCallForwarding::disableAllResp()
 void OfonoCallForwarding::disableAllErr(QDBusError error)
 {
     qDebug() << "DisableAll failed" << error;
-    m_errorName = error.name();
-    m_errorMessage = error.message();
+    m_if->setError(error.name(), error.message());
     emit disableAllComplete(FALSE);
 }
 

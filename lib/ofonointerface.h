@@ -28,6 +28,7 @@
 #include <QVariant>
 #include <QDBusVariant>
 #include <QDBusError>
+#include "ofonopropertysetting.h"
 #include "libofono-qt_global.h"
 
 //! Basic oFono interface class
@@ -41,21 +42,12 @@ class OFONO_QT_EXPORT OfonoInterface : public QObject
     Q_OBJECT
 public:
 
-    //! How to handle getting the properties
-    enum GetPropertySetting {
-    	GetAllOnStartup,	/*!< Get all properties synchronously on startup;
-    				 * they would be immediately available. */
-    	GetAllOnFirstRequest 	/*!< Do not get properties on startup;
-    			     	 * get them in an asynhronous way when the first
-    			     	 * property is requested. */
-    };
-
     /*!
      * \param path D-Bus path to the interface
      * \param ifname D-Bus name of the interface
      * \param setting specifies how the object should handle oFono properties of the interface
      */
-    OfonoInterface(const QString &path, const QString &ifname, GetPropertySetting setting, QObject *parent=0);
+    OfonoInterface(const QString &path, const QString &ifname, OfonoGetPropertySetting setting, QObject *parent=0);
     ~OfonoInterface();
 
     //! Get all properties
@@ -109,6 +101,9 @@ public:
      * GetAllOnStartup or reset otherwise.
      */
     void setPath(const QString &path);
+    
+    //! Sets the last error explicitly
+    void setError(const QString &errorName, const QString &errorMessage);
 
 signals:
     //! Issued when a property has changed
@@ -151,7 +146,7 @@ private:
    QString m_ifname;
    QVariantMap m_properties;
    QString m_pendingProperty;
-   GetPropertySetting m_getpropsetting;
+   OfonoGetPropertySetting m_getpropsetting;
 };
 
 #endif

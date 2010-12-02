@@ -25,14 +25,15 @@
 #include <QtCore/QObject>
 
 #include "ofonosimmanager.h"
+#include "ofonointerface.h"
 
 
 OfonoSimManager::OfonoSimManager(OfonoModem::SelectionSetting modemSetting, const QString &modemPath, QObject *parent)
-    : OfonoModemInterface(modemSetting, modemPath, "org.ofono.SimManager", OfonoInterface::GetAllOnStartup, parent)
+    : OfonoModemInterface(modemSetting, modemPath, "org.ofono.SimManager", OfonoGetAllOnStartup, parent)
 {
-    connect(this, SIGNAL(propertyChanged(const QString&, const QVariant&)), 
+    connect(m_if, SIGNAL(propertyChanged(const QString&, const QVariant&)), 
             this, SLOT(propertyChanged(const QString&, const QVariant&)));
-    connect(this, SIGNAL(setPropertyFailed(const QString&)), 
+    connect(m_if, SIGNAL(setPropertyFailed(const QString&)), 
             this, SLOT(setPropertyFailed(const QString&)));
 
 }
@@ -46,7 +47,7 @@ void OfonoSimManager::requestChangePin(const QString &pintype, const QString &ol
     QDBusMessage request;
 
     request = QDBusMessage::createMethodCall("org.ofono",
-					     path(), ifname(),
+					     path(), m_if->ifname(),
 					     "ChangePin");
     request << pintype << oldpin << newpin;
 
@@ -60,7 +61,7 @@ void OfonoSimManager::requestEnterPin(const QString &pintype, const QString &pin
     QDBusMessage request;
 
     request = QDBusMessage::createMethodCall("org.ofono",
-					     path(), ifname(),
+					     path(), m_if->ifname(),
 					     "EnterPin");
     request << pintype << pin;
 
@@ -74,7 +75,7 @@ void OfonoSimManager::requestResetPin(const QString &pintype, const QString &puk
     QDBusMessage request;
 
     request = QDBusMessage::createMethodCall("org.ofono",
-					     path(), ifname(),
+					     path(), m_if->ifname(),
 					     "ResetPin");
     request << pintype << puk << newpin;
 
@@ -88,7 +89,7 @@ void OfonoSimManager::requestLockPin(const QString &pintype, const QString &pin)
     QDBusMessage request;
 
     request = QDBusMessage::createMethodCall("org.ofono",
-					     path(), ifname(),
+					     path(), m_if->ifname(),
 					     "LockPin");
     request << pintype << pin;
 
@@ -102,7 +103,7 @@ void OfonoSimManager::requestUnlockPin(const QString &pintype, const QString &pi
     QDBusMessage request;
 
     request = QDBusMessage::createMethodCall("org.ofono",
-					     path(), ifname(),
+					     path(), m_if->ifname(),
 					     "UnlockPin");
     request << pintype << pin;
 
@@ -113,59 +114,59 @@ void OfonoSimManager::requestUnlockPin(const QString &pintype, const QString &pi
 
 void OfonoSimManager::setSubscriberNumbers(const QStringList &numbers)
 {
-    setProperty("SubscriberNumbers", qVariantFromValue(numbers));
+    m_if->setProperty("SubscriberNumbers", qVariantFromValue(numbers));
 }
 
 bool OfonoSimManager::present() const
 {
-    return properties()["Present"].value<bool>();
+    return m_if->properties()["Present"].value<bool>();
 }
 
 QString OfonoSimManager::subscriberIdentity() const
 {
-    return properties()["SubscriberIdentity"].value<QString>();
+    return m_if->properties()["SubscriberIdentity"].value<QString>();
 }
 
 QString OfonoSimManager::mobileCountryCode() const
 {
-    return properties()["MobileCountryCode"].value<QString>();
+    return m_if->properties()["MobileCountryCode"].value<QString>();
 }
 
 QString OfonoSimManager::mobileNetworkCode() const
 {
-    return properties()["MobileNetworkCode"].value<QString>();
+    return m_if->properties()["MobileNetworkCode"].value<QString>();
 }
 
 QStringList OfonoSimManager::subscriberNumbers() const
 {
-    return properties()["SubscriberNumbers"].value<QStringList>();
+    return m_if->properties()["SubscriberNumbers"].value<QStringList>();
 }
 
 QMap<QString, QString> OfonoSimManager::serviceNumbers() const
 {
     QMap<QString, QString> map;
-    properties()["ServiceNumbers"].value<QDBusArgument>() >> map;
+    m_if->properties()["ServiceNumbers"].value<QDBusArgument>() >> map;
     return map;
 }
 
 QString OfonoSimManager::pinRequired() const
 {
-    return properties()["PinRequired"].value<QString>();
+    return m_if->properties()["PinRequired"].value<QString>();
 }
 
 QStringList OfonoSimManager::lockedPins() const
 {
-    return properties()["LockedPins"].value<QStringList>();
+    return m_if->properties()["LockedPins"].value<QStringList>();
 }
 
 QString OfonoSimManager::cardIdentifier() const
 {
-    return properties()["CardIdentifier"].value<QString>();
+    return m_if->properties()["CardIdentifier"].value<QString>();
 }
 
 QStringList OfonoSimManager::preferredLanguages() const
 {
-    return properties()["PreferredLanguages"].value<QStringList>();
+    return m_if->properties()["PreferredLanguages"].value<QStringList>();
 }
 
 
@@ -210,8 +211,7 @@ void OfonoSimManager::changePinResp()
 void OfonoSimManager::changePinErr(QDBusError error)
 {
     qDebug() << "ChangePin failed" << error;
-    m_errorName = error.name();
-    m_errorMessage = error.message();
+    m_if->setError(error.name(), error.message());    
     emit changePinComplete(FALSE);
 }
 
@@ -223,8 +223,7 @@ void OfonoSimManager::enterPinResp()
 void OfonoSimManager::enterPinErr(QDBusError error)
 {
     qDebug() << "EnterPin failed" << error;
-    m_errorName = error.name();
-    m_errorMessage = error.message();
+    m_if->setError(error.name(), error.message());
     emit enterPinComplete(FALSE);
 }
 
@@ -236,8 +235,7 @@ void OfonoSimManager::resetPinResp()
 void OfonoSimManager::resetPinErr(QDBusError error)
 {
     qDebug() << "ResetPin failed" << error;
-    m_errorName = error.name();
-    m_errorMessage = error.message();
+    m_if->setError(error.name(), error.message());
     emit resetPinComplete(FALSE);
 }
 
@@ -248,8 +246,7 @@ void OfonoSimManager::lockPinResp()
 void OfonoSimManager::lockPinErr(QDBusError error)
 {
     qDebug() << "LockPin failed" << error;
-    m_errorName = error.name();
-    m_errorMessage = error.message();
+    m_if->setError(error.name(), error.message());
     emit lockPinComplete(FALSE);
 }
 
@@ -260,7 +257,6 @@ void OfonoSimManager::unlockPinResp()
 void OfonoSimManager::unlockPinErr(QDBusError error)
 {
     qDebug() << "UnlockPin failed" << error;
-    m_errorName = error.name();
-    m_errorMessage = error.message();
+    m_if->setError(error.name(), error.message()); 
     emit unlockPinComplete(FALSE);
 }

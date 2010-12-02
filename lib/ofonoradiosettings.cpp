@@ -25,13 +25,14 @@
 #include <QtCore/QObject>
 
 #include "ofonoradiosettings.h"
+#include "ofonointerface.h"
 
 OfonoRadioSettings::OfonoRadioSettings(OfonoModem::SelectionSetting modemSetting, const QString &modemPath, QObject *parent)
-    : OfonoModemInterface(modemSetting, modemPath, "org.ofono.RadioSettings", OfonoInterface::GetAllOnStartup, parent)
+    : OfonoModemInterface(modemSetting, modemPath, "org.ofono.RadioSettings", OfonoGetAllOnStartup, parent)
 {
-    connect(this, SIGNAL(propertyChanged(const QString&, const QVariant&)), 
+    connect(m_if, SIGNAL(propertyChanged(const QString&, const QVariant&)), 
             this, SLOT(propertyChanged(const QString&, const QVariant&)));
-    connect(this, SIGNAL(setPropertyFailed(const QString&)), 
+    connect(m_if, SIGNAL(setPropertyFailed(const QString&)), 
             this, SLOT(setPropertyFailed(const QString&)));}
 
 OfonoRadioSettings::~OfonoRadioSettings()
@@ -40,12 +41,12 @@ OfonoRadioSettings::~OfonoRadioSettings()
 
 QString OfonoRadioSettings::technologyPreference() const
 {
-    return properties()["TechnologyPreference"].value<QString>();
+    return m_if->properties()["TechnologyPreference"].value<QString>();
 }
 
 void OfonoRadioSettings::setTechnologyPreference(QString preference)
 {
-    setProperty("TechnologyPreference", qVariantFromValue(preference));
+    m_if->setProperty("TechnologyPreference", qVariantFromValue(preference));
 }
 
 void OfonoRadioSettings::setPropertyFailed(const QString& property)

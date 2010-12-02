@@ -21,40 +21,16 @@
  *
  */
 
-#ifndef OFONOPHONEBOOK_H
-#define OFONOPHONEBOOK_H
+#ifndef OFONOPROPERTYSETTING_H
+#define OFONOPROPERTYSETTING_H
 
-#include <QtCore/QObject>
-#include <QDBusError>
-#include "ofonomodeminterface.h"
-#include "libofono-qt_global.h"
-
-//! This class is used to access oFono phonebook API
-/*!
- * oFono phonebook API is documented in
- * http://git.kernel.org/?p=network/ofono/ofono.git;a=blob_plain;f=doc/phonebook-api.txt
- */
-class OFONO_QT_EXPORT OfonoPhonebook : public OfonoModemInterface
-{
-
-Q_OBJECT
-
-public:
-
-    OfonoPhonebook(OfonoModem::SelectionSetting modemSetting, const QString &modemPath, QObject *parent);
-
-    ~OfonoPhonebook();
-
-    void requestImport();
-
-signals:
-    void importComplete(bool success, const QString &entries);
-
-private slots:
-    void importResp(const QString &entries);
-    void importErr(const QDBusError &error);
-
-private:
-
-};
+//! How to handle getting the properties
+enum OfonoGetPropertySetting {
+    	OfonoGetAllOnStartup,	/*!< Get all properties synchronously on startup;
+    				 * they would be immediately available. */
+    	OfonoGetAllOnFirstRequest 	/*!< Do not get properties on startup;
+    			     	 * get them in an asynhronous way when the first
+    			     	 * property is requested. */
+    };
+    
 #endif

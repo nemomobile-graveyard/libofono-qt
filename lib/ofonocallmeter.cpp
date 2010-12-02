@@ -25,13 +25,14 @@
 #include <QtCore/QObject>
 
 #include "ofonocallmeter.h"
+#include "ofonointerface.h"
 
 OfonoCallMeter::OfonoCallMeter(OfonoModem::SelectionSetting modemSetting, const QString &modemPath, QObject *parent)
-    : OfonoModemInterface(modemSetting, modemPath, "org.ofono.CallMeter", OfonoInterface::GetAllOnFirstRequest, parent)
+    : OfonoModemInterface(modemSetting, modemPath, "org.ofono.CallMeter", OfonoGetAllOnFirstRequest, parent)
 {
-    connect(this, SIGNAL(propertyChanged(const QString&, const QVariant&)), 
+    connect(m_if, SIGNAL(propertyChanged(const QString&, const QVariant&)), 
             this, SLOT(propertyChanged(const QString&, const QVariant&)));
-    connect(this, SIGNAL(requestPropertyComplete(bool, const QString&, const QVariant&)),
+    connect(m_if, SIGNAL(requestPropertyComplete(bool, const QString&, const QVariant&)),
     	    this, SLOT(requestPropertyComplete(bool, const QString&, const QVariant&)));
 }
 
@@ -41,7 +42,7 @@ OfonoCallMeter::~OfonoCallMeter()
 
 void OfonoCallMeter::requestCallMeter()
 {
-    requestProperty("CallMeter");
+    m_if->requestProperty("CallMeter");
 }
 
 void OfonoCallMeter::requestPropertyComplete(bool success, const QString& property, const QVariant& value)

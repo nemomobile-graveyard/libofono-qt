@@ -25,6 +25,7 @@
 #include <QtCore/QObject>
 
 #include "ofononetworkregistration.h"
+#include "ofonointerface.h"
 
 #define REGISTER_TIMEOUT 300000
 #define SCAN_TIMEOUT 300000
@@ -47,12 +48,12 @@ const QDBusArgument &operator>>(const QDBusArgument &argument, OfonoOperatorStru
 
 
 OfonoNetworkRegistration::OfonoNetworkRegistration(OfonoModem::SelectionSetting modemSetting, const QString &modemPath, QObject *parent)
-    : OfonoModemInterface(modemSetting, modemPath, "org.ofono.NetworkRegistration", OfonoInterface::GetAllOnStartup, parent)
+    : OfonoModemInterface(modemSetting, modemPath, "org.ofono.NetworkRegistration", OfonoGetAllOnStartup, parent)
 {
     qDBusRegisterMetaType<OfonoOperatorStruct>();
     qDBusRegisterMetaType<OfonoOperatorList>();
 
-    connect(this, SIGNAL(propertyChanged(const QString&, const QVariant&)), 
+    connect(m_if, SIGNAL(propertyChanged(const QString&, const QVariant&)), 
             this, SLOT(propertyChanged(const QString&, const QVariant&)));
 }
 
@@ -65,7 +66,7 @@ void OfonoNetworkRegistration::requestRegister()
     QDBusMessage request;
 
     request = QDBusMessage::createMethodCall("org.ofono",
-					     path(), ifname(),
+					     path(), m_if->ifname(),
 					     "Register");
 
     QDBusConnection::systemBus().callWithCallback(request, this,
@@ -79,7 +80,7 @@ void OfonoNetworkRegistration::requestDeregister()
     QDBusMessage request;
 
     request = QDBusMessage::createMethodCall("org.ofono",
-					     path(), ifname(),
+					     path(), m_if->ifname(),
 					     "Deregister");
 
     QDBusConnection::systemBus().callWithCallback(request, this,
@@ -93,7 +94,7 @@ void OfonoNetworkRegistration::requestScan()
     QDBusMessage request;
 
     request = QDBusMessage::createMethodCall("org.ofono",
-					     path(), ifname(),
+					     path(), m_if->ifname(),
 					     "Scan");
 
     QDBusConnection::systemBus().callWithCallback(request, this,
@@ -107,7 +108,7 @@ void OfonoNetworkRegistration::requestGetOperators()
     QDBusMessage request;
 
     request = QDBusMessage::createMethodCall("org.ofono",
-					     path(), ifname(),
+					     path(), m_if->ifname(),
 					     "GetOperators");
 
     QDBusConnection::systemBus().callWithCallback(request, this,
@@ -118,52 +119,52 @@ void OfonoNetworkRegistration::requestGetOperators()
 
 QString OfonoNetworkRegistration::mode() const
 {
-    return properties()["Mode"].value<QString>();
+    return m_if->properties()["Mode"].value<QString>();
 }
 
 QString OfonoNetworkRegistration::status() const
 {
-    return properties()["Status"].value<QString>();
+    return m_if->properties()["Status"].value<QString>();
 }
 
 uint OfonoNetworkRegistration::locationAreaCode() const
 {
-    return properties()["LocationAreaCode"].value<uint>();
+    return m_if->properties()["LocationAreaCode"].value<uint>();
 }
 
 uint OfonoNetworkRegistration::cellId() const
 {
-    return properties()["CellId"].value<uint>();
+    return m_if->properties()["CellId"].value<uint>();
 }
 
 QString OfonoNetworkRegistration::mcc() const
 {
-    return properties()["MobileCountryCode"].value<QString>();
+    return m_if->properties()["MobileCountryCode"].value<QString>();
 }
 
 QString OfonoNetworkRegistration::mnc() const
 {
-    return properties()["MobileNetworkCode"].value<QString>();
+    return m_if->properties()["MobileNetworkCode"].value<QString>();
 }
 
 QString OfonoNetworkRegistration::technology() const
 {
-    return properties()["Technology"].value<QString>();
+    return m_if->properties()["Technology"].value<QString>();
 }
 
 QString OfonoNetworkRegistration::name() const
 {
-    return properties()["Name"].value<QString>();
+    return m_if->properties()["Name"].value<QString>();
 }
 
 uint OfonoNetworkRegistration::strength() const
 {
-    return properties()["Strength"].value<uint>();
+    return m_if->properties()["Strength"].value<uint>();
 }
 
 QString OfonoNetworkRegistration::baseStation() const
 {
-    return properties()["BaseStation"].value<QString>();
+    return m_if->properties()["BaseStation"].value<QString>();
 }
 
 void OfonoNetworkRegistration::propertyChanged(const QString& property, const QVariant& value)
@@ -199,8 +200,7 @@ void OfonoNetworkRegistration::registerResp()
 void OfonoNetworkRegistration::registerErr(QDBusError error)
 {
     qDebug() << "Register failed" << error;
-    m_errorName = error.name();
-    m_errorMessage = error.message();
+    m_if->setError(error.name(), error.message());
     emit registerComplete(FALSE);
 }
 
@@ -212,8 +212,7 @@ void OfonoNetworkRegistration::deregisterResp()
 void OfonoNetworkRegistration::deregisterErr(QDBusError error)
 {
     qDebug() << "Deregister failed" << error;
-    m_errorName = error.name();
-    m_errorMessage = error.message();
+    m_if->setError(error.name(), error.message());
     emit deregisterComplete(FALSE);
 }
 
@@ -229,8 +228,7 @@ void OfonoNetworkRegistration::getOperatorsResp(OfonoOperatorList list)
 void OfonoNetworkRegistration::getOperatorsErr(QDBusError error)
 {
     qDebug() << "GetOperators failed" << error;
-    m_errorName = error.name();
-    m_errorMessage = error.message();
+    m_if->setError(error.name(), error.message());
     emit getOperatorsComplete(FALSE, QStringList());
 }
 
@@ -246,8 +244,7 @@ void OfonoNetworkRegistration::scanResp(OfonoOperatorList list)
 void OfonoNetworkRegistration::scanErr(QDBusError error)
 {
     qDebug() << "Scan failed" << error;
-    m_errorName = error.name();
-    m_errorMessage = error.message();
+    m_if->setError(error.name(), error.message());
     emit scanComplete(FALSE, QStringList());
 }
 

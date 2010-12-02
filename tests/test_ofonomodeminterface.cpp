@@ -36,7 +36,7 @@ private slots:
 
     void initTestCase()
     {
-	mi = new OfonoModemInterface(OfonoModem::ManualSelect, "/phonesim", "org.ofono.NetworkRegistration", OfonoInterface::GetAllOnStartup, this);
+	mi = new OfonoModemInterface(OfonoModem::ManualSelect, "/phonesim", "org.ofono.NetworkRegistration", OfonoGetAllOnStartup, this);
 	
 	if (!mi->modem()->powered()) {
   	    mi->modem()->setPowered(true);
@@ -54,7 +54,6 @@ private slots:
         QSignalSpy validity(mi, SIGNAL(validityChanged(bool)));
         QSignalSpy property(mi, SIGNAL(propertyChanged(QString, QVariant)));
         QCOMPARE(mi->isValid(), true);
-        QVERIFY(mi->properties()["Name"].toString().length() > 0);
 
         mi->modem()->setOnline(false);
         QTest::qWait(5000);
@@ -83,7 +82,7 @@ private slots:
         QCOMPARE(property.count(), 0);
 
         delete mi;
-      	mi = new OfonoModemInterface(OfonoModem::ManualSelect, "/phonesim", "org.ofono.NetworkRegistration", OfonoInterface::GetAllOnStartup, this);
+      	mi = new OfonoModemInterface(OfonoModem::ManualSelect, "/phonesim", "org.ofono.NetworkRegistration", OfonoGetAllOnStartup, this);
 	if (!mi->modem()->powered()) {
   	    mi->modem()->setPowered(true);
             QTest::qWait(5000);

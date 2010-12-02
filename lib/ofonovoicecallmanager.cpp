@@ -25,11 +25,12 @@
 #include <QtCore/QObject>
 
 #include "ofonovoicecallmanager.h"
+#include "ofonointerface.h"
 
 OfonoVoiceCallManager::OfonoVoiceCallManager(OfonoModem::SelectionSetting modemSetting, const QString &modemPath, QObject *parent)
-    : OfonoModemInterface(modemSetting, modemPath, "org.ofono.VoiceCallManager", OfonoInterface::GetAllOnStartup, parent)
+    : OfonoModemInterface(modemSetting, modemPath, "org.ofono.VoiceCallManager", OfonoGetAllOnStartup, parent)
 {
-    connect(this, SIGNAL(propertyChanged(const QString&, const QVariant&)), 
+    connect(m_if, SIGNAL(propertyChanged(const QString&, const QVariant&)), 
             this, SLOT(propertyChanged(const QString&, const QVariant&)));
 }
 
@@ -39,7 +40,7 @@ OfonoVoiceCallManager::~OfonoVoiceCallManager()
 
 QStringList OfonoVoiceCallManager::emergencyNumbers() const
 {
-    return properties()["EmergencyNumbers"].value<QStringList>();
+    return m_if->properties()["EmergencyNumbers"].value<QStringList>();
 }
 
 void OfonoVoiceCallManager::propertyChanged(const QString& property, const QVariant& value)

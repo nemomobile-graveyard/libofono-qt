@@ -47,7 +47,7 @@ OfonoModem::OfonoModem(SelectionSetting setting, const QString &modemPath, QObje
     if (finalModemPath.isEmpty()) {
         finalModemPath = "/";
     } 
-    m_if = new OfonoInterface(finalModemPath, "org.ofono.Modem", OfonoInterface::GetAllOnStartup, this);
+    m_if = new OfonoInterface(finalModemPath, "org.ofono.Modem", OfonoGetAllOnStartup, this);
     connect(m_if, SIGNAL(propertyChanged(const QString&, const QVariant&)), 
             this, SLOT(propertyChanged(const QString&, const QVariant&)));
     connect(m_if, SIGNAL(setPropertyFailed(const QString&)), 

@@ -25,20 +25,21 @@
 #include <QtCore/QObject>
 
 #include "ofonosupplementaryservices.h"
+#include "ofonointerface.h"
 
 #define REQUEST_TIMEOUT 60000
 
 OfonoSupplementaryServices::OfonoSupplementaryServices(OfonoModem::SelectionSetting modemSetting, const QString &modemPath, QObject *parent)
-    : OfonoModemInterface(modemSetting, modemPath, "org.ofono.SupplementaryServices", OfonoInterface::GetAllOnStartup, parent)
+    : OfonoModemInterface(modemSetting, modemPath, "org.ofono.SupplementaryServices", OfonoGetAllOnStartup, parent)
 {
 
-    connect(this, SIGNAL(propertyChanged(const QString&, const QVariant&)), 
+    connect(m_if, SIGNAL(propertyChanged(const QString&, const QVariant&)), 
             this, SLOT(propertyChanged(const QString&, const QVariant&)));
-    QDBusConnection::systemBus().connect("org.ofono", path(), ifname(), 
+    QDBusConnection::systemBus().connect("org.ofono", path(), m_if->ifname(), 
 					     "NotificationReceived",
 					     this,
 					     SIGNAL(notificationReceived(QString)));
-    QDBusConnection::systemBus().connect("org.ofono", path(), ifname(), 
+    QDBusConnection::systemBus().connect("org.ofono", path(), m_if->ifname(), 
 					     "RequestReceived",
 					     this,
 					     SIGNAL(requestReceived(QString)));
@@ -53,7 +54,7 @@ void OfonoSupplementaryServices::requestInitiate(const QString &command)
     QDBusMessage request;
 
     request = QDBusMessage::createMethodCall("org.ofono",
-					     path(), ifname(),
+					     path(), m_if->ifname(),
 					     "Initiate");
     request << command;
 
@@ -68,7 +69,7 @@ void OfonoSupplementaryServices::requestRespond(const QString &reply)
     QDBusMessage request;
 
     request = QDBusMessage::createMethodCall("org.ofono",
-					     path(), ifname(),
+					     path(), m_if->ifname(),
 					     "Respond");
     request << reply;
 
@@ -83,7 +84,7 @@ void OfonoSupplementaryServices::requestCancel()
     QDBusMessage request;
 
     request = QDBusMessage::createMethodCall("org.ofono",
-					     path(), ifname(),
+					     path(), m_if->ifname(),
 					     "Cancel");
 
     QDBusConnection::systemBus().callWithCallback(request, this,
@@ -94,7 +95,7 @@ void OfonoSupplementaryServices::requestCancel()
 
 QString OfonoSupplementaryServices::state() const
 {
-    return properties()["State"].value<QString>();
+    return m_if->properties()["State"].value<QString>();
 }
 
 void OfonoSupplementaryServices::propertyChanged(const QString& property, const QVariant& value)
@@ -162,8 +163,7 @@ void OfonoSupplementaryServices::initiateResp(QString message, QDBusVariant deta
 void OfonoSupplementaryServices::initiateErr(QDBusError error)
 {
     qDebug() << "Initiate failed" << error;
-    m_errorName = error.name();
-    m_errorMessage = error.message();
+    m_if->setError(error.name(), error.message());
     emit initiateFailed();
 }
 
@@ -176,8 +176,7 @@ void OfonoSupplementaryServices::respondResp(QString message)
 void OfonoSupplementaryServices::respondErr(QDBusError error)
 {
     qDebug() << "Respond failed" << error;
-    m_errorName = error.name();
-    m_errorMessage = error.message();
+    m_if->setError(error.name(), error.message());
     emit respondComplete(FALSE, QString());
 }
 
@@ -189,8 +188,7 @@ void OfonoSupplementaryServices::cancelResp()
 void OfonoSupplementaryServices::cancelErr(QDBusError error)
 {
     qDebug() << "Cancel failed" << error;
-    m_errorName = error.name();
-    m_errorMessage = error.message();
+    m_if->setError(error.name(), error.message());
     emit cancelComplete(FALSE);
 }
 

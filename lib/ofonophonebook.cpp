@@ -25,11 +25,12 @@
 #include <QtCore/QObject>
 
 #include "ofonophonebook.h"
+#include "ofonointerface.h"
 
 #define IMPORT_TIMEOUT 300000
 
 OfonoPhonebook::OfonoPhonebook(OfonoModem::SelectionSetting modemSetting, const QString &modemPath, QObject *parent)
-    : OfonoModemInterface(modemSetting, modemPath, "org.ofono.Phonebook", OfonoInterface::GetAllOnFirstRequest, parent)
+    : OfonoModemInterface(modemSetting, modemPath, "org.ofono.Phonebook", OfonoGetAllOnFirstRequest, parent)
 {
 
 }
@@ -43,7 +44,7 @@ void OfonoPhonebook::requestImport()
     QDBusMessage request;
 
     request = QDBusMessage::createMethodCall("org.ofono",
-					     path(), ifname(),
+					     path(), m_if->ifname(),
 					     "Import");
     request.setArguments(QList<QVariant>());
 
@@ -60,9 +61,7 @@ void OfonoPhonebook::importResp(const QString &entries)
 
 void OfonoPhonebook::importErr(const QDBusError& error)
 {
-    m_errorName = error.name();
-    m_errorMessage = error.message();
-
+    m_if->setError(error.name(), error.message());
     emit importComplete(false, QString());
 }
 

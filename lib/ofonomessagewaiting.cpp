@@ -25,14 +25,15 @@
 #include <QtCore/QObject>
 
 #include "ofonomessagewaiting.h"
+#include "ofonointerface.h"
 
 
 OfonoMessageWaiting::OfonoMessageWaiting(OfonoModem::SelectionSetting modemSetting, const QString &modemPath, QObject *parent)
-    : OfonoModemInterface(modemSetting, modemPath, "org.ofono.MessageWaiting", OfonoInterface::GetAllOnStartup, parent)
+    : OfonoModemInterface(modemSetting, modemPath, "org.ofono.MessageWaiting", OfonoGetAllOnStartup, parent)
 {
-    connect(this, SIGNAL(propertyChanged(const QString&, const QVariant&)), 
+    connect(m_if, SIGNAL(propertyChanged(const QString&, const QVariant&)), 
             this, SLOT(propertyChanged(const QString&, const QVariant&)));
-    connect(this, SIGNAL(setPropertyFailed(const QString&)), 
+    connect(m_if, SIGNAL(setPropertyFailed(const QString&)), 
             this, SLOT(setPropertyFailed(const QString&)));
 
 }
@@ -43,22 +44,22 @@ OfonoMessageWaiting::~OfonoMessageWaiting()
 
 bool OfonoMessageWaiting::voicemailWaiting() const
 {
-    return properties()["VoicemailWaiting"].value<bool>();
+    return m_if->properties()["VoicemailWaiting"].value<bool>();
 }
 
 int OfonoMessageWaiting::voicemailMessageCount() const
 {
-    return properties()["VoicemailMessageCount"].value<int>();
+    return m_if->properties()["VoicemailMessageCount"].value<int>();
 }
 
 QString OfonoMessageWaiting::voicemailMailboxNumber() const
 {
-    return properties()["VoicemailMailboxNumber"].value<QString>();
+    return m_if->properties()["VoicemailMailboxNumber"].value<QString>();
 }
 
 void OfonoMessageWaiting::setVoicemailMailboxNumber(QString mailboxnumber)
 {
-    setProperty("VoicemailMailboxNumber", qVariantFromValue(mailboxnumber));
+    m_if->setProperty("VoicemailMailboxNumber", qVariantFromValue(mailboxnumber));
 }
 
 void OfonoMessageWaiting::setPropertyFailed(const QString& property)
