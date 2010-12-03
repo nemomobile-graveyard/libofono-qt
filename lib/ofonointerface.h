@@ -94,6 +94,7 @@ public:
      */
     QString errorMessage() const {return m_errorMessage;}
 
+public slots:
     //! Changes the interface path
     /*!
      * This method changes the D-Bus path to the interface.

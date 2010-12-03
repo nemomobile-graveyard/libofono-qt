@@ -52,36 +52,33 @@ private slots:
     void testOfonoModemInterfaceOnlineOfflineModem()
     {
         QSignalSpy validity(mi, SIGNAL(validityChanged(bool)));
-        QSignalSpy property(mi, SIGNAL(propertyChanged(QString, QVariant)));
         QCOMPARE(mi->isValid(), true);
 
         mi->modem()->setOnline(false);
         QTest::qWait(5000);
         QCOMPARE(validity.count(), 1);
         QCOMPARE(validity.takeFirst().at(0).toBool(), false);
-        QCOMPARE(property.count(), 0);
 
         mi->modem()->setOnline(true);
         QTest::qWait(5000);
         QCOMPARE(validity.count(), 1);
         QCOMPARE(validity.takeFirst().at(0).toBool(), true);
-        QVERIFY(property.count() > 0);
     }
 
     void testOfonoModemInterfaceAddRemoveModem()
     {
         QSignalSpy validity(mi, SIGNAL(validityChanged(bool)));
-        QSignalSpy property(mi, SIGNAL(propertyChanged(QString, QVariant)));
         qDebug() << "Please stop oFono and then start it again";
     
         for (int i=0; i<30; i++) {
+            if (validity.count() > 0)
+                break;
             QTest::qWait(1000);
         }
         QCOMPARE(validity.count(), 1);
         QCOMPARE(validity.takeFirst().at(0).toBool(), false);
-        QCOMPARE(property.count(), 0);
-
         delete mi;
+	QTest::qWait(10000);
       	mi = new OfonoModemInterface(OfonoModem::ManualSelect, "/phonesim", "org.ofono.NetworkRegistration", OfonoGetAllOnStartup, this);
 	if (!mi->modem()->powered()) {
   	    mi->modem()->setPowered(true);
@@ -92,7 +89,6 @@ private slots:
             QTest::qWait(5000);
         }
         QCOMPARE(validity.count(), 0);
-        QCOMPARE(property.count(), 0);
     }
 
     void cleanupTestCase()
