@@ -55,7 +55,7 @@ public:
     void setVoiceNotReachable(const QString &property);
     
     /* Methods */
-    void requestDisableAll(const QString &type); /* "all" | "conditional" */
+    void disableAll(const QString &type); /* "all" | "conditional" */
     
 signals:
     void voiceUnconditionalComplete(bool success, const QString &property);

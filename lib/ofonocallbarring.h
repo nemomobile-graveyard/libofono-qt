@@ -49,10 +49,10 @@ public:
     void setVoiceOutgoing(const QString &barrings, const QString &password);
 
     /* Methods */
-    void requestChangePassword(const QString &old_password, const QString &new_password);
-    void requestDisableAll(const QString &password);
-    void requestDisableAllIncoming(const QString &password);
-    void requestDisableAllOutgoing(const QString &password);
+    void changePassword(const QString &old_password, const QString &new_password);
+    void disableAll(const QString &password);
+    void disableAllIncoming(const QString &password);
+    void disableAllOutgoing(const QString &password);
 
 signals:
     void incomingBarringInEffect();

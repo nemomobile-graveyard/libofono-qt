@@ -72,7 +72,7 @@ private slots:
     void testOfonoNetworkOperator()
     {
 	qDebug() << "state():" << m->state();
-	m->requestInitiate("*#002**11#");
+	m->initiate("*#002**11#");
 
 	QTest::qWait(120000);
     }

@@ -63,7 +63,7 @@ private slots:
 	qDebug() << "mobileNetworkCode():" << m->mnc();
 	qDebug() << "technologies():" << m->technologies();
 	qDebug() << "additionalInfo():" << m->additionalInfo();
-	m->requestRegister();
+	m->registerOp();
 
 	QTest::qWait(120000);
     }

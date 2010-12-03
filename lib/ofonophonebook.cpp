@@ -39,7 +39,7 @@ OfonoPhonebook::~OfonoPhonebook()
 {
 }
 
-void OfonoPhonebook::requestImport()
+void OfonoPhonebook::import()
 {
     QDBusMessage request;
 

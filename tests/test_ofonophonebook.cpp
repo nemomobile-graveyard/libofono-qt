@@ -55,7 +55,7 @@ private slots:
     void testOfonoPhonebook()
     {
 	qDebug() << "validity" << m->isValid();
-	m->requestImport();
+	m->import();
     QTest::qWait(120000);
     }
 

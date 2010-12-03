@@ -41,7 +41,7 @@ OfonoNetworkOperator::~OfonoNetworkOperator()
 {
 }
 
-void OfonoNetworkOperator::requestRegister()
+void OfonoNetworkOperator::registerOp()
 {
     QDBusMessage request;
 

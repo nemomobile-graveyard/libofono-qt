@@ -64,10 +64,10 @@ public:
     uint strength() const;
     QString baseStation() const;
     
-    void requestRegister();
-    void requestDeregister();
-    void requestGetOperators();
-    void requestScan();
+    void registerOp();
+    void deregister();
+    void getOperators();
+    void scan();
     
 signals:
     void modeChanged(const QString &mode);

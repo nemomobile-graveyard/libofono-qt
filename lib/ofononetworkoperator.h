@@ -60,7 +60,7 @@ public:
      */
     QString errorMessage() const;
 
-    void requestRegister();
+    void registerOp();
     
     QString name() const;
     QString status() const;

@@ -42,7 +42,7 @@ OfonoSimManager::~OfonoSimManager()
 {
 }
 
-void OfonoSimManager::requestChangePin(const QString &pintype, const QString &oldpin, const QString &newpin)
+void OfonoSimManager::changePin(const QString &pintype, const QString &oldpin, const QString &newpin)
 {
     QDBusMessage request;
 
@@ -56,7 +56,7 @@ void OfonoSimManager::requestChangePin(const QString &pintype, const QString &ol
 					SLOT(changePinErr(const QDBusError&)));
 }
 
-void OfonoSimManager::requestEnterPin(const QString &pintype, const QString &pin)
+void OfonoSimManager::enterPin(const QString &pintype, const QString &pin)
 {
     QDBusMessage request;
 
@@ -70,7 +70,7 @@ void OfonoSimManager::requestEnterPin(const QString &pintype, const QString &pin
 					SLOT(enterPinErr(const QDBusError&)));
 }
 
-void OfonoSimManager::requestResetPin(const QString &pintype, const QString &puk, const QString &newpin)
+void OfonoSimManager::resetPin(const QString &pintype, const QString &puk, const QString &newpin)
 {
     QDBusMessage request;
 
@@ -84,7 +84,7 @@ void OfonoSimManager::requestResetPin(const QString &pintype, const QString &puk
 					SLOT(resetPinErr(const QDBusError&)));
 }
 
-void OfonoSimManager::requestLockPin(const QString &pintype, const QString &pin)
+void OfonoSimManager::lockPin(const QString &pintype, const QString &pin)
 {
     QDBusMessage request;
 
@@ -98,7 +98,7 @@ void OfonoSimManager::requestLockPin(const QString &pintype, const QString &pin)
 					SLOT(lockPinErr(const QDBusError&)));
 }
 
-void OfonoSimManager::requestUnlockPin(const QString &pintype, const QString &pin)
+void OfonoSimManager::unlockPin(const QString &pintype, const QString &pin)
 {
     QDBusMessage request;
 

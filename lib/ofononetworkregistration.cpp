@@ -61,7 +61,7 @@ OfonoNetworkRegistration::~OfonoNetworkRegistration()
 {
 }
 
-void OfonoNetworkRegistration::requestRegister()
+void OfonoNetworkRegistration::registerOp()
 {
     QDBusMessage request;
 
@@ -75,7 +75,7 @@ void OfonoNetworkRegistration::requestRegister()
 					REGISTER_TIMEOUT);
 }
 
-void OfonoNetworkRegistration::requestDeregister()
+void OfonoNetworkRegistration::deregister()
 {
     QDBusMessage request;
 
@@ -89,7 +89,7 @@ void OfonoNetworkRegistration::requestDeregister()
 					REGISTER_TIMEOUT);
 }
 
-void OfonoNetworkRegistration::requestScan()
+void OfonoNetworkRegistration::scan()
 {
     QDBusMessage request;
 
@@ -103,7 +103,7 @@ void OfonoNetworkRegistration::requestScan()
 					REGISTER_TIMEOUT);
 }
 
-void OfonoNetworkRegistration::requestGetOperators()
+void OfonoNetworkRegistration::getOperators()
 {
     QDBusMessage request;
 

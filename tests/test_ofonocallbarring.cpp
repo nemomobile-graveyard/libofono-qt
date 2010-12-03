@@ -135,7 +135,7 @@ private slots:
 
 	connect(m, SIGNAL(disableAllComplete(bool)), 
 		this, SLOT(disableAllComplete(bool)));
-	m->requestDisableAll("3579");
+	m->disableAll("3579");
 	QTest::qWait(1000);
 	m->requestVoiceIncoming();
 	QTest::qWait(5000);
@@ -144,9 +144,9 @@ private slots:
 
 	connect(m, SIGNAL(changePasswordComplete(bool)), 
 		this, SLOT(changePasswordComplete(bool)));
-	m->requestChangePassword("3579", "1234");
+	m->changePassword("3579", "1234");
 	QTest::qWait(1000);
-	m->requestChangePassword("1234", "3579");
+	m->changePassword("1234", "3579");
 
 	QTest::qWait(2000);
     }

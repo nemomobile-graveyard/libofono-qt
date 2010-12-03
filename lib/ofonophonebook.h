@@ -45,7 +45,7 @@ public:
 
     ~OfonoPhonebook();
 
-    void requestImport();
+    void import();
 
 signals:
     void importComplete(bool success, const QString &entries);

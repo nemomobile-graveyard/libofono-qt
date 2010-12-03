@@ -154,15 +154,15 @@ private slots:
 	qDebug() << "strength():" << m->strength();
 	qDebug() << "baseStation():" << m->baseStation();
 	
-	m->requestGetOperators();
+	m->getOperators();
 	QTest::qWait(5000);
 
-	m->requestScan();
+	m->scan();
 	QTest::qWait(10000);
 	
-	m->requestDeregister();
+	m->deregister();
 	QTest::qWait(10000);
-	m->requestRegister();
+	m->registerOp();
 
 	QTest::qWait(120000);
     }

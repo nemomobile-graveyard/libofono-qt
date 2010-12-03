@@ -55,11 +55,11 @@ public:
     QString cardIdentifier() const;
     QStringList preferredLanguages() const;
 
-    void requestChangePin(const QString &pintype, const QString &oldpin, const QString &newpin);
-    void requestEnterPin(const QString &pintype, const QString &pin);
-    void requestResetPin(const QString &pintype, const QString &puk, const QString &newpin);
-    void requestLockPin(const QString &pintype, const QString &pin);
-    void requestUnlockPin(const QString &pintype, const QString &pin);
+    void changePin(const QString &pintype, const QString &oldpin, const QString &newpin);
+    void enterPin(const QString &pintype, const QString &pin);
+    void resetPin(const QString &pintype, const QString &puk, const QString &newpin);
+    void lockPin(const QString &pintype, const QString &pin);
+    void unlockPin(const QString &pintype, const QString &pin);
 
     void setSubscriberNumbers(const QStringList &numbers);
 

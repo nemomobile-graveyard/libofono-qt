@@ -163,30 +163,30 @@ private slots:
 	    if (m->pinRequired() == "pin") {
 		connect(m, SIGNAL(enterPinComplete(bool)), 
 			this, SLOT(enterPinComplete(bool)));
-		m->requestEnterPin("pin", "2468");
+		m->enterPin("pin", "2468");
 		QTest::qWait(1000);
 	    } else if (m->pinRequired() == "puk") {
 		connect(m, SIGNAL(resetPinComplete(bool)), 
 			this, SLOT(resetPinComplete(bool)));
-		m->requestResetPin("puk", "13243546", "2468");	    
+		m->resetPin("puk", "13243546", "2468");	    
 	    }
 
 	    if (m->lockedPins().contains("pin")) {
-		m->requestUnlockPin("pin", "2468");
+		m->unlockPin("pin", "2468");
 		QTest::qWait(1000);
-		m->requestLockPin("pin", "2468");
+		m->lockPin("pin", "2468");
 		QTest::qWait(1000);
-		m->requestChangePin("pin", "2468", "1234");
+		m->changePin("pin", "2468", "1234");
 		QTest::qWait(1000);
-		m->requestChangePin("pin", "1234", "2468");
+		m->changePin("pin", "1234", "2468");
 	    } else {
-		m->requestLockPin("pin", "2468");
+		m->lockPin("pin", "2468");
 		QTest::qWait(1000);
-		m->requestChangePin("pin", "2468", "1234");
+		m->changePin("pin", "2468", "1234");
 		QTest::qWait(1000);
-		m->requestChangePin("pin", "1234", "2468");
+		m->changePin("pin", "1234", "2468");
 		QTest::qWait(1000);
-		m->requestUnlockPin("pin", "2468");
+		m->unlockPin("pin", "2468");
 	    }
 	}
 	QTest::qWait(120000);

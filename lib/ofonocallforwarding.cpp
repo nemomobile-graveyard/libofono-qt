@@ -43,7 +43,7 @@ OfonoCallForwarding::~OfonoCallForwarding()
 }
 
 
-void OfonoCallForwarding::requestDisableAll(const QString &type)
+void OfonoCallForwarding::disableAll(const QString &type)
 {
     QDBusMessage request;
 

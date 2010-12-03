@@ -49,7 +49,7 @@ OfonoSupplementaryServices::~OfonoSupplementaryServices()
 {
 }
 
-void OfonoSupplementaryServices::requestInitiate(const QString &command)
+void OfonoSupplementaryServices::initiate(const QString &command)
 {
     QDBusMessage request;
 
@@ -64,7 +64,7 @@ void OfonoSupplementaryServices::requestInitiate(const QString &command)
 					REQUEST_TIMEOUT);
 }
 
-void OfonoSupplementaryServices::requestRespond(const QString &reply)
+void OfonoSupplementaryServices::respond(const QString &reply)
 {
     QDBusMessage request;
 
@@ -79,7 +79,7 @@ void OfonoSupplementaryServices::requestRespond(const QString &reply)
 					REQUEST_TIMEOUT);
 }
 
-void OfonoSupplementaryServices::requestCancel()
+void OfonoSupplementaryServices::cancel()
 {
     QDBusMessage request;
 

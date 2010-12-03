@@ -152,7 +152,7 @@ private slots:
 
 	connect(m, SIGNAL(disableAllComplete(bool)), 
 		this, SLOT(disableAllComplete(bool)));
-	m->requestDisableAll("all");
+	m->disableAll("all");
 
 	QTest::qWait(120000);
     }

@@ -47,9 +47,9 @@ public:
     /* Properties */
     QString state() const;
     
-    void requestInitiate(const QString &command);
-    void requestRespond(const QString &reply);
-    void requestCancel();
+    void initiate(const QString &command);
+    void respond(const QString &reply);
+    void cancel();
     
 signals:
     void notificationReceived(const QString &message);

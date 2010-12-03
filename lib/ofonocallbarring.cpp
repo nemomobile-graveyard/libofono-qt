@@ -104,7 +104,7 @@ void OfonoCallBarring::setPropertyErr(const QDBusError& error)
 }
 
 
-void OfonoCallBarring::requestChangePassword(const QString &old_password, 
+void OfonoCallBarring::changePassword(const QString &old_password, 
 					     const QString &new_password)
 {
     QDBusMessage request;
@@ -119,7 +119,7 @@ void OfonoCallBarring::requestChangePassword(const QString &old_password,
 					SLOT(changePasswordErr(const QDBusError&)));
 }
 
-void OfonoCallBarring::requestDisableAll(const QString &password)
+void OfonoCallBarring::disableAll(const QString &password)
 {
     QDBusMessage request;
 
@@ -133,7 +133,7 @@ void OfonoCallBarring::requestDisableAll(const QString &password)
 					SLOT(disableAllErr(const QDBusError&)));
 }
 
-void OfonoCallBarring::requestDisableAllIncoming(const QString &password)
+void OfonoCallBarring::disableAllIncoming(const QString &password)
 {
     QDBusMessage request;
 
@@ -147,7 +147,7 @@ void OfonoCallBarring::requestDisableAllIncoming(const QString &password)
 					SLOT(disableAllIncomingErr(const QDBusError&)));
 }
 
-void OfonoCallBarring::requestDisableAllOutgoing(const QString &password)
+void OfonoCallBarring::disableAllOutgoing(const QString &password)
 {
     QDBusMessage request;
 
