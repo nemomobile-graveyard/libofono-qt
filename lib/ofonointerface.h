@@ -35,7 +35,7 @@
 /*!
  * This class implements basic access to properties of oFono interfaces.
  * It should not be instantiated directly; instead you should instantiate
- * interface-specific subclasses.
+ * interface-specific classes.
  */
 class OFONO_QT_EXPORT OfonoInterface : public QObject
 {

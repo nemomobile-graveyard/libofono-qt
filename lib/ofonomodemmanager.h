@@ -30,14 +30,6 @@
 #include <QStringList>
 #include "libofono-qt_global.h"
 
-struct OfonoModemStruct {
-    QDBusObjectPath path;
-    QVariantMap properties;
-};
-typedef QList<OfonoModemStruct> OfonoModemList;
-Q_DECLARE_METATYPE(OfonoModemStruct)
-Q_DECLARE_METATYPE(OfonoModemList)
-
 //! Provides access to the list of available modems and changes in that list.
 class OFONO_QT_EXPORT OfonoModemManager : public QObject {
 

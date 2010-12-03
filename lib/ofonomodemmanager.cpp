@@ -27,6 +27,14 @@
 #include "ofonomodemmanager.h"
 #include "ofonointerface.h"
 
+struct OfonoModemStruct {
+    QDBusObjectPath path;
+    QVariantMap properties;
+};
+typedef QList<OfonoModemStruct> OfonoModemList;
+Q_DECLARE_METATYPE(OfonoModemStruct)
+Q_DECLARE_METATYPE(OfonoModemList)
+
 QDBusArgument &operator<<(QDBusArgument &argument, const OfonoModemStruct &modem)
 {
     argument.beginStructure();
