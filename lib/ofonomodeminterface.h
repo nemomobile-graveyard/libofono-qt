@@ -60,7 +60,10 @@ public:
      */
     bool isValid() const;
     
-    //! Get the modem object that this interface belongs to
+    //! Get the modem object that this interface belongs to.
+    /*!
+     * The ownership of the modem object stays with the OfonoModemInterface object.
+     */
     OfonoModem *modem() const;
     
     //! Returns the D-Bus object path of the interface
