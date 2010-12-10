@@ -25,6 +25,7 @@
 #include <QtCore/QObject>
 #include <QtCore/QDebug>
 
+#include "ofonointerface.h"
 #include "ofononetworkoperator.h"
 
 #define REGISTER_TIMEOUT 300000

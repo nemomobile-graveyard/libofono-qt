@@ -12,7 +12,6 @@ INCLUDEPATH += ../
 
 PUBLIC_HEADERS += libofono-qt_global.h
 PUBLIC_HEADERS += ofonopropertysetting.h 
-PUBLIC_HEADERS += ofonointerface.h 
 PUBLIC_HEADERS += ofonomodeminterface.h 
 PUBLIC_HEADERS += ofonomodemmanager.h
 PUBLIC_HEADERS += ofonomodem.h
@@ -31,6 +30,7 @@ PUBLIC_HEADERS += ofonosupplementaryservices.h
 PUBLIC_HEADERS += ofonovoicecallmanager.h
 
 HEADERS += $$PUBLIC_HEADERS
+HEADERS += ofonointerface.h 
 
 SOURCES += ofonointerface.cpp 
 SOURCES += ofonomodeminterface.cpp 

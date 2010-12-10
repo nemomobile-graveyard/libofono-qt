@@ -28,8 +28,11 @@
 #include <QtCore/QObject>
 #include <QVariant>
 #include <QStringList>
-#include "ofonointerface.h"
+#include <QDBusError>
+
 #include "libofono-qt_global.h"
+
+class OfonoInterface;
 
 //! This class is used to access oFono network operator API
 /*!
