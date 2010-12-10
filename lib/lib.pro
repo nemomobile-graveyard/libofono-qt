@@ -56,10 +56,10 @@ headers.path = $$[QT_INSTALL_PREFIX]/include/ofono-qt
 
 CONFIG += create_pc create_prl
 
-pkgconfig.path = $$[QT_INSTALL_PREFIX]/lib/pkgconfig
-pkgconfig.files = ofono-qt.pc
+QMAKE_PKGCONFIG_DESTDIR = pkgconfig
+QMAKE_PKGCONFIG_INCDIR = $$headers.path
 
 qtconfig.path = $$[QT_INSTALL_PREFIX]/share/qt4/mkspecs/features
 qtconfig.files = ofono-qt.prf
 
-INSTALLS += target headers pkgconfig qtconfig
+INSTALLS += target headers qtconfig
