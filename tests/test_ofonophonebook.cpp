@@ -47,7 +47,7 @@ private slots:
   	    m->modem()->setOnline(true);
             QTest::qWait(5000);
         }
-	    
+	QCOMPARE(m->isValid(), true);    
     }
 
     void testOfonoPhonebook()
