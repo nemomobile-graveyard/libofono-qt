@@ -37,6 +37,7 @@ private slots:
     void initTestCase()
     {
 	mi = new OfonoModemInterface(OfonoModem::ManualSelect, "/phonesim", "org.ofono.NetworkRegistration", OfonoGetAllOnStartup, this);
+	QCOMPARE(mi->modem()->isValid(), true);
 	
 	if (!mi->modem()->powered()) {
   	    mi->modem()->setPowered(true);
