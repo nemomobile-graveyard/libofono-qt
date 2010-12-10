@@ -56,7 +56,7 @@ void OfonoMessageManager::requestPropertyComplete(bool success, const QString& p
 
 void OfonoMessageManager::setServiceCenterAddress(QString address)
 {
-    setProperty("ServiceCenterAddress", qVariantFromValue(address));
+    m_if->setProperty("ServiceCenterAddress", qVariantFromValue(address));
 }
 
 

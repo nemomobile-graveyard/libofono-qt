@@ -35,58 +35,72 @@ class TestOfonoMessageManager : public QObject
 
 private slots:
 
-    void serviceCenterAddressChanged(const QString numbers)
-    {
-	qDebug() << "serviceCenterAddressChanged" << numbers;
-    }
-
-    void setServiceCenterAddressFailed()
-    {
-	qDebug() << "serviceCenterAddressFailed";
-    }
-
-    void serviceCenterAddressComplete(bool success, const QString numbers)
-    {
-	qDebug() << "serviceCenterAddressComplete" << success << numbers;
-	m_sca = numbers;
-    }
-
-    void validityChanged(bool validity)
-    {
-	qDebug() << "ValidityChanged" << validity;
-    }
-
     void initTestCase()
     {
-	m = new OfonoMessageManager(OfonoModem::AutomaticSelect, QString(), this);
-	connect(m, SIGNAL(validityChanged(bool)), this, 
-		SLOT(validityChanged(bool)));
-	connect(m, SIGNAL(serviceCenterAddressChanged(QString)), 
-		this, 
-		SLOT(serviceCenterAddressChanged(QString)));
-	connect(m, SIGNAL(setServiceCenterAddressFailed()), 
-		this, 
-		SLOT(setServiceCenterAddressFailed()));
-	connect(m, SIGNAL(serviceCenterAddressComplete(bool, QString)), 
-		this, 
-		SLOT(serviceCenterAddressComplete(bool, QString)));
+	m = new OfonoMessageManager(OfonoModem::ManualSelect, "/phonesim", this);
+	QCOMPARE(m->modem()->isValid(), true);	
+
+	if (!m->modem()->powered()) {
+  	    m->modem()->setPowered(true);
+            QTest::qWait(5000);
+        }
+        if (!m->modem()->online()) {
+  	    m->modem()->setOnline(true);
+            QTest::qWait(5000);
+        }
+	QCOMPARE(m->isValid(), true);    
     }
 
-    void testOfonoMessageManager()
+    void testOfonoMessageManagerSca()
     {
-	qDebug() << "validity:" << m->isValid();
-	if (m->isValid()) {
-	    m->requestServiceCenterAddress();
-	    QTest::qWait(2000);
-	    if (m_sca.length() == 0)
-	        return;
-	    qDebug() << "setServiceCenterAddress(+123456)";
-	    m->setServiceCenterAddress("+123456");
-	    QTest::qWait(1000);
-	    qDebug() << "setServiceCenterAddress(original)";
-	    m->setServiceCenterAddress(m_sca);
-	}
-	QTest::qWait(1000);
+        QSignalSpy scaComplete(m, SIGNAL(serviceCenterAddressComplete(bool, QString)));
+        m->requestServiceCenterAddress();
+        for (int i=0; i<30; i++) {
+            if (scaComplete.count() > 0)
+                break;
+            QTest::qWait(1000);
+        }
+	QCOMPARE(scaComplete.count(), 1);
+	QVariantList params = scaComplete.takeFirst();
+	QCOMPARE(params.at(0).toBool(), true);
+	QString sca = params.at(1).toString();
+        QVERIFY(sca.length() > 0);
+        qDebug() << sca;
+
+        QSignalSpy setScaFailed(m, SIGNAL(setServiceCenterAddressFailed()));
+        QSignalSpy scaChanged(m, SIGNAL(serviceCenterAddressChanged(QString)));
+
+        m->setServiceCenterAddress("+12345678");
+        for (int i=0; i<30; i++) {
+            if (setScaFailed.count() > 0 || scaChanged.count() > 0)
+                break;
+            QTest::qWait(1000);
+        }
+	QCOMPARE(setScaFailed.count(), 0);
+	QCOMPARE(scaChanged.count(), 1);
+	QCOMPARE(scaChanged.takeFirst().at(0).toString(), QString("+12345678"));
+
+        m->setServiceCenterAddress("");
+        for (int i=0; i<30; i++) {
+            if (setScaFailed.count() > 0 || scaChanged.count() > 0)
+                break;
+            QTest::qWait(1000);
+        }
+	QCOMPARE(setScaFailed.count(), 1);
+	setScaFailed.takeFirst();
+	QCOMPARE(scaChanged.count(), 0);
+	QCOMPARE(m->errorName(), QString("org.ofono.Error.InvalidFormat"));
+	QCOMPARE(m->errorMessage(), QString("Argument format is not recognized"));
+	
+	m->setServiceCenterAddress(sca);
+        for (int i=0; i<30; i++) {
+            if (setScaFailed.count() > 0 || scaChanged.count() > 0)
+                break;
+            QTest::qWait(1000);
+        }
+	QCOMPARE(setScaFailed.count(), 0);
+	QCOMPARE(scaChanged.count(), 1);
+	QCOMPARE(scaChanged.takeFirst().at(0).toString(), sca);
     }
 
 
@@ -98,7 +112,6 @@ private slots:
 
 private:
     OfonoMessageManager *m;
-    QString m_sca;
 };
 
 QTEST_MAIN(TestOfonoMessageManager)
