@@ -33,30 +33,37 @@ class TestOfonoPhonebook : public QObject
     Q_OBJECT
 
 private slots:
-    void validityChanged(bool validity)
-    {
-    qDebug() << "ValidityChanged" << validity;
-    }
-
-    void importComplete(bool success, QString entries)
-    {
-    qDebug() << "importComplete" << success << entries;
-    }
 
     void initTestCase()
     {
-//	m = new OfonoPhonebook("/isimodem0", this);
-	m = new OfonoPhonebook(OfonoModem::AutomaticSelect, QString(), this);
-	connect(m, SIGNAL(validityChanged(bool)), this, SLOT(validityChanged(bool)));
-    connect(m, SIGNAL(importComplete(bool, QString)),
-	    this, SLOT(importComplete(bool, QString)));
+	m = new OfonoPhonebook(OfonoModem::ManualSelect, "/phonesim", this);
+	QCOMPARE(m->modem()->isValid(), true);	
+
+	if (!m->modem()->powered()) {
+  	    m->modem()->setPowered(true);
+            QTest::qWait(5000);
+        }
+        if (!m->modem()->online()) {
+  	    m->modem()->setOnline(true);
+            QTest::qWait(5000);
+        }
+	    
     }
 
     void testOfonoPhonebook()
     {
-	qDebug() << "validity" << m->isValid();
+        QSignalSpy import(m, SIGNAL(importComplete(bool, QString)));    
 	m->import();
-    QTest::qWait(120000);
+
+        for (int i=0; i<30; i++) {
+            if (import.count() > 0)
+                break;
+            QTest::qWait(1000);
+        }
+	QCOMPARE(import.count(), 1);
+	QVariantList list = import.takeFirst();
+        QCOMPARE(list.at(0).toBool(), true);	
+        QVERIFY(list.at(1).toStringList().length() > 0);
     }
 
 
