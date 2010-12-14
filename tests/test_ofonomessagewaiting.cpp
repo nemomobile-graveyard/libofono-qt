@@ -34,46 +34,83 @@ class TestOfonoMessageWaiting : public QObject
 
 private slots:
 
-    void voicemailWaitingChanged(bool waiting)
-    {
-	qDebug() << "voicemailWaitingChanged" << waiting;
-    }
-
-    void voicemailMessageCountChanged(int count)
-    {
-	qDebug() << "voicemailMessageCountChanged" << count;
-    }
-
-    void voicemailMailboxNumberChanged(QString mailboxnumber)
-    {
-	qDebug() << "voicemailMailboxNumberChanged" << mailboxnumber;
-    }
-
-    void validityChanged(bool validity)
-    {
-	qDebug() << "ValidityChanged" << validity;
-    }
-
     void initTestCase()
     {
-	m = new OfonoMessageWaiting(OfonoModem::AutomaticSelect, QString(), this);
-	connect(m, SIGNAL(validityChanged(bool)), this, 
-		SLOT(validityChanged(bool)));
-	connect(m, SIGNAL(voicemailWaitingChanged(bool)), this, 
-		SLOT(voicemailWaitingChanged(bool)));
-	connect(m, SIGNAL(voicemailMessageCountChanged(int)), this, 
-		SLOT(voicemailMessageCountChanged(int)));
-	connect(m, SIGNAL(voicemailMailboxNumberChanged(QString)), this, 
-		SLOT(voicemailMailboxNumberChanged(QString)));
+	m = new OfonoMessageWaiting(OfonoModem::ManualSelect, "/phonesim", this);
+	QCOMPARE(m->modem()->isValid(), true);	
+
+	if (!m->modem()->powered()) {
+  	    m->modem()->setPowered(true);
+            QTest::qWait(5000);
+        }
+        if (!m->modem()->online()) {
+  	    m->modem()->setOnline(true);
+            QTest::qWait(5000);
+        }
+	QCOMPARE(m->isValid(), true);    
     }
 
     void testOfonoMessageWaiting()
     {
-	qDebug() << "validity:" << m->isValid();
-	qDebug() << "voicemailWaiting():" << m->voicemailWaiting();
-	qDebug() << "voicemailMessageCount():" << m->voicemailMessageCount();
-	qDebug() << "voicemailMailboxNumber():" << m->voicemailMailboxNumber();
-	QTest::qWait(120000);
+        QSignalSpy waiting(m, SIGNAL(voicemailWaitingChanged(bool)));    
+        QSignalSpy messageCount(m, SIGNAL(voicemailMessageCountChanged(int)));
+        QSignalSpy mailboxNumber(m, SIGNAL(voicemailMailboxNumberChanged(QString)));
+        QSignalSpy setNumberFailed(m, SIGNAL(setVoicemailMailboxNumberFailed()));
+
+	QCOMPARE(m->voicemailWaiting(), true);
+	QCOMPARE(m->voicemailMessageCount(), 1);
+	QCOMPARE(m->voicemailMailboxNumber(), QString("6789"));
+
+	m->modem()->setOnline(false);
+	QTest::qWait(5000);
+        QCOMPARE(waiting.count(), 0);
+        QCOMPARE(messageCount.count(), 0);
+        QCOMPARE(mailboxNumber.count(), 0);
+        QCOMPARE(setNumberFailed.count(), 0);
+
+	m->modem()->setOnline(true);
+	QTest::qWait(5000);
+        QCOMPARE(waiting.count(), 1);
+        QCOMPARE(waiting.takeFirst().at(0).toBool(), true);
+        QCOMPARE(messageCount.count(), 1);
+        QCOMPARE(messageCount.takeFirst().at(0).toInt(), 1);
+        QCOMPARE(mailboxNumber.count(), 1);
+        QCOMPARE(mailboxNumber.takeFirst().at(0).toString(), QString("6789"));
+        QCOMPARE(setNumberFailed.count(), 0);
+    }
+
+    void testOfonoMessageWaitingSet()
+    {
+        QSignalSpy waiting(m, SIGNAL(voicemailWaitingChanged(bool)));    
+        QSignalSpy messageCount(m, SIGNAL(voicemailMessageCountChanged(int)));
+        QSignalSpy mailboxNumber(m, SIGNAL(voicemailMailboxNumberChanged(QString)));
+        QSignalSpy setNumberFailed(m, SIGNAL(setVoicemailMailboxNumberFailed()));
+
+	QString number = m->voicemailMailboxNumber();
+	
+        m->setVoicemailMailboxNumber("");
+	QTest::qWait(1000);
+        QCOMPARE(waiting.count(), 0);
+        QCOMPARE(messageCount.count(), 0);
+        QCOMPARE(mailboxNumber.count(), 0);
+        QCOMPARE(setNumberFailed.count(), 1);
+        setNumberFailed.takeFirst();
+
+        m->setVoicemailMailboxNumber("1234");
+	QTest::qWait(1000);
+        QCOMPARE(waiting.count(), 0);
+        QCOMPARE(messageCount.count(), 0);
+        QCOMPARE(mailboxNumber.count(), 1);
+        QCOMPARE(mailboxNumber.takeFirst().at(0).toString(), QString("1234"));
+        QCOMPARE(setNumberFailed.count(), 0);
+
+        m->setVoicemailMailboxNumber(number);
+	QTest::qWait(1000);
+        QCOMPARE(waiting.count(), 0);
+        QCOMPARE(messageCount.count(), 0);
+        QCOMPARE(mailboxNumber.count(), 1);
+        QCOMPARE(mailboxNumber.takeFirst().at(0).toString(), number);
+        QCOMPARE(setNumberFailed.count(), 0);
     }
 
 
