@@ -34,32 +34,29 @@ class TestOfonoRadioSettings : public QObject
     Q_OBJECT
 
 private slots:
-
-    void technologyPreferenceChanged(const QString pref)
-    {
-	qDebug() << "technologyPreferenceChanged" << pref;
-    }
-
-    void validityChanged(bool validity)
-    {
-	qDebug() << "ValidityChanged" << validity;
-    }
-
     void initTestCase()
     {
-	m = new OfonoRadioSettings(OfonoModem::AutomaticSelect, QString(), this);
-	connect(m, SIGNAL(validityChanged(bool)), this, 
-		SLOT(validityChanged(bool)));
-	connect(m, SIGNAL(technologyPreferenceChanged(QString)), 
-		this, 
-		SLOT(technologyPreferenceChanged(QString)));
+	m = new OfonoRadioSettings(OfonoModem::ManualSelect, "/phonesim", this);
+	QCOMPARE(m->modem()->isValid(), true);	
+
+	if (!m->modem()->powered()) {
+  	    m->modem()->setPowered(true);
+            QTest::qWait(5000);
+        }
+        if (!m->modem()->online()) {
+  	    m->modem()->setOnline(true);
+            QTest::qWait(5000);
+        }
+        qDebug() << "FIXME: radio settings interface is not supported by AT modems, and consequently, phonesim";
+	QCOMPARE(m->isValid(), true);    
     }
 
     void testOfonoRadioSettings()
     {
-	qDebug() << "validity:" << m->isValid();
+        QSignalSpy preference(m, SIGNAL(technologyPreferenceChanged(QString)));
+        QSignalSpy setPreferenceFailed(m, SIGNAL(setTechnologyPreferenceFailed()));
+
 	qDebug() << "technologyPreference():" << m->technologyPreference();
-	QTest::qWait(120000);
     }
 
 
