@@ -63,6 +63,7 @@ private slots:
 	QCOMPARE(list.at(1).toUInt(), uint(0));
 	QCOMPARE(callMeterChanged.count(), 1);
 	QCOMPARE(callMeterChanged.takeFirst().at(0).toUInt(), uint(0));
+	// should also test change in call meter as a result of voice call
     }
 
 
