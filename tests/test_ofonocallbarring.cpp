@@ -75,6 +75,7 @@ private slots:
 	QVariantList list = voiceIncomingComplete.takeFirst();
 	QCOMPARE(list.at(0).toBool(), true);
 	QCOMPARE(list.at(1).toString(), QString("disabled"));
+	QCOMPARE(voiceIncomingChanged.count(), 1);	
 	QCOMPARE(voiceIncomingChanged.takeFirst().at(0).toString(), QString("disabled"));
         m->requestVoiceOutgoing();
 	QTest::qWait(1000);
@@ -82,6 +83,7 @@ private slots:
 	list = voiceOutgoingComplete.takeFirst();
 	QCOMPARE(list.at(0).toBool(), true);
 	QCOMPARE(list.at(1).toString(), QString("disabled"));
+	QCOMPARE(voiceOutgoingChanged.count(), 1);
 	QCOMPARE(voiceOutgoingChanged.takeFirst().at(0).toString(), QString("disabled"));
 
 	m->setVoiceIncoming("always", "0000");
