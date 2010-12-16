@@ -34,38 +34,35 @@ class TestOfonoCallMeter : public QObject
     Q_OBJECT
 
 private slots:
-
-    void validityChanged(bool validity)
-    {
-	qDebug() << "ValidityChanged" << validity;
-    }
-
-    void callMeterComplete(bool success, uint value)
-    {
-	qDebug() << "callMeterComplete" << success << value;
-    }
-
-    void callMeterChanged(uint value)
-    {
-	qDebug() << "callMeterChanged" << value;
-    }
-
     void initTestCase()
     {
-	m = new OfonoCallMeter(OfonoModem::AutomaticSelect, QString(), this);
-	connect(m, SIGNAL(validityChanged(bool)), this, 
-		SLOT(validityChanged(bool)));
-	connect(m, SIGNAL(callMeterChanged(uint)), this, 
-		SLOT(callMeterChanged(uint)));
-	connect(m, SIGNAL(callMeterComplete(bool, uint)), this, 
-		SLOT(callMeterComplete(bool, uint)));
+	m = new OfonoCallMeter(OfonoModem::ManualSelect, "/phonesim", this);
+	QCOMPARE(m->modem()->isValid(), true);	
+
+	if (!m->modem()->powered()) {
+  	    m->modem()->setPowered(true);
+            QTest::qWait(5000);
+        }
+        if (!m->modem()->online()) {
+  	    m->modem()->setOnline(true);
+            QTest::qWait(5000);
+        }
+	QCOMPARE(m->isValid(), true);
     }
 
     void testOfonoCallMeter()
     {
-	qDebug() << "validity:" << m->isValid();
+    	QSignalSpy callMeterComplete(m, SIGNAL(callMeterComplete(bool, uint)));
+    	QSignalSpy callMeterChanged(m, SIGNAL(callMeterChanged(uint)));
+
 	m->requestCallMeter();
 	QTest::qWait(1000);
+	QCOMPARE(callMeterComplete.count(), 1);
+	QVariantList list = callMeterComplete.takeFirst();
+	QCOMPARE(list.at(0).toBool(), true);
+	QCOMPARE(list.at(1).toUInt(), uint(0));
+	QCOMPARE(callMeterChanged.count(), 1);
+	QCOMPARE(callMeterChanged.takeFirst().at(0).toUInt(), uint(0));
     }
 
 
