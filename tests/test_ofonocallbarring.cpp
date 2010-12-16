@@ -33,122 +33,103 @@ class TestOfonoCallBarring : public QObject
 {
     Q_OBJECT
 
-public slots:
-
-    void validityChanged(bool validity)
-    {
-	qDebug() << "ValidityChanged" << validity;
-    }
-
-    void voiceIncomingComplete(bool success, QString barrings)
-    {
-	qDebug() << "voiceIncomingComplete" << success << barrings;
-    }
-
-    void voiceOutgoingComplete(bool success, QString barrings)
-    {
-	qDebug() << "voiceOutgoingComplete" << success << barrings;
-    }
-
-    void voiceIncomingChanged(QString barrings)
-    {
-	qDebug() << "voiceIncomingChanged" << barrings;
-    }
-
-    void voiceOutgoingChanged(QString barrings)
-    {
-	qDebug() << "voiceOutgoingChanged" << barrings;
-    }
-
-    void setVoiceIncomingFailed()
-    {
-	qDebug() << "setVoiceIncomingFailed" << m->errorName() << m->errorMessage();
-    }
-
-    void setVoiceOutgoingFailed()
-    {
-	qDebug() << "setVoiceOutgoingFailed" << m->errorName() << m->errorMessage();
-    }
-
-    void incomingBarringInEffect()
-    {
-	qDebug() << "incomingBarringInEffect signal";
-    }
-
-    void outgoingBarringInEffect()
-    {
-	qDebug() << "outgoingBarringInEffect signal";
-    }
-
-
-    void disableAllComplete(bool success)
-    {
-	qDebug() << "disableAllComplete:" << success;
-    }
-
-    void changePasswordComplete(bool success)
-    {
-	qDebug() << "changePasswordComplete:" << success;
-    }
-
 private slots:
 
     void initTestCase()
     {
-	m = new OfonoCallBarring(OfonoModem::AutomaticSelect, QString(), this);
-	connect(m, SIGNAL(validityChanged(bool)), this, 
-		SLOT(validityChanged(bool)));
-	connect(m, SIGNAL(voiceIncomingComplete(bool, QString)), this, 
-		SLOT(voiceIncomingComplete(bool, QString)));
-	connect(m, SIGNAL(voiceOutgoingComplete(bool, QString)), this, 
-		SLOT(voiceOutgoingComplete(bool, QString)));
-	connect(m, SIGNAL(voiceIncomingChanged(QString)), this, 
-		SLOT(voiceIncomingChanged(QString)));
-	connect(m, SIGNAL(voiceOutgoingChanged(QString)), this, 
-		SLOT(voiceOutgoingChanged(QString)));
-	connect(m, SIGNAL(setVoiceIncomingFailed()), this, 
-		SLOT(setVoiceIncomingFailed()));
-	connect(m, SIGNAL(setVoiceOutgoingFailed()), this, 
-		SLOT(setVoiceOutgoingFailed()));
-	connect(m, SIGNAL(incomingBarringInEffect()), this, 
-		SLOT(incomingBarringInEffect()));
-	connect(m, SIGNAL(outgoingBarringInEffect()), this, 
-		SLOT(outgoingBarringInEffect()));
-	// Wait for properties to arrive...
-	QTest::qWait(1000);
+	m = new OfonoCallBarring(OfonoModem::ManualSelect, "/phonesim", this);
+	QCOMPARE(m->modem()->isValid(), true);	
+
+	if (!m->modem()->powered()) {
+  	    m->modem()->setPowered(true);
+            QTest::qWait(5000);
+        }
+        if (!m->modem()->online()) {
+  	    m->modem()->setOnline(true);
+            QTest::qWait(5000);
+        }
+	QCOMPARE(m->isValid(), true);    
     }
 
     void testOfonoCallbarring()
     {
-	qDebug() << "validity:" << m->isValid();
-	m->requestVoiceIncoming();
-	QTest::qWait(5000);
-	m->requestVoiceOutgoing();
-	QTest::qWait(5000);
+        QSignalSpy voiceIncomingComplete(m, SIGNAL(voiceIncomingComplete(bool, QString)));
+        QSignalSpy voiceOutgoingComplete(m, SIGNAL(voiceOutgoingComplete(bool, QString)));        
+        QSignalSpy voiceIncomingChanged(m, SIGNAL(voiceIncomingChanged(QString)));
+        QSignalSpy voiceOutgoingChanged(m, SIGNAL(voiceOutgoingChanged(QString)));        
+        QSignalSpy setVoiceIncomingFailed(m, SIGNAL(setVoiceIncomingFailed()));
+        QSignalSpy setVoiceOutgoingFailed(m, SIGNAL(setVoiceOutgoingFailed()));
 
-	qDebug() << "setVoiceIncoming(always)";
+        // These two are unused until we support a voicecall API
+        QSignalSpy incomingBarringInEffect(m, SIGNAL(incomingBarringInEffect()));
+        QSignalSpy outgoingBarringInEffect(m, SIGNAL(outgoingBarringInEffect()));        
+
+        QSignalSpy changePasswordComplete(m, SIGNAL(changePasswordComplete(bool)));
+        QSignalSpy disableAllComplete(m, SIGNAL(disableAllComplete(bool)));
+        QSignalSpy disableAllIncomingComplete(m, SIGNAL(disableAllIncomingComplete(bool)));
+        QSignalSpy disableAllOutgoingComplete(m, SIGNAL(disableAllOutgoingComplete(bool)));
+        
+        m->requestVoiceIncoming();
+	QTest::qWait(1000);
+	QCOMPARE(voiceIncomingComplete.count(), 1);
+	QVariantList list = voiceIncomingComplete.takeFirst();
+	QCOMPARE(list.at(0).toBool(), true);
+	QCOMPARE(list.at(1).toString(), QString("disabled"));
+	QCOMPARE(voiceIncomingChanged.takeFirst().at(0).toString(), QString("disabled"));
+        m->requestVoiceOutgoing();
+	QTest::qWait(1000);
+	QCOMPARE(voiceOutgoingComplete.count(), 1);
+	list = voiceOutgoingComplete.takeFirst();
+	QCOMPARE(list.at(0).toBool(), true);
+	QCOMPARE(list.at(1).toString(), QString("disabled"));
+	QCOMPARE(voiceOutgoingChanged.takeFirst().at(0).toString(), QString("disabled"));
+
+	m->setVoiceIncoming("always", "0000");
+	QTest::qWait(1000);
+	QCOMPARE(setVoiceIncomingFailed.count(), 1);
+	setVoiceIncomingFailed.takeFirst();
+	m->setVoiceOutgoing("always", "0000");
+	QTest::qWait(1000);
+	QCOMPARE(setVoiceOutgoingFailed.count(), 1);
+	setVoiceOutgoingFailed.takeFirst();
+
 	m->setVoiceIncoming("always", "3579");
 	QTest::qWait(1000);
-	qDebug() << "setVoiceOutgoing(international)";
+	QCOMPARE(voiceIncomingChanged.count(), 1);
+	QCOMPARE(voiceIncomingChanged.takeFirst().at(0).toString(), QString("always"));
 	m->setVoiceOutgoing("international", "3579");
 	QTest::qWait(1000);
+	QCOMPARE(voiceOutgoingChanged.count(), 1);
+	QCOMPARE(voiceOutgoingChanged.takeFirst().at(0).toString(), QString("international"));
 
-	connect(m, SIGNAL(disableAllComplete(bool)), 
-		this, SLOT(disableAllComplete(bool)));
-	m->disableAll("3579");
+        m->disableAllIncoming("3579");
 	QTest::qWait(1000);
-	m->requestVoiceIncoming();
-	QTest::qWait(5000);
-	m->requestVoiceOutgoing();
-	QTest::qWait(5000);
-
-	connect(m, SIGNAL(changePasswordComplete(bool)), 
-		this, SLOT(changePasswordComplete(bool)));
+	QCOMPARE(disableAllIncomingComplete.count(), 1);
+	QCOMPARE(disableAllIncomingComplete.takeFirst().at(0).toBool(), false);
+	QCOMPARE(m->errorName(), QString("org.ofono.Error.Failed"));
+	QCOMPARE(m->errorMessage(), QString("Operation failed"));
+        m->disableAllOutgoing("3579");
+	QTest::qWait(1000);
+	QCOMPARE(disableAllOutgoingComplete.count(), 1);
+	QCOMPARE(disableAllOutgoingComplete.takeFirst().at(0).toBool(), false);
+	QCOMPARE(m->errorName(), QString("org.ofono.Error.Failed"));
+	QCOMPARE(m->errorMessage(), QString("Operation failed"));
+        m->disableAll("3579");
+	QTest::qWait(1000);
+	QCOMPARE(disableAllComplete.count(), 1);
+	QCOMPARE(disableAllComplete.takeFirst().at(0).toBool(), true);
+	QCOMPARE(voiceIncomingChanged.count(), 1);
+	QCOMPARE(voiceIncomingChanged.takeFirst().at(0).toString(), QString("disabled"));
+	QCOMPARE(voiceOutgoingChanged.count(), 1);
+	QCOMPARE(voiceOutgoingChanged.takeFirst().at(0).toString(), QString("disabled"));
+	
 	m->changePassword("3579", "1234");
 	QTest::qWait(1000);
 	m->changePassword("1234", "3579");
-
-	QTest::qWait(2000);
+	QTest::qWait(1000);
+	QCOMPARE(changePasswordComplete.count(), 2);	
+	QCOMPARE(changePasswordComplete.takeFirst().at(0).toBool(), true);
+	QCOMPARE(changePasswordComplete.takeFirst().at(0).toBool(), true);
     }
 
 
