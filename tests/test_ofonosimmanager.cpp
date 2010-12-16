@@ -27,6 +27,7 @@
 #include <ofonosimmanager.h>
 
 #include <QtDebug>
+#include <QVariant>
 
 
 class TestOfonoSimManager : public QObject
@@ -34,162 +35,163 @@ class TestOfonoSimManager : public QObject
     Q_OBJECT
 
 private slots:
-
-    void validityChanged(bool validity)
-    {
-	qDebug() << "ValidityChanged" << validity;
-    }
-
-    void presenceChanged(bool ispresent)
-    {
-	qDebug() << "presenceChanged" << ispresent;
-    }
-    void subscriberIdentityChanged(QString imsi)
-    {
-	qDebug() << "subscriberIdentityChanged" << imsi;
-    }
-    void mobileCountryCodeChanged(QString mcc)
-    {
-	qDebug() << "mobileCountryCodeChanged" << mcc;
-    }
-    void mobileNetworkCodeChanged(QString mnc)
-    {
-	qDebug() << "mobileNetworkCodeChanged" << mnc;
-    }
-    void subscriberNumbersChanged(QStringList msisdns)
-    {
-	qDebug() << "subscriberNumbersChanged" << msisdns;
-    }
-    void serviceNumbersChanged(QMap<QString, QString> sdns)
-    {
-	qDebug() << "serviceNumbersChanged" << sdns;
-    }
-    void pinRequiredChanged(QString pintype)
-    {
-	qDebug() << "pinRequiredChanged" << pintype;
-    }
-    void lockedPinsChanged(QStringList pins)
-    {
-	qDebug() << "lockedPinsChanged" << pins;
-    }
-    void cardIdentifierChanged(QString iccid)
-    {
-	qDebug() << "cardIdentifierChanged" << iccid;
-    }
-    void preferredLanguagesChanged(QStringList languages)
-    {
-	qDebug() << "preferredLanguagesChanged" << languages;
-    }
-
-    void enterPinComplete(bool success)
-    {
-	qDebug() << "enterPinComplete:" << success;
-	if (!success)
-	    qDebug() << "Error name/message" << m->errorName() << m->errorMessage();
-    }
-    void resetPinComplete(bool success)
-    {
-	qDebug() << "resetPinComplete:" << success;
-	if (!success)
-	    qDebug() << "Error name/message" << m->errorName() << m->errorMessage();
-    }
-
-    void changePinComplete(bool success)
-    {
-	qDebug() << "changePinComplete:" << success;
-    }
-
-    void lockPinComplete(bool success)
-    {
-	qDebug() << "lockPinComplete:" << success;
-    }
-
-    void unlockPinComplete(bool success)
-    {
-	qDebug() << "unlockPinComplete:" << success;
-    }
-
     void initTestCase()
     {
-	m = new OfonoSimManager(OfonoModem::AutomaticSelect, QString(), this);
-	connect(m, SIGNAL(validityChanged(bool)), this, 
-		SLOT(validityChanged(bool)));
-	connect(m, SIGNAL(presenceChanged(bool)), 
-		this, 
-		SLOT(presenceChanged(bool)));
-	connect(m, SIGNAL(subscriberIdentityChanged(QString)), this, 
-		SLOT(subscriberIdentityChanged(QString)));
-	connect(m, SIGNAL(mobileCountryCodeChanged(QString)), this, 
-		SLOT(mobileCountryCodeChanged(QString)));
-	connect(m, SIGNAL(mobileNetworkCodeChanged(QString)), this, 
-		SLOT(mobileNetworkCodeChanged(QString)));
-	connect(m, SIGNAL(subscriberNumbersChanged(QStringList)), this, 
-		SLOT(subscriberNumbersChanged(QStringList)));
-	connect(m, SIGNAL(serviceNumbersChanged(QMap<QString, QString>)), this, 
-		SLOT(serviceNumbersChanged(QMap<QString, QString>)));
-	connect(m, SIGNAL(pinRequiredChanged(QString)), this, 
-		SLOT(pinRequiredChanged(QString)));
-	connect(m, SIGNAL(lockedPinsChanged(QStringList)), this, 
-		SLOT(lockedPinsChanged(QStringList)));
-	connect(m, SIGNAL(cardIdentifierChanged(QString)), this, 
-		SLOT(cardIdentifierChanged(QString)));
-	connect(m, SIGNAL(preferredLanguagesChanged(QStringList)), this, 
-		SLOT(preferredLanguagesChanged(QStringList)));
+	m = new OfonoSimManager(OfonoModem::ManualSelect, "/phonesim", this);
+	QCOMPARE(m->modem()->isValid(), true);	
+
+	if (!m->modem()->powered()) {
+  	    m->modem()->setPowered(true);
+            QTest::qWait(5000);
+        }
+        if (!m->modem()->online()) {
+  	    m->modem()->setOnline(true);
+            QTest::qWait(5000);
+        }
+	QCOMPARE(m->isValid(), true);    
     }
 
     void testOfonoSimManager()
     {
-	qDebug() << "validity:" << m->isValid();
-	qDebug() << "present():" << m->present();
-	qDebug() << "subscriberIdentity():" << m->subscriberIdentity();
-	qDebug() << "mobileCountryCode():" << m->mobileCountryCode();
-	qDebug() << "mobileNetworkCode():" << m->mobileNetworkCode();
-	qDebug() << "subscriberNumbers():" << m->subscriberNumbers();
-	qDebug() << "serviceNumbers():" << m->serviceNumbers();
-	qDebug() << "pinRequired():" << m->pinRequired();
-	qDebug() << "lockedPins():" << m->lockedPins();
-	qDebug() << "cardIdentifier():" << m->cardIdentifier();
-	qDebug() << "preferredLanguages():" << m->preferredLanguages();
+        QSignalSpy presence(m, SIGNAL(presenceChanged(bool)));
+        QSignalSpy subscriberIdentity(m, SIGNAL(subscriberIdentityChanged(QString)));
+        QSignalSpy mcc(m, SIGNAL(mobileCountryCodeChanged(QString)));
+        QSignalSpy mnc(m, SIGNAL(mobileNetworkCodeChanged(QString)));
+        QSignalSpy subscriberNumbers(m, SIGNAL(subscriberNumbersChanged(QStringList)));
+        QSignalSpy serviceNumbers(m, SIGNAL(serviceNumbersChanged(OfonoServiceNumbers)));
+        QSignalSpy pinRequired(m, SIGNAL(pinRequiredChanged(QString)));
+        QSignalSpy lockedPins(m, SIGNAL(lockedPinsChanged(QStringList)));
+        QSignalSpy cardIdentifier(m, SIGNAL(cardIdentifierChanged(QString)));
+        QSignalSpy preferredLanguages(m, SIGNAL(preferredLanguagesChanged(QStringList)));
 
-	/* If we are using phonesim */
-	if (m->subscriberIdentity() == "246813579") {
-	    connect(m, SIGNAL(lockPinComplete(bool)), 
-		    this, SLOT(lockPinComplete(bool)));
-	    connect(m, SIGNAL(unlockPinComplete(bool)), 
-		    this, SLOT(unlockPinComplete(bool)));
-	    connect(m, SIGNAL(changePinComplete(bool)), 
-		    this, SLOT(changePinComplete(bool)));
+        QSignalSpy setSubscriberNumbersFailed(m, SIGNAL(setSubscriberNumbersFailed()));
 
-	    if (m->pinRequired() == "pin") {
-		connect(m, SIGNAL(enterPinComplete(bool)), 
-			this, SLOT(enterPinComplete(bool)));
-		m->enterPin("pin", "2468");
-		QTest::qWait(1000);
-	    } else if (m->pinRequired() == "puk") {
-		connect(m, SIGNAL(resetPinComplete(bool)), 
-			this, SLOT(resetPinComplete(bool)));
-		m->resetPin("puk", "13243546", "2468");	    
-	    }
+        QSignalSpy changePin(m, SIGNAL(changePinComplete(bool)));
+        QSignalSpy enterPin(m, SIGNAL(enterPinComplete(bool)));
+        QSignalSpy resetPin(m, SIGNAL(resetPinComplete(bool)));
+        QSignalSpy lockPin(m, SIGNAL(lockPinComplete(bool)));
+        QSignalSpy unlockPin(m, SIGNAL(unlockPinComplete(bool)));
+            
+	QCOMPARE(m->present(), true);
+	QCOMPARE(m->subscriberIdentity(), QString("246813579"));
+	QCOMPARE(m->mobileCountryCode(), QString("246"));
+	QCOMPARE(m->mobileNetworkCode(), QString("81"));
+	QVERIFY(m->subscriberNumbers().count() > 0);
+	QCOMPARE(m->subscriberNumbers()[0], QString("358501234567"));
+	QVERIFY(m->serviceNumbers().count() > 0);
+	QCOMPARE(m->serviceNumbers()[".HELP DESK"], QString("2601"));
+	QCOMPARE(m->pinRequired(), QString("none"));
+	QCOMPARE(m->lockedPins().count(), 0);
+	QCOMPARE(m->cardIdentifier(), QString("8949222074451242066"));
+	QVERIFY(m->preferredLanguages().count() > 0);
+	QCOMPARE(m->preferredLanguages()[0], QString("de"));
+	
+	QStringList numbers = m->subscriberNumbers();
+	QStringList newNumbers;
+	newNumbers << "1234567";
+	m->setSubscriberNumbers(newNumbers);
+	QTest::qWait(1000);
+	QCOMPARE(subscriberNumbers.count(), 1);
+	QStringList newNumbersSignal = subscriberNumbers.takeFirst().at(0).toStringList();
+	QCOMPARE(newNumbersSignal.count(), 1);
+	QCOMPARE(newNumbersSignal, newNumbers);
 
-	    if (m->lockedPins().contains("pin")) {
-		m->unlockPin("pin", "2468");
-		QTest::qWait(1000);
-		m->lockPin("pin", "2468");
-		QTest::qWait(1000);
-		m->changePin("pin", "2468", "1234");
-		QTest::qWait(1000);
-		m->changePin("pin", "1234", "2468");
-	    } else {
-		m->lockPin("pin", "2468");
-		QTest::qWait(1000);
-		m->changePin("pin", "2468", "1234");
-		QTest::qWait(1000);
-		m->changePin("pin", "1234", "2468");
-		QTest::qWait(1000);
-		m->unlockPin("pin", "2468");
-	    }
-	}
-	QTest::qWait(120000);
+	newNumbers.clear();
+	newNumbers << "";
+	m->setSubscriberNumbers(newNumbers);
+	QTest::qWait(1000);
+	QCOMPARE(setSubscriberNumbersFailed.count(), 1);
+	setSubscriberNumbersFailed.takeFirst();
+
+	m->setSubscriberNumbers(numbers);
+	QTest::qWait(1000);
+	QCOMPARE(subscriberNumbers.count(), 1);
+	newNumbersSignal = subscriberNumbers.takeFirst().at(0).toStringList();
+	QCOMPARE(newNumbersSignal.count(), 1);
+	QCOMPARE(newNumbersSignal, numbers);
+
+	//SIM hotswap is not testable with phonesim, so we simulate a modem reset
+        m->modem()->setOnline(false);
+        QTest::qWait(5000);
+        m->modem()->setPowered(false);
+        QTest::qWait(5000);
+        m->modem()->setPowered(true);
+        QTest::qWait(5000);
+        m->modem()->setOnline(true);
+        QTest::qWait(5000);
+        QCOMPARE(presence.count(), 0);
+        QCOMPARE(subscriberIdentity.count(), 1);
+        QCOMPARE(subscriberIdentity.takeFirst().at(0).toString(), QString("246813579"));
+        QCOMPARE(mcc.count(), 1);
+        QCOMPARE(mcc.takeFirst().at(0).toString(), QString("246"));
+        QCOMPARE(mnc.count(), 1);
+        QCOMPARE(mnc.takeFirst().at(0).toString(), QString("81"));
+        QCOMPARE(subscriberNumbers.count(), 1);
+        numbers = subscriberNumbers.takeFirst().at(0).toStringList();
+        QCOMPARE(numbers.count(), 1);
+	QCOMPARE(numbers[0], QString("358501234567"));
+	QCOMPARE(serviceNumbers.count(), 1);
+	OfonoServiceNumbers serviceNumbersMap = serviceNumbers.takeFirst().at(0).value<OfonoServiceNumbers>();
+	QVERIFY(serviceNumbersMap.count() > 0);
+	QCOMPARE(serviceNumbersMap[".HELP DESK"], QString("2601"));
+        QCOMPARE(pinRequired.count(), 0);
+        QCOMPARE(lockedPins.count(), 0);
+        QCOMPARE(cardIdentifier.count(), 1);
+        QCOMPARE(cardIdentifier.takeFirst().at(0).toString(), QString("8949222074451242066"));
+        QCOMPARE(preferredLanguages.count(), 1);
+        QStringList languages = preferredLanguages.takeFirst().at(0).toStringList();
+        QVERIFY(languages.count() > 0);
+       	QCOMPARE(languages[0], QString("de"));
+    }
+    
+    void testOfonoSimManagerPin()
+    {
+        QSignalSpy presence(m, SIGNAL(presenceChanged(bool)));
+        QSignalSpy subscriberIdentity(m, SIGNAL(subscriberIdentityChanged(QString)));
+        QSignalSpy mcc(m, SIGNAL(mobileCountryCodeChanged(QString)));
+        QSignalSpy mnc(m, SIGNAL(mobileNetworkCodeChanged(QString)));
+        QSignalSpy subscriberNumbers(m, SIGNAL(subscriberNumbersChanged(QStringList)));
+        QSignalSpy serviceNumbers(m, SIGNAL(serviceNumbersChanged(OfonoServiceNumbers)));
+        QSignalSpy pinRequired(m, SIGNAL(pinRequiredChanged(QString)));
+        QSignalSpy lockedPins(m, SIGNAL(lockedPinsChanged(QStringList)));
+        QSignalSpy cardIdentifier(m, SIGNAL(cardIdentifierChanged(QString)));
+        QSignalSpy preferredLanguages(m, SIGNAL(preferredLanguagesChanged(QStringList)));
+
+        QSignalSpy changePin(m, SIGNAL(changePinComplete(bool)));
+        QSignalSpy enterPin(m, SIGNAL(enterPinComplete(bool)));
+        QSignalSpy resetPin(m, SIGNAL(resetPinComplete(bool)));
+        QSignalSpy lockPin(m, SIGNAL(lockPinComplete(bool)));
+        QSignalSpy unlockPin(m, SIGNAL(unlockPinComplete(bool)));
+
+	m->lockPin("pin", "2468");
+	QTest::qWait(1000);
+	m->changePin("pin", "2468", "1234");
+	QTest::qWait(1000);
+	m->changePin("pin", "1234", "2468");
+	QTest::qWait(1000);
+	// entering and resetting PIN is not possible with phonesim's default config
+	m->enterPin("pin", "2468");	
+	QTest::qWait(1000);
+	m->resetPin("puk", "13243546", "2468");	    
+	QTest::qWait(1000);
+	m->unlockPin("pin", "2468");
+	QTest::qWait(1000);
+	
+	QCOMPARE(lockedPins.count(), 2);
+	QCOMPARE(lockedPins.takeFirst().at(0).toStringList().count(), 1);
+	QCOMPARE(lockedPins.takeFirst().at(0).toStringList().count(), 0);
+	
+	QCOMPARE(lockPin.count(), 1);
+	QCOMPARE(lockPin.takeFirst().at(0).toBool(), true);
+	QCOMPARE(unlockPin.count(), 1);
+	QCOMPARE(unlockPin.takeFirst().at(0).toBool(), true);
+	QCOMPARE(changePin.count(), 2);
+	QCOMPARE(changePin.takeFirst().at(0).toBool(), true);
+	QCOMPARE(changePin.takeFirst().at(0).toBool(), true);
+	QCOMPARE(enterPin.count(), 1);
+	QCOMPARE(enterPin.takeFirst().at(0).toBool(), false);
+	QCOMPARE(resetPin.count(), 1);
+	QCOMPARE(resetPin.takeFirst().at(0).toBool(), false);
     }
 
 

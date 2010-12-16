@@ -30,6 +30,9 @@
 #include "ofonomodeminterface.h"
 #include "libofono-qt_global.h"
 
+typedef QMap<QString, QString> OfonoServiceNumbers;
+Q_DECLARE_METATYPE(OfonoServiceNumbers);
+
 //! This class is used to access oFono SIM API
 /*!
  * The API is documented in
@@ -49,7 +52,7 @@ public:
     QString mobileCountryCode() const;
     QString mobileNetworkCode() const;
     QStringList subscriberNumbers() const;
-    QMap<QString, QString> serviceNumbers() const;
+    OfonoServiceNumbers serviceNumbers() const;
     QString pinRequired() const;
     QStringList lockedPins() const;
     QString cardIdentifier() const;
@@ -70,7 +73,7 @@ signals:
     void mobileNetworkCodeChanged(const QString &mnc);
     void subscriberNumbersChanged(const QStringList &msisdns);
     void setSubscriberNumbersFailed();
-    void serviceNumbersChanged(const QMap<QString, QString> &sdns);
+    void serviceNumbersChanged(const OfonoServiceNumbers &sdns);
     void pinRequiredChanged(const QString &pintype);
     void lockedPinsChanged(const QStringList &pins);
     void cardIdentifierChanged(const QString &iccid);

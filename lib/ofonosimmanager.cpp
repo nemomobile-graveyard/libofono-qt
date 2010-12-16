@@ -27,10 +27,10 @@
 #include "ofonosimmanager.h"
 #include "ofonointerface.h"
 
-
 OfonoSimManager::OfonoSimManager(OfonoModem::SelectionSetting modemSetting, const QString &modemPath, QObject *parent)
     : OfonoModemInterface(modemSetting, modemPath, "org.ofono.SimManager", OfonoGetAllOnStartup, parent)
 {
+    qRegisterMetaType<OfonoServiceNumbers>("OfonoServiceNumbers");
     connect(m_if, SIGNAL(propertyChanged(const QString&, const QVariant&)), 
             this, SLOT(propertyChanged(const QString&, const QVariant&)));
     connect(m_if, SIGNAL(setPropertyFailed(const QString&)), 
@@ -142,9 +142,9 @@ QStringList OfonoSimManager::subscriberNumbers() const
     return m_if->properties()["SubscriberNumbers"].value<QStringList>();
 }
 
-QMap<QString, QString> OfonoSimManager::serviceNumbers() const
+OfonoServiceNumbers OfonoSimManager::serviceNumbers() const
 {
-    QMap<QString, QString> map;
+    OfonoServiceNumbers map;
     m_if->properties()["ServiceNumbers"].value<QDBusArgument>() >> map;
     return map;
 }
@@ -183,12 +183,12 @@ void OfonoSimManager::propertyChanged(const QString& property, const QVariant& v
     } else if (property == "SubscriberNumbers") {	
         emit subscriberNumbersChanged(value.value<QStringList>());
     } else if (property == "ServiceNumbers") {	
-        QMap<QString, QString> map;
+        OfonoServiceNumbers map;
         value.value<QDBusArgument>() >> map;
         emit serviceNumbersChanged(map);
     } else if (property == "PinRequired") {	
         emit pinRequiredChanged(value.value<QString>());
-    } else if (property == "LockedPins") {	
+    } else if (property == "LockedPins") {
         emit lockedPinsChanged(value.value<QStringList>());
     } else if (property == "CardIdentifier") {	
         emit cardIdentifierChanged(value.value<QString>());
