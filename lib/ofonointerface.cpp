@@ -154,7 +154,7 @@ void OfonoInterface::onPropertyChanged(QString property, QDBusVariant value)
     emit propertyChanged(property, value.variant());
 }
 
-void OfonoInterface::setProperty(const QString& name, const QVariant& property)
+void OfonoInterface::setProperty(const QString& name, const QVariant& property, const QString& password)
 {
     if (m_pendingProperty.length() > 0) {
         // FIXME: should indicate that a get/setProperty is already in progress
@@ -164,13 +164,16 @@ void OfonoInterface::setProperty(const QString& name, const QVariant& property)
     }
 
     QDBusMessage request;
-
     request = QDBusMessage::createMethodCall("org.ofono",
 					     m_path, m_ifname,
 					     "SetProperty");
-    request.setArguments(QList<QVariant>() 
-                        << QVariant(name) 
-                        << QVariant::fromValue(QDBusVariant(property)));
+
+    QVariantList arguments;
+    arguments << QVariant(name) << QVariant::fromValue(QDBusVariant(property));
+    if (!password.isNull())
+        arguments << QVariant(password);
+
+    request.setArguments(arguments);
     bool result = QDBusConnection::systemBus().callWithCallback(request, this,
     					SLOT(setPropertyResp()),
     					SLOT(setPropertyErr(const QDBusError&)),

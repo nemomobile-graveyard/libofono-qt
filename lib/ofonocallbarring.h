@@ -73,8 +73,6 @@ signals:
 private slots:
     void propertyChanged(const QString& property, const QVariant& value);
     void setPropertyFailed(const QString& property);
-    void setPropertyResp();
-    void setPropertyErr(const QDBusError& error);
     void changePasswordResp();
     void changePasswordErr(QDBusError error);
     void disableAllResp();
@@ -84,12 +82,6 @@ private slots:
     void disableAllOutgoingResp();
     void disableAllOutgoingErr(QDBusError error);
     void requestPropertyComplete(bool success, const QString& property, const QVariant& value);
-
-private:
-    void setProperty(const QString& name, const QVariant& property,
-			const QString& password);
-
-   QString m_pendingProperty;
 };
 
 #endif  /* !OFONOCALLBARRING_H */

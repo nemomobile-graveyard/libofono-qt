@@ -45,64 +45,11 @@ OfonoCallBarring::OfonoCallBarring(OfonoModem::SelectionSetting modemSetting, co
 					 "OutgoingBarringInEffect",
 					 this,
 					 SIGNAL(outgoingBarringInEffect()));
-    m_pendingProperty = QString();
 }
 
 OfonoCallBarring::~OfonoCallBarring()
 {
 }
-
-void OfonoCallBarring::setProperty(const QString& name, 
-				   const QVariant& property, 
-				   const QString& password)
-{
-    if (m_pendingProperty.length() > 0) {
-        // FIXME: should indicate that a setProperty is already in progress
-        m_if->setError(QString(), QString("Operation already in progress"));
-        emit setPropertyFailed(name);
-        return;
-    }
-
-
-    QDBusMessage request;
-
-    request = QDBusMessage::createMethodCall("org.ofono",
-					     path(), m_if->ifname(),
-					     "SetProperty");
-    request.setArguments(QList<QVariant>() 
-			 << QVariant(name) 
-			 << QVariant::fromValue(QDBusVariant(property))
-			 << QVariant(password));
-
-    bool result = QDBusConnection::systemBus().callWithCallback(request, this,
-    					SLOT(setPropertyResp()),
-    					SLOT(setPropertyErr(const QDBusError&)),
-    					SET_PROPERTY_TIMEOUT);
-    if (!result) {
-        // FIXME: should indicate that sending a message failed
-        m_if->setError(QString(), QString("DBUS sending failed"));
-    	emit setPropertyFailed(name);
-    	return;
-    }
-    m_pendingProperty = name;
-
-
-}
-
-void OfonoCallBarring::setPropertyResp()
-{
-    m_pendingProperty = QString();
-    // emit nothing; we will get a PropertyChanged signal
-}
-
-void OfonoCallBarring::setPropertyErr(const QDBusError& error)
-{
-    QString prop = m_pendingProperty;
-    m_if->setError(error.name(), error.message());
-    m_pendingProperty = QString();
-    emit setPropertyFailed(prop);
-}
-
 
 void OfonoCallBarring::changePassword(const QString &old_password, 
 					     const QString &new_password)
@@ -169,7 +116,7 @@ void OfonoCallBarring::requestVoiceIncoming()
 
 void OfonoCallBarring::setVoiceIncoming(const QString &barrings, const QString &password)
 {
-    setProperty("VoiceIncoming", qVariantFromValue(barrings), password);
+    m_if->setProperty("VoiceIncoming", qVariantFromValue(barrings), password);
 }
 
 void OfonoCallBarring::requestVoiceOutgoing()
@@ -179,7 +126,7 @@ void OfonoCallBarring::requestVoiceOutgoing()
 
 void OfonoCallBarring::setVoiceOutgoing(const QString &barrings, const QString &password)
 {
-    setProperty("VoiceOutgoing", qVariantFromValue(barrings), password);
+    m_if->setProperty("VoiceOutgoing", qVariantFromValue(barrings), password);
 }
 
 void OfonoCallBarring::propertyChanged(const QString& property, const QVariant& value)

@@ -69,7 +69,7 @@ public:
      * Result is returned via propertyChanged() signal
      * if setting is successful or via setPropertyFailed() signal if setting has failed.
      */
-    void setProperty(const QString &name, const QVariant &property);
+    void setProperty(const QString &name, const QVariant &property, const QString& password=0);
     
     //! Resets the property cache.
     void resetProperties();
