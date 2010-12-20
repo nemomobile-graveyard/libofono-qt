@@ -34,24 +34,35 @@ class TestOfonoVoiceCallManager : public QObject
     Q_OBJECT
 
 private slots:
-
-    void validityChanged(bool validity)
-    {
-	qDebug() << "ValidityChanged" << validity;
-    }
-
     void initTestCase()
     {
-	m = new OfonoVoiceCallManager(OfonoModem::AutomaticSelect, QString(), this);
-	connect(m, SIGNAL(validityChanged(bool)), this, 
-		SLOT(validityChanged(bool)));
+	m = new OfonoVoiceCallManager(OfonoModem::ManualSelect, "/phonesim", this);
+	QCOMPARE(m->modem()->isValid(), true);	
+
+	if (!m->modem()->powered()) {
+  	    m->modem()->setPowered(true);
+            QTest::qWait(5000);
+        }
+        if (!m->modem()->online()) {
+  	    m->modem()->setOnline(true);
+            QTest::qWait(5000);
+        }
+	QCOMPARE(m->isValid(), true);
     }
 
     void testOfonoVoiceCallManager()
     {
-	qDebug() << "validity:" << m->isValid();
-	qDebug() << "emergencyNumbers():" << m->emergencyNumbers();
-	QTest::qWait(1000);
+    	QVERIFY(m->emergencyNumbers().count() > 0);
+
+	QSignalSpy emergencyNumbers(m, SIGNAL(emergencyNumbersChanged(QStringList)));
+	m->modem()->setPowered(false);
+        QTest::qWait(5000);
+	m->modem()->setPowered(true);
+        QTest::qWait(5000);
+  	m->modem()->setOnline(true);
+        QTest::qWait(5000);
+        QCOMPARE(emergencyNumbers.count(), 1);
+        QVERIFY(emergencyNumbers.takeFirst().at(0).toStringList().count() > 0);
     }
 
 
