@@ -38,6 +38,19 @@ OfonoNetworkOperator::OfonoNetworkOperator(const QString& operatorId, QObject *p
             this, SLOT(propertyChanged(const QString&, const QVariant&)));
 }
 
+OfonoNetworkOperator::OfonoNetworkOperator(const OfonoNetworkOperator& op)
+    : QObject(op.parent())
+{
+    m_if = new OfonoInterface(op.path(), "org.ofono.NetworkOperator", OfonoGetAllOnStartup, this);
+    connect(m_if, SIGNAL(propertyChanged(const QString&, const QVariant&)), 
+            this, SLOT(propertyChanged(const QString&, const QVariant&)));
+}    
+    
+bool OfonoNetworkOperator::operator==(const OfonoNetworkOperator &op)
+{
+    return path() == op.path();
+}
+
 OfonoNetworkOperator::~OfonoNetworkOperator()
 {
 }

@@ -44,7 +44,10 @@ class OFONO_QT_EXPORT OfonoNetworkOperator : public QObject
     Q_OBJECT
 public:
     OfonoNetworkOperator(const QString& operatorId, QObject *parent=0);
+    OfonoNetworkOperator(const OfonoNetworkOperator& op);
     ~OfonoNetworkOperator();
+    
+    bool operator==(const OfonoNetworkOperator &op);
 
     //! Returns the D-Bus object path of the network operator object
     QString path() const;
