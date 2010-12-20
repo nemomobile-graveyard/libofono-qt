@@ -34,137 +34,95 @@ class TestOfonoNetworkRegistration : public QObject
     Q_OBJECT
 
 private slots:
-
-    void modeChanged(QString mode)
-    {
-	qDebug() << "modeChanged" << mode;
-    }
-
-    void statusChanged(QString status)
-    {
-	qDebug() << "statusChanged" << status;
-    }
-
-    void locationAreaCodeChanged(uint locationAreaCode)
-    {
-	qDebug() << "locationAreaCodeChanged" << locationAreaCode;
-    }
-
-    void cellIdChanged(uint cellId)
-    {
-	qDebug() << "cellIdChanged" << cellId;
-    }
-
-    void mccChanged(QString mcc)
-    {
-	qDebug() << "mccChanged" << mcc;
-    }
-
-    void mncChanged(QString mnc)
-    {
-	qDebug() << "mncChanged" << mnc;
-    }
-
-    void technologyChanged(QString technology)
-    {
-	qDebug() << "technologyChanged" << technology;
-    }
-
-    void nameChanged(QString name)
-    {
-	qDebug() << "nameChanged" << name;
-    }
-
-    void strengthChanged(uint strength)
-    {
-	qDebug() << "strengthChanged" << strength;
-    }
-
-    void baseStationChanged(QString baseStation)
-    {
-	qDebug() << "baseStationChanged" << baseStation;
-    }
-
-    void registerComplete(bool success)
-    {
-	qDebug() << "registerComplete:" << success;
-    }
-
-    void deregisterComplete(bool success)
-    {
-	qDebug() << "deregisterComplete:" << success;
-    }
-
-    void getOperatorsComplete(bool success, QStringList oplist)
-    {
-	qDebug() << "getOperatorsComplete:" << success << oplist;
-    }
-
-    void scanComplete(bool success, QStringList oplist)
-    {
-	qDebug() << "scanComplete:" << success << oplist;
-    }
-
     void initTestCase()
     {
-	m = new OfonoNetworkRegistration(OfonoModem::AutomaticSelect, QString(), this);
+	m = new OfonoNetworkRegistration(OfonoModem::ManualSelect, "/phonesim", this);
+	QCOMPARE(m->modem()->isValid(), true);	
 
-	connect(m, SIGNAL(registerComplete(bool)), this, 
-		SLOT(registerComplete(bool)));
-	connect(m, SIGNAL(deregisterComplete(bool)), this, 
-		SLOT(deregisterComplete(bool)));
-    connect(m, SIGNAL(getOperatorsComplete(bool, QStringList)), 
-            this, SLOT(getOperatorsComplete(bool, QStringList)));
-    connect(m, SIGNAL(scanComplete(bool, QStringList)), 
-            this, SLOT(scanComplete(bool, QStringList)));
-
-	connect(m, SIGNAL(modeChanged(QString)), 
-		this, SLOT(modeChanged(QString)));
-	connect(m, SIGNAL(statusChanged(QString)), 
-		this, SLOT(statusChanged(QString)));
-	connect(m, SIGNAL(locationAreaCodeChanged(uint)), 
-		this, SLOT(locationAreaCodeChanged(uint)));
-	connect(m, SIGNAL(cellIdChanged(uint)), 
-		this, SLOT(cellIdChanged(uint)));
-	connect(m, SIGNAL(mccChanged(QString)), 
-		this, SLOT(mccChanged(QString)));
-	connect(m, SIGNAL(mncChanged(QString)), 
-		this, SLOT(mncChanged(QString)));
-	connect(m, SIGNAL(technologyChanged(QString)), 
-		this, SLOT(technologyChanged(QString)));
-	connect(m, SIGNAL(nameChanged(QString)), 
-		this, SLOT(nameChanged(QString)));
-	connect(m, SIGNAL(strengthChanged(uint)), 
-		this, SLOT(strengthChanged(uint)));
-	connect(m, SIGNAL(baseStationChanged(QString)), 
-		this, SLOT(baseStationChanged(QString)));
-
+	if (!m->modem()->powered()) {
+  	    m->modem()->setPowered(true);
+            QTest::qWait(5000);
+        }
+        if (!m->modem()->online()) {
+  	    m->modem()->setOnline(true);
+            QTest::qWait(5000);
+        }
+	QCOMPARE(m->isValid(), true);
     }
 
     void testOfonoNetworkRegistration()
     {
-	qDebug() << "mode():" << m->mode();
-	qDebug() << "status():" << m->status();
-	qDebug() << "lac():" << m->locationAreaCode();
-	qDebug() << "cellid():" << m->cellId();
-	qDebug() << "mobileCountryCode():" << m->mcc();
-	qDebug() << "mobileNetworkCode():" << m->mnc();
-	qDebug() << "technology():" << m->technology();
-	qDebug() << "name():" << m->name();
-	qDebug() << "strength():" << m->strength();
-	qDebug() << "baseStation():" << m->baseStation();
-	
-	m->getOperators();
-	QTest::qWait(5000);
+    	QSignalSpy mode(m, SIGNAL(modeChanged(QString)));
+	QSignalSpy status(m, SIGNAL(statusChanged(QString)));	
+	QSignalSpy lac(m, SIGNAL(locationAreaCodeChanged(uint)));	
+	QSignalSpy cellId(m, SIGNAL(cellIdChanged(uint)));	
+	QSignalSpy mcc(m, SIGNAL(mccChanged(QString)));	
+	QSignalSpy mnc(m, SIGNAL(mncChanged(QString)));	
+	QSignalSpy tech(m, SIGNAL(technologyChanged(QString)));	
+	QSignalSpy name(m, SIGNAL(nameChanged(QString)));	
+	QSignalSpy strength(m, SIGNAL(strengthChanged(uint)));	
+	QSignalSpy base(m, SIGNAL(baseStationChanged(QString)));	
+
+    	QSignalSpy registerS(m, SIGNAL(registerComplete(bool)));
+    	QSignalSpy deregister(m, SIGNAL(deregisterComplete(bool)));
+    	QSignalSpy scan(m, SIGNAL(scanComplete(bool, QStringList)));
+    	QSignalSpy getOp(m, SIGNAL(getOperatorsComplete(bool, QStringList)));
+
+	QVERIFY(m->mode().length() > 0);
+	QCOMPARE(m->status(), QString("registered"));
+	QCOMPARE(m->mcc(), QString("234"));	
+	QCOMPARE(m->mnc(), QString("01"));	
+	QVERIFY(m->name().length() > 0);
+	QCOMPARE(m->strength(), uint(100));
 
 	m->scan();
-	QTest::qWait(10000);
+	QTest::qWait(5000);
+	QCOMPARE(scan.count(), 1);
+	QVariantList scanList = scan.takeFirst();
+	QCOMPARE(scanList.at(0).toBool(), true);
+	QStringList scanOpList = scanList.at(1).toStringList();
+	QVERIFY(scanOpList.count() > 0);
+
+	m->getOperators();
+	QTest::qWait(1000);
+	QCOMPARE(getOp.count(), 1);
+	QVariantList getList = getOp.takeFirst();
+	QCOMPARE(getList.at(0).toBool(), true);
+	QStringList getOpList = getList.at(1).toStringList();
+	QVERIFY(getOpList.count() > 0);
+	QCOMPARE(scanOpList, getOpList);
 	
 	m->deregister();
-	QTest::qWait(10000);
+	QTest::qWait(1000);
+	QCOMPARE(deregister.count(), 1);
+	QCOMPARE(deregister.takeFirst().at(0).toBool(), false);
+	QCOMPARE(m->errorName(), QString("org.ofono.Error.Failed"));
+	QCOMPARE(m->errorMessage(), QString("Operation failed"));
+	QCOMPARE(mode.count(), 1);
+	QCOMPARE(mode.takeFirst().at(0).toString(), QString("off"));
 	m->registerOp();
+	QTest::qWait(5000);
+	QCOMPARE(registerS.count(), 1);
+	QCOMPARE(registerS.takeFirst().at(0).toBool(), true);
+	QCOMPARE(mode.count(), 1);
+	QCOMPARE(mode.takeFirst().at(0).toString(), QString("auto"));
 
-	QTest::qWait(120000);
+	m->modem()->setOnline(false);
+	QTest::qWait(5000);
+	QCOMPARE(m->isValid(), false);	
+	m->modem()->setOnline(true);
+	QTest::qWait(5000);
+	QCOMPARE(status.count(), 1);
+	QCOMPARE(status.takeFirst().at(0).toString(), QString("registered"));
+	QCOMPARE(mcc.count(), 1);
+	QCOMPARE(mcc.takeFirst().at(0).toString(), QString("234"));
+	QCOMPARE(mnc.count(), 1);
+	QCOMPARE(mnc.takeFirst().at(0).toString(), QString("01"));
+	QCOMPARE(name.count(), 2);
+	QVERIFY(name.takeFirst().at(0).toString().length() > 0);
+	QVERIFY(name.takeFirst().at(0).toString().length() > 0);
+	QCOMPARE(strength.count(), 1);
+	QCOMPARE(strength.takeFirst().at(0).toUInt(), uint(100));
     }
 
 
