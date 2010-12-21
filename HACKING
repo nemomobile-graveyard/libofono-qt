@@ -1,0 +1,12 @@
+The basic rule is simple: follow the coding style, and the design and functionality
+patterns that are already there. There are patterns for getting and setting oFono 
+properties, calling methods and getting the method call result, setting the errors,
+and receiving out-of-band signals. Hopefully that should be enough for any remaining 
+APIs which are currently missing.
+
+For any new API that is added, there should also be a test case. Again, try to
+imitate existing test cases. It is not necessary to thoroughly test the functionality;
+it is enough to go through all properties, methods and signals and check that they
+work, return sane values and match the actual oFono API. The tests should be 
+written against Phonesim phone simulator and they should be able to run without 
+manual intervention.
