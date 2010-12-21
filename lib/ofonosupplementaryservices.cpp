@@ -88,7 +88,7 @@ void OfonoSupplementaryServices::cancel()
 					     "Cancel");
 
     QDBusConnection::systemBus().callWithCallback(request, this,
-					SLOT(cancelResp(QString)),
+					SLOT(cancelResp()),
 					SLOT(cancelErr(const QDBusError&)),
 					REQUEST_TIMEOUT);
 }
@@ -109,8 +109,7 @@ void OfonoSupplementaryServices::initiateResp(QString message, QDBusVariant deta
 {
     const QDBusArgument argument = details.variant().value<QDBusArgument>();
     if (message == "USSD") {
-    	QString ussdResp;
-    	argument >> ussdResp;
+    	QString ussdResp = details.variant().toString();
         emit initiateUSSDComplete(ussdResp);
     } else if (message == "CallBarring") {
         QString ssOp, cbService;
@@ -157,7 +156,10 @@ void OfonoSupplementaryServices::initiateResp(QString message, QDBusVariant deta
         argument >> ssOp >> status;
         argument.endStructure();
         emit calledLineRestrictionComplete(ssOp, status);
-    } 
+    } else {
+        m_if->setError(QString(), QString("Unknown initiate response"));
+        emit initiateFailed();
+    }
 }
 
 void OfonoSupplementaryServices::initiateErr(QDBusError error)

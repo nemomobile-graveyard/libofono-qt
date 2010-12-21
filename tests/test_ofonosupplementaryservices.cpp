@@ -35,46 +35,127 @@ class TestOfonoSupplementaryServices : public QObject
 
 public slots:
 
-    void stateChanged(QString state)
-    {
-	qDebug() << "stateChanged" << state;
-    }
-    
-    void initiateFailed()
-    {
-    qDebug() << "initiateFailed" << m->errorName() << m->errorMessage();
-    }
-    
-    void barringComplete(QString ssOp, QString cbService, QVariantMap cbMap)
-    {
-    qDebug() << "barringComplete" << ssOp << cbService << cbMap;
-    }
-
-    void forwardingComplete(QString ssOp, QString cfService, QVariantMap cfMap)
-    {
-    qDebug() << "forwardingComplete" << ssOp << cfService << cfMap;
-    }
-
 private slots:
     void initTestCase()
     {
-	m = new OfonoSupplementaryServices(OfonoModem::AutomaticSelect, QString(), this);
-	connect(m, SIGNAL(stateChanged(QString)), 
-		this, SLOT(stateChanged(QString)));
-	connect(m, SIGNAL(initiateFailed()), 
-		this, SLOT(initiateFailed()));
-	connect(m, SIGNAL(barringComplete(QString, QString, QVariantMap)), 
-		this, SLOT(barringComplete(QString, QString, QVariantMap)));
-	connect(m, SIGNAL(forwardingComplete(QString, QString, QVariantMap)), 
-		this, SLOT(forwardingComplete(QString, QString, QVariantMap)));
+	m = new OfonoSupplementaryServices(OfonoModem::ManualSelect, "/phonesim", this);
+	QCOMPARE(m->modem()->isValid(), true);	
+
+	if (!m->modem()->powered()) {
+  	    m->modem()->setPowered(true);
+            QTest::qWait(5000);
+        }
+        if (!m->modem()->online()) {
+  	    m->modem()->setOnline(true);
+            QTest::qWait(5000);
+        }
+	QCOMPARE(m->isValid(), true);
     }
 
-    void testOfonoNetworkOperator()
+    void testOfonoSupplementaryServices()
     {
-	qDebug() << "state():" << m->state();
-	m->initiate("*#002**11#");
+        QSignalSpy notification(m, SIGNAL(notificationReceived(QString)));
+        QSignalSpy request(m, SIGNAL(requestReceived(QString)));
 
-	QTest::qWait(120000);
+        QSignalSpy state(m, SIGNAL(stateChanged(QString)));
+
+        QSignalSpy initiateUSSD(m, SIGNAL(initiateUSSDComplete(QString)));
+        QSignalSpy barring(m, SIGNAL(barringComplete(QString, QString, QVariantMap)));
+        QSignalSpy forwarding(m, SIGNAL(forwardingComplete(QString, QString, QVariantMap)));
+        QSignalSpy waiting(m, SIGNAL(waitingComplete(QString, QVariantMap)));
+        QSignalSpy callingLinePresentation(m, SIGNAL(callingLinePresentationComplete(QString, QString)));
+        QSignalSpy calledLinePresentation(m, SIGNAL(calledLinePresentationComplete(QString, QString)));
+        QSignalSpy callingLineRestriction(m, SIGNAL(callingLineRestrictionComplete(QString, QString)));
+        QSignalSpy calledLineRestriction(m, SIGNAL(calledLineRestrictionComplete(QString, QString)));
+
+        QSignalSpy initiateFailed(m, SIGNAL(initiateFailed()));
+        QSignalSpy respond(m, SIGNAL(respondComplete(bool, QString)));
+        QSignalSpy cancel(m, SIGNAL(cancelComplete(bool)));
+    
+        QCOMPARE(m->state(), QString("idle"));
+
+	m->initiate("*225#");
+	QTest::qWait(1000);
+	QCOMPARE(state.count(), 2);
+	QCOMPARE(state.takeFirst().at(0).toString(), QString("active"));
+	QCOMPARE(state.takeFirst().at(0).toString(), QString("idle"));
+	QCOMPARE(initiateUSSD.count(), 1);
+	QCOMPARE(initiateUSSD.takeFirst().at(0).toString(), QString("Thank you, your request is being processed. A message will be sent to your phone."));
+	
+	m->cancel();
+	QTest::qWait(1000);
+	QCOMPARE(cancel.count(), 1);
+	QCOMPARE(cancel.takeFirst().at(0).toBool(), false);
+
+	m->respond("*225#");
+	QTest::qWait(1000);
+	QCOMPARE(respond.count(), 1);
+	QCOMPARE(respond.takeFirst().at(0).toBool(), false);
+
+	m->initiate("*226#");
+	QTest::qWait(1000);
+	QCOMPARE(state.count(), 2);
+	QCOMPARE(state.takeFirst().at(0).toString(), QString("active"));
+	QCOMPARE(state.takeFirst().at(0).toString(), QString("idle"));
+	QCOMPARE(initiateFailed.count(), 1);
+	initiateFailed.takeFirst();
+
+	m->initiate("*#331#");
+	QTest::qWait(1000);
+	QCOMPARE(barring.count(), 1);
+	QVariantList list = barring.takeFirst();
+	QCOMPARE(list.at(0).toString(), QString("interrogation"));
+	QCOMPARE(list.at(1).toString(), QString("InternationalOutgoing"));
+	QVariantMap map = list.at(2).toMap();
+	QCOMPARE(map.count(), 3);
+	QCOMPARE(map["DataInternationalOutgoing"].toString(), QString("disabled"));
+	
+	m->initiate("*#002**11#");
+	QTest::qWait(1000);
+	QCOMPARE(forwarding.count(), 1);
+	list = forwarding.takeFirst();
+	QCOMPARE(list.at(0).toString(), QString("interrogation"));
+	QCOMPARE(list.at(1).toString(), QString("All"));
+	map = list.at(2).toMap();
+	QCOMPARE(map.count(), 5);
+	QCOMPARE(map["VoiceNoReplyTimeout"].toUInt(), uint(20));
+
+	m->initiate("*#43#");
+	QTest::qWait(5000);
+	QCOMPARE(waiting.count(), 1);
+	list = waiting.takeFirst();
+	QCOMPARE(list.at(0).toString(), QString("interrogation"));
+	map = list.at(1).toMap();
+	QCOMPARE(map.count(), 5);
+	QCOMPARE(map["DataAsyncCallWaiting"].toString(), QString("disabled"));
+
+	m->initiate("*#31#");
+	QTest::qWait(1000);
+	QCOMPARE(callingLineRestriction.count(), 1);
+	list = callingLineRestriction.takeFirst();
+	QCOMPARE(list.at(0).toString(), QString("interrogation"));
+	QCOMPARE(list.at(1).toString(), QString("disabled"));
+
+	m->initiate("*#30#");
+	QTest::qWait(1000);
+	QCOMPARE(callingLinePresentation.count(), 1);
+	list = callingLinePresentation.takeFirst();
+	QCOMPARE(list.at(0).toString(), QString("interrogation"));
+	QCOMPARE(list.at(1).toString(), QString("enabled"));
+
+	m->initiate("*#76#");
+	QTest::qWait(1000);
+	QCOMPARE(calledLinePresentation.count(), 1);
+	list = calledLinePresentation.takeFirst();
+	QCOMPARE(list.at(0).toString(), QString("interrogation"));
+	QCOMPARE(list.at(1).toString(), QString("enabled"));
+
+	m->initiate("*#77#");
+	QTest::qWait(1000);
+	QCOMPARE(calledLineRestriction.count(), 1);
+	list = calledLineRestriction.takeFirst();
+	QCOMPARE(list.at(0).toString(), QString("interrogation"));
+	QCOMPARE(list.at(1).toString(), QString("enabled"));
     }
 
 
