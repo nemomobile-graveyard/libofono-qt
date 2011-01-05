@@ -6,11 +6,11 @@
  * ofono-qt is a high-level Qt binding to oFono cellular services provided via DBus
  * 
  * Development is done in the Git repository <a
- * href="https://path.to.gitorious.repo">here</a>.
+ * href="http://meego.gitorious.org/meego-cellular/ofono-qt">here</a>.
  *
  * \section building Building
  *
- * Building CellularQt requires:
+ * Building ofono-qt requires:
  * \li Qt, including QtDBus
  * \li qmake
  *
@@ -23,12 +23,14 @@
  *
  * \section running Running
  *
- * In order to run CellularQt under scratchbox, you need a working
+ * In order to run ofono-qt, you need a working
  * installation of ofono daemon. This is the backend with which the 
- * CellularQt bindings communicate.
+ * ofono-qt bindings communicate.
  *
  * In order to set up ofono, you will need a working PhoNet stack and
  * a device connected via USB or a running phonesim modem simulator.
  *
- *
+ * More information:
+ * http://git.kernel.org/?p=network/ofono/phonesim.git;a=blob;f=HACKING;hb=HEAD
+ * 
  */
