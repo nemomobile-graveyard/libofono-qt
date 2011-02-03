@@ -1,7 +1,7 @@
 /*
  * This file is part of ofono-qt
  *
- * Copyright (C) 2010 Nokia Corporation and/or its subsidiary(-ies).
+ * Copyright (C) 2010-2011 Nokia Corporation and/or its subsidiary(-ies).
  *
  * Contact: Alexander Kanavin <alexander.kanavin@nokia.com>
  *
@@ -65,7 +65,6 @@ public:
     QString baseStation() const;
     
     void registerOp();
-    void deregister();
     void getOperators();
     void scan();
     
@@ -82,7 +81,6 @@ signals:
     void baseStationChanged(const QString &baseStation);
 
     void registerComplete(bool success);
-    void deregisterComplete(bool success);
     void getOperatorsComplete(bool success, const QStringList &operatorIds);
     void scanComplete(bool success, const QStringList &operatorIds);
 
@@ -90,8 +88,6 @@ private slots:
     void propertyChanged(const QString& property, const QVariant& value);
     void registerResp();
     void registerErr(QDBusError error);
-    void deregisterResp();
-    void deregisterErr(QDBusError error);
     void getOperatorsResp(OfonoOperatorList list);
     void getOperatorsErr(QDBusError error);
     void scanResp(OfonoOperatorList list);

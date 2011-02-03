@@ -1,7 +1,7 @@
 /*
  * This file is part of ofono-qt
  *
- * Copyright (C) 2010 Nokia Corporation and/or its subsidiary(-ies).
+ * Copyright (C) 2010-2011 Nokia Corporation and/or its subsidiary(-ies).
  *
  * Contact: Alexander Kanavin <alexander.kanavin@nokia.com>
  *
@@ -62,9 +62,9 @@ signals:
     void forwardingComplete(const QString &ssOp, const QString &cfService, const QVariantMap &cfMap);
     void waitingComplete(const QString &ssOp, const QVariantMap &cwMap);
     void callingLinePresentationComplete(const QString &ssOp, const QString &status);
-    void calledLinePresentationComplete(const QString &ssOp, const QString &status);
+    void connectedLinePresentationComplete(const QString &ssOp, const QString &status);
     void callingLineRestrictionComplete(const QString &ssOp, const QString &status);
-    void calledLineRestrictionComplete(const QString &ssOp, const QString &status);
+    void connectedLineRestrictionComplete(const QString &ssOp, const QString &status);
     void initiateFailed();
     void respondComplete(bool success, const QString &message);
     void cancelComplete(bool success);

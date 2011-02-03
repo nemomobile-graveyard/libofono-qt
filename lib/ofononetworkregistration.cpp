@@ -1,7 +1,7 @@
 /*
  * This file is part of ofono-qt
  *
- * Copyright (C) 2010 Nokia Corporation and/or its subsidiary(-ies).
+ * Copyright (C) 2010-2011 Nokia Corporation and/or its subsidiary(-ies).
  *
  * Contact: Alexander Kanavin <alexander.kanavin@nokia.com>
  *
@@ -72,20 +72,6 @@ void OfonoNetworkRegistration::registerOp()
     QDBusConnection::systemBus().callWithCallback(request, this,
 					SLOT(registerResp()),
 					SLOT(registerErr(const QDBusError&)),
-					REGISTER_TIMEOUT);
-}
-
-void OfonoNetworkRegistration::deregister()
-{
-    QDBusMessage request;
-
-    request = QDBusMessage::createMethodCall("org.ofono",
-					     path(), m_if->ifname(),
-					     "Deregister");
-
-    QDBusConnection::systemBus().callWithCallback(request, this,
-					SLOT(deregisterResp()),
-					SLOT(deregisterErr(const QDBusError&)),
 					REGISTER_TIMEOUT);
 }
 
@@ -202,18 +188,6 @@ void OfonoNetworkRegistration::registerErr(QDBusError error)
     qDebug() << "Register failed" << error;
     m_if->setError(error.name(), error.message());
     emit registerComplete(FALSE);
-}
-
-void OfonoNetworkRegistration::deregisterResp()
-{
-    emit deregisterComplete(TRUE);
-}
-
-void OfonoNetworkRegistration::deregisterErr(QDBusError error)
-{
-    qDebug() << "Deregister failed" << error;
-    m_if->setError(error.name(), error.message());
-    emit deregisterComplete(FALSE);
 }
 
 void OfonoNetworkRegistration::getOperatorsResp(OfonoOperatorList list)

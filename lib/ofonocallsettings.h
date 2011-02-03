@@ -1,7 +1,7 @@
 /*
  * This file is part of ofono-qt
  *
- * Copyright (C) 2010 Nokia Corporation and/or its subsidiary(-ies).
+ * Copyright (C) 2010-2011 Nokia Corporation and/or its subsidiary(-ies).
  *
  * Contact: Alexander Kanavin <alexander.kanavin@nokia.com>
  *
@@ -44,7 +44,8 @@ public:
     /* Properties */
     void requestCallingLinePresentation();
     void requestCalledLinePresentation();
-    void requestCalledLineRestriction();
+    void requestConnectedLinePresentation();
+    void requestConnectedLineRestriction();
     void requestCallingLineRestriction();
     void requestHideCallerId();
     void setHideCallerId(const QString &setting);
@@ -54,14 +55,16 @@ public:
 signals:
     void callingLinePresentationComplete(bool success, const QString &setting);
     void calledLinePresentationComplete(bool success, const QString &setting);
-    void calledLineRestrictionComplete(bool success, const QString &setting);
+    void connectedLinePresentationComplete(bool success, const QString &setting);
+    void connectedLineRestrictionComplete(bool success, const QString &setting);
     void callingLineRestrictionComplete(bool success, const QString &setting);
     void hideCallerIdComplete(bool success, const QString &setting);
     void voiceCallWaitingComplete(bool success, const QString &setting);
 
     void callingLinePresentationChanged(const QString &setting);
     void calledLinePresentationChanged(const QString &setting);
-    void calledLineRestrictionChanged(const QString &setting);
+    void connectedLinePresentationChanged(const QString &setting);
+    void connectedLineRestrictionChanged(const QString &setting);
     void callingLineRestrictionChanged(const QString &setting);
     void hideCallerIdChanged(const QString &setting);
     void voiceCallWaitingChanged(const QString &setting);

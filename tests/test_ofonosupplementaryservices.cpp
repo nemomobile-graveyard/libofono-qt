@@ -1,7 +1,7 @@
 /*
  * This file is part of ofono-qt
  *
- * Copyright (C) 2010 Nokia Corporation and/or its subsidiary(-ies).
+ * Copyright (C) 2010-2011 Nokia Corporation and/or its subsidiary(-ies).
  *
  * Contact: Alexander Kanavin <alexander.kanavin@nokia.com>
  *
@@ -64,9 +64,9 @@ private slots:
         QSignalSpy forwarding(m, SIGNAL(forwardingComplete(QString, QString, QVariantMap)));
         QSignalSpy waiting(m, SIGNAL(waitingComplete(QString, QVariantMap)));
         QSignalSpy callingLinePresentation(m, SIGNAL(callingLinePresentationComplete(QString, QString)));
-        QSignalSpy calledLinePresentation(m, SIGNAL(calledLinePresentationComplete(QString, QString)));
+        QSignalSpy connectedLinePresentation(m, SIGNAL(connectedLinePresentationComplete(QString, QString)));
         QSignalSpy callingLineRestriction(m, SIGNAL(callingLineRestrictionComplete(QString, QString)));
-        QSignalSpy calledLineRestriction(m, SIGNAL(calledLineRestrictionComplete(QString, QString)));
+        QSignalSpy connectedLineRestriction(m, SIGNAL(connectedLineRestrictionComplete(QString, QString)));
 
         QSignalSpy initiateFailed(m, SIGNAL(initiateFailed()));
         QSignalSpy respond(m, SIGNAL(respondComplete(bool, QString)));
@@ -145,15 +145,15 @@ private slots:
 
 	m->initiate("*#76#");
 	QTest::qWait(1000);
-	QCOMPARE(calledLinePresentation.count(), 1);
-	list = calledLinePresentation.takeFirst();
+	QCOMPARE(connectedLinePresentation.count(), 1);
+	list = connectedLinePresentation.takeFirst();
 	QCOMPARE(list.at(0).toString(), QString("interrogation"));
 	QCOMPARE(list.at(1).toString(), QString("enabled"));
 
 	m->initiate("*#77#");
 	QTest::qWait(1000);
-	QCOMPARE(calledLineRestriction.count(), 1);
-	list = calledLineRestriction.takeFirst();
+	QCOMPARE(connectedLineRestriction.count(), 1);
+	list = connectedLineRestriction.takeFirst();
 	QCOMPARE(list.at(0).toString(), QString("interrogation"));
 	QCOMPARE(list.at(1).toString(), QString("enabled"));
     }

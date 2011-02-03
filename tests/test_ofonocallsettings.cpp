@@ -1,7 +1,7 @@
 /*
  * This file is part of ofono-qt
  *
- * Copyright (C) 2010 Nokia Corporation and/or its subsidiary(-ies).
+ * Copyright (C) 2010-2011 Nokia Corporation and/or its subsidiary(-ies).
  *
  * Contact: Alexander Kanavin <alexander.kanavin@nokia.com>
  *
@@ -54,14 +54,16 @@ private slots:
     {
         QSignalSpy callingLinePresentationComplete(m, SIGNAL(callingLinePresentationComplete(bool, QString)));
         QSignalSpy calledLinePresentationComplete(m, SIGNAL(calledLinePresentationComplete(bool, QString)));
-        QSignalSpy calledLineRestrictionComplete(m, SIGNAL(calledLineRestrictionComplete(bool, QString)));
+        QSignalSpy connectedLinePresentationComplete(m, SIGNAL(connectedLinePresentationComplete(bool, QString)));
+        QSignalSpy connectedLineRestrictionComplete(m, SIGNAL(connectedLineRestrictionComplete(bool, QString)));
         QSignalSpy callingLineRestrictionComplete(m, SIGNAL(callingLineRestrictionComplete(bool, QString)));
         QSignalSpy hideCallerIdComplete(m, SIGNAL(hideCallerIdComplete(bool, QString)));
         QSignalSpy voiceCallWaitingComplete(m, SIGNAL(voiceCallWaitingComplete(bool, QString)));
 
         QSignalSpy callingLinePresentationChanged(m, SIGNAL(callingLinePresentationChanged(QString)));        
         QSignalSpy calledLinePresentationChanged(m, SIGNAL(calledLinePresentationChanged(QString)));        
-        QSignalSpy calledLineRestrictionChanged(m, SIGNAL(calledLineRestrictionChanged(QString)));        
+        QSignalSpy connectedLinePresentationChanged(m, SIGNAL(connectedLinePresentationChanged(QString)));
+        QSignalSpy connectedLineRestrictionChanged(m, SIGNAL(connectedLineRestrictionChanged(QString)));
         QSignalSpy callingLineRestrictionChanged(m, SIGNAL(callingLineRestrictionChanged(QString)));        
         QSignalSpy hideCallerIdChanged(m, SIGNAL(hideCallerIdChanged(QString)));        
         QSignalSpy voiceCallWaitingChanged(m, SIGNAL(voiceCallWaitingChanged(QString)));        
@@ -85,14 +87,22 @@ private slots:
 	QCOMPARE(list.at(1).toString(), QString("enabled"));
 	QVERIFY(calledLinePresentationChanged.count() > 0);	
 	QCOMPARE(calledLinePresentationChanged.takeFirst().at(0).toString(), QString("enabled"));	
-	m->requestCalledLineRestriction();
+        m->requestConnectedLinePresentation();
 	QTest::qWait(1000);
-	QCOMPARE(calledLineRestrictionComplete.count(), 1);
-	list = calledLineRestrictionComplete.takeFirst();
+        QCOMPARE(connectedLinePresentationComplete.count(), 1);
+        list = connectedLinePresentationComplete.takeFirst();
 	QCOMPARE(list.at(0).toBool(), true);
 	QCOMPARE(list.at(1).toString(), QString("enabled"));
-	QVERIFY(calledLineRestrictionChanged.count() > 0);	
-	QCOMPARE(calledLineRestrictionChanged.takeFirst().at(0).toString(), QString("enabled"));	
+        QVERIFY(connectedLinePresentationChanged.count() > 0);
+        QCOMPARE(connectedLinePresentationChanged.takeFirst().at(0).toString(), QString("enabled"));
+        m->requestConnectedLineRestriction();
+	QTest::qWait(1000);
+        QCOMPARE(connectedLineRestrictionComplete.count(), 1);
+        list = connectedLineRestrictionComplete.takeFirst();
+	QCOMPARE(list.at(0).toBool(), true);
+	QCOMPARE(list.at(1).toString(), QString("enabled"));
+        QVERIFY(connectedLineRestrictionChanged.count() > 0);
+        QCOMPARE(connectedLineRestrictionChanged.takeFirst().at(0).toString(), QString("enabled"));
 	m->requestCallingLineRestriction();
 	QTest::qWait(1000);
 	QCOMPARE(callingLineRestrictionComplete.count(), 1);

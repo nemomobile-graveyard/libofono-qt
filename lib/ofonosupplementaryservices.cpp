@@ -1,7 +1,7 @@
 /*
  * This file is part of ofono-qt
  *
- * Copyright (C) 2010 Nokia Corporation and/or its subsidiary(-ies).
+ * Copyright (C) 2010-2011 Nokia Corporation and/or its subsidiary(-ies).
  *
  * Contact: Alexander Kanavin <alexander.kanavin@nokia.com>
  *
@@ -138,24 +138,24 @@ void OfonoSupplementaryServices::initiateResp(QString message, QDBusVariant deta
         argument >> ssOp >> status;
         argument.endStructure();
         emit callingLinePresentationComplete(ssOp, status);
-    } else if (message == "CalledLinePresentation") {
+    } else if (message == "ConnectedLinePresentation") {
         QString ssOp, status;
         argument.beginStructure();
         argument >> ssOp >> status;
         argument.endStructure();
-        emit calledLinePresentationComplete(ssOp, status);
+        emit connectedLinePresentationComplete(ssOp, status);
     } else if (message == "CallingLineRestriction") {
         QString ssOp, status;
         argument.beginStructure();
         argument >> ssOp >> status;
         argument.endStructure();
         emit callingLineRestrictionComplete(ssOp, status);
-    } else if (message == "CalledLineRestriction") {
+    } else if (message == "ConnectedLineRestriction") {
         QString ssOp, status;
         argument.beginStructure();
         argument >> ssOp >> status;
         argument.endStructure();
-        emit calledLineRestrictionComplete(ssOp, status);
+        emit connectedLineRestrictionComplete(ssOp, status);
     } else {
         m_if->setError(QString(), QString("Unknown initiate response"));
         emit initiateFailed();

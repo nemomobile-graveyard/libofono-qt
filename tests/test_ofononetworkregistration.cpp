@@ -1,7 +1,7 @@
 /*
  * This file is part of ofono-qt
  *
- * Copyright (C) 2010 Nokia Corporation and/or its subsidiary(-ies).
+ * Copyright (C) 2010-2011 Nokia Corporation and/or its subsidiary(-ies).
  *
  * Contact: Alexander Kanavin <alexander.kanavin@nokia.com>
  *
@@ -64,7 +64,6 @@ private slots:
 	QSignalSpy base(m, SIGNAL(baseStationChanged(QString)));	
 
     	QSignalSpy registerS(m, SIGNAL(registerComplete(bool)));
-    	QSignalSpy deregister(m, SIGNAL(deregisterComplete(bool)));
     	QSignalSpy scan(m, SIGNAL(scanComplete(bool, QStringList)));
     	QSignalSpy getOp(m, SIGNAL(getOperatorsComplete(bool, QStringList)));
 
@@ -91,21 +90,12 @@ private slots:
 	QStringList getOpList = getList.at(1).toStringList();
 	QVERIFY(getOpList.count() > 0);
 	QCOMPARE(scanOpList, getOpList);
-	
-	m->deregister();
-	QTest::qWait(1000);
-	QCOMPARE(deregister.count(), 1);
-	QCOMPARE(deregister.takeFirst().at(0).toBool(), false);
-	QCOMPARE(m->errorName(), QString("org.ofono.Error.Failed"));
-	QCOMPARE(m->errorMessage(), QString("Operation failed"));
-	QCOMPARE(mode.count(), 1);
-	QCOMPARE(mode.takeFirst().at(0).toString(), QString("off"));
+
 	m->registerOp();
 	QTest::qWait(5000);
 	QCOMPARE(registerS.count(), 1);
 	QCOMPARE(registerS.takeFirst().at(0).toBool(), true);
-	QCOMPARE(mode.count(), 1);
-	QCOMPARE(mode.takeFirst().at(0).toString(), QString("auto"));
+        QCOMPARE(m->mode(), QString("auto"));
 
 	m->modem()->setOnline(false);
 	QTest::qWait(5000);

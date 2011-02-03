@@ -1,7 +1,7 @@
 /*
  * This file is part of ofono-qt
  *
- * Copyright (C) 2010 Nokia Corporation and/or its subsidiary(-ies).
+ * Copyright (C) 2010-2011 Nokia Corporation and/or its subsidiary(-ies).
  *
  * Contact: Alexander Kanavin <alexander.kanavin@nokia.com>
  *
@@ -52,9 +52,14 @@ void OfonoCallSettings::requestCalledLinePresentation()
     m_if->requestProperty("CalledLinePresentation");
 }
 
-void OfonoCallSettings::requestCalledLineRestriction()
+void OfonoCallSettings::requestConnectedLinePresentation()
 {
-    m_if->requestProperty("CalledLineRestriction");
+    m_if->requestProperty("ConnectedLinePresentation");
+}
+
+void OfonoCallSettings::requestConnectedLineRestriction()
+{
+    m_if->requestProperty("ConnectedLineRestriction");
 }
 
 void OfonoCallSettings::requestCallingLineRestriction()
@@ -88,8 +93,10 @@ void OfonoCallSettings::requestPropertyComplete(bool success, const QString& pro
         success ? emit callingLinePresentationComplete(true, value.value<QString>()) : emit callingLinePresentationComplete(false, value.value<QString>());
     } else if (property == "CalledLinePresentation") {	
         success ? emit calledLinePresentationComplete(true, value.value<QString>()) : emit calledLinePresentationComplete(false, value.value<QString>());
-    } else if (property == "CalledLineRestriction") {	
-        success ? emit calledLineRestrictionComplete(true, value.value<QString>()) : emit calledLineRestrictionComplete(false, value.value<QString>());
+    } else if (property == "ConnectedLinePresentation") {
+        success ? emit connectedLinePresentationComplete(true, value.value<QString>()) : emit connectedLinePresentationComplete(false, value.value<QString>());
+    } else if (property == "ConnectedLineRestriction") {
+        success ? emit connectedLineRestrictionComplete(true, value.value<QString>()) : emit connectedLineRestrictionComplete(false, value.value<QString>());
     } else if (property == "CallingLineRestriction") {	
         success ? emit callingLineRestrictionComplete(true, value.value<QString>()) : emit callingLineRestrictionComplete(false, value.value<QString>());
     } else if (property == "HideCallerId") {	
@@ -105,8 +112,10 @@ void OfonoCallSettings::propertyChanged(const QString& property, const QVariant&
         emit callingLinePresentationChanged(value.value<QString>());
     } else if (property == "CalledLinePresentation") {	
         emit calledLinePresentationChanged(value.value<QString>());
-    } else if (property == "CalledLineRestriction") {	
-        emit calledLineRestrictionChanged(value.value<QString>());
+    } else if (property == "ConnectedLinePresentation") {
+        emit connectedLinePresentationChanged(value.value<QString>());
+    } else if (property == "ConnectedLineRestriction") {
+        emit connectedLineRestrictionChanged(value.value<QString>());
     } else if (property == "CallingLineRestriction") {	
         emit callingLineRestrictionChanged(value.value<QString>());
     } else if (property == "HideCallerId") {	
