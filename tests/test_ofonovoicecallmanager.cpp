@@ -1,7 +1,7 @@
 /*
  * This file is part of ofono-qt
  *
- * Copyright (C) 2010 Nokia Corporation and/or its subsidiary(-ies).
+ * Copyright (C) 2010-2011 Nokia Corporation and/or its subsidiary(-ies).
  *
  * Contact: Alexander Kanavin <alexander.kanavin@nokia.com>
  *
@@ -55,16 +55,84 @@ private slots:
     	QVERIFY(m->emergencyNumbers().count() > 0);
 
 	QSignalSpy emergencyNumbers(m, SIGNAL(emergencyNumbersChanged(QStringList)));
-	m->modem()->setPowered(false);
+        QSignalSpy dialreg(m,SIGNAL(dialComplete(bool)));
+        QSignalSpy dspy(m, SIGNAL(callAdded(QString)));
+        QSignalSpy hupreg(m,SIGNAL(hangupAllComplete(bool)));
+        QSignalSpy tonereg(m,SIGNAL(sendTonesComplete(bool)));
+        QSignalSpy hspy(m, SIGNAL(callRemoved(QString)));
+
+        m->modem()->setPowered(false);
         QTest::qWait(5000);
-	m->modem()->setPowered(true);
+        m->modem()->setPowered(true);
         QTest::qWait(5000);
   	m->modem()->setOnline(true);
         QTest::qWait(5000);
+
         QCOMPARE(emergencyNumbers.count(), 1);
         QVERIFY(emergencyNumbers.takeFirst().at(0).toStringList().count() > 0);
+        //Dial testing
+        m->dial("123","");
+        QTest::qWait(5000);
+        QCOMPARE(dialreg.count(), 1);
+        QCOMPARE(dialreg.takeFirst().at(0).toBool(),true);
+        QCOMPARE(dspy.count(), 1);
+        //Tones testing
+        QTest::qWait(5000);
+        m->sendTones("1234");
+        QTest::qWait(45000);
+        QCOMPARE(tonereg.count(), 1);
+        QCOMPARE(tonereg.takeFirst().at(0).toBool(),true);
+        QTest::qWait(5000);
+        QStringList calls = m->getCalls();
+        QVERIFY(calls.size()>0);
+        //hangup testing
+        m->hangupAll();
+        QTest::qWait(5000);
+        QCOMPARE(hupreg.count(), 1);
+        QCOMPARE(hupreg.takeFirst().at(0).toBool(),true);
+        QCOMPARE(hspy.count(), 1);
+
     }
 
+    void testoFonoVoiceCallManagerStep2()
+    {
+        // test dial failure and hangup of incoming alerting call
+        QSignalSpy dialreg(m,SIGNAL(dialComplete(bool)));
+        QSignalSpy hupreg(m,SIGNAL(hangupAllComplete(bool)));
+        QSignalSpy dspy(m, SIGNAL(callAdded(QString)));
+        QSignalSpy hspy(m, SIGNAL(callRemoved(QString)));
+
+
+        m->dial("199","");
+        QTest::qWait(5000);
+        QCOMPARE(dialreg.count(), 1);
+        QCOMPARE(dialreg.takeFirst().at(0).toBool(),false);
+        QTest::qWait(10000);
+        QCOMPARE(dspy.count(), 1);
+
+        //hangup the alerting call
+        m->hangupAll();
+        QTest::qWait(5000);
+        QCOMPARE(hupreg.count(), 1);
+        QCOMPARE(hupreg.takeFirst().at(0).toBool(),true);
+
+        QTest::qWait(10000);
+        QCOMPARE(hspy.count(), 1);
+
+    }
+    void testOfonoVoiceCallmanagerStep3()
+    {
+        // MO call and MT hangup
+        QSignalSpy dspy(m, SIGNAL(callAdded(QString)));
+        QSignalSpy hspy(m, SIGNAL(callRemoved(QString)));
+
+        QTest::qWait(5000);
+        m->dial("0512305","");
+        QTest::qWait(10000);
+        QCOMPARE(dspy.count(), 1);
+        QTest::qWait(10000);
+        QCOMPARE(hspy.count(), 1);
+    }
 
     void cleanupTestCase()
     {

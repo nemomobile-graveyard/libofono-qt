@@ -1,7 +1,7 @@
 /*
  * This file is part of ofono-qt
  *
- * Copyright (C) 2010 Nokia Corporation and/or its subsidiary(-ies).
+ * Copyright (C) 2010-2011 Nokia Corporation and/or its subsidiary(-ies).
  *
  * Contact: Alexander Kanavin <alexander.kanavin@nokia.com>
  *
@@ -25,8 +25,21 @@
 #define OFONOVOICECALLMANAGER_H
 
 #include <QtCore/QObject>
+#include <QStringList>
+#include <QDBusError>
+#include <QDBusObjectPath>
+
 #include "ofonomodeminterface.h"
 #include "libofono-qt_global.h"
+
+struct OfonoVoiceCallManagerStruct {
+    QDBusObjectPath path;
+    QVariantMap properties;
+};
+typedef QList<OfonoVoiceCallManagerStruct> OfonoVoiceCallManagerList;
+
+Q_DECLARE_METATYPE(OfonoVoiceCallManagerStruct)
+Q_DECLARE_METATYPE(OfonoVoiceCallManagerList)
 
 //! This class is used to access oFono voice call manager API
 /*!
@@ -43,12 +56,49 @@ public:
 
     /* Properties */
     QStringList emergencyNumbers() const;
-    
+    QStringList getCalls() const;
+    void dial(const QString &number, const QString &callerid_hide);
+    void hangupAll();
+    void sendTones(const QString &tonestring);
+    void transfer();
+    void swapCalls();
+    void releaseAndAnswer();
+    void holdAndAnswer();
+
 signals:
     void emergencyNumbersChanged(const QStringList &numbers);
+    void callAdded(const QString &call);
+    void callRemoved(const QString &call);
+    void dialComplete(const bool status);
+    void hangupAllComplete(const bool status);
+    void sendTonesComplete(const bool status);
+    void transferComplete(const bool status);
+    void swapCallsComplete(const bool status);
+    void releaseAndAnswerComplete(const bool status);
+    void holdAndAnswerComplete(const bool status);
 
 private slots:
-    void propertyChanged(const QString& property, const QVariant& value);
+    void propertyChanged(const QString &property, const QVariant &value);
+    void callAddedChanged(const QDBusObjectPath &call, const QVariantMap &properties);
+    void callRemovedChanged(const QDBusObjectPath &call);
+    void dialResp();
+    void dialErr(const QDBusError &error);
+    void hangupAllResp();
+    void hangupAllErr(const QDBusError &error);
+    void sendTonesResp();
+    void sendTonesErr(const QDBusError &error);
+    void transferResp();
+    void transferErr(const QDBusError &error);
+    void swapCallsResp();
+    void swapCallsErr(const QDBusError &error);
+    void releaseAndAnswerResp();
+    void releaseAndAnswerErr(const QDBusError &error);
+    void holdAndAnswerResp();
+    void holdAndAnswerErr(const QDBusError &error);
+
+
+private:
+    QStringList m_calllist;
 };
 
 #endif  /* !OFONOVOICECALLMANAGER_H */
