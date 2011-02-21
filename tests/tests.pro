@@ -17,3 +17,4 @@ SUBDIRS += test_ofononetworkregistration.pro
 SUBDIRS += test_ofonosupplementaryservices.pro
 SUBDIRS += test_ofonovoicecallmanager.pro
 SUBDIRS += test_ofonovoicecall.pro
+SUBDIRS += test_ofonocallvolume.pro
