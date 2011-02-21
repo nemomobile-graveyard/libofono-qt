@@ -28,6 +28,7 @@ PUBLIC_HEADERS += ofononetworkoperator.h
 PUBLIC_HEADERS += ofononetworkregistration.h
 PUBLIC_HEADERS += ofonosupplementaryservices.h
 PUBLIC_HEADERS += ofonovoicecallmanager.h
+PUBLIC_HEADERS += ofonovoicecall.h
 
 HEADERS += $$PUBLIC_HEADERS
 HEADERS += ofonointerface.h 
@@ -49,6 +50,8 @@ SOURCES += ofononetworkoperator.cpp
 SOURCES += ofononetworkregistration.cpp
 SOURCES += ofonosupplementaryservices.cpp
 SOURCES += ofonovoicecallmanager.cpp
+SOURCES += ofonovoicecall.cpp
+
 
 target.path = $$[QT_INSTALL_PREFIX]/lib
 headers.files = $$PUBLIC_HEADERS
