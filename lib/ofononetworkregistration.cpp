@@ -185,7 +185,6 @@ void OfonoNetworkRegistration::registerResp()
 
 void OfonoNetworkRegistration::registerErr(QDBusError error)
 {
-    qDebug() << "Register failed" << error;
     m_if->setError(error.name(), error.message());
     emit registerComplete(FALSE);
 }
@@ -201,7 +200,6 @@ void OfonoNetworkRegistration::getOperatorsResp(OfonoOperatorList list)
 
 void OfonoNetworkRegistration::getOperatorsErr(QDBusError error)
 {
-    qDebug() << "GetOperators failed" << error;
     m_if->setError(error.name(), error.message());
     emit getOperatorsComplete(FALSE, QStringList());
 }
@@ -217,7 +215,6 @@ void OfonoNetworkRegistration::scanResp(OfonoOperatorList list)
 
 void OfonoNetworkRegistration::scanErr(QDBusError error)
 {
-    qDebug() << "Scan failed" << error;
     m_if->setError(error.name(), error.message());
     emit scanComplete(FALSE, QStringList());
 }

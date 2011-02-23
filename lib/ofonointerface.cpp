@@ -23,7 +23,6 @@
  
 #include <QtDBus/QtDBus>
 #include <QtCore/QObject>
-#include <QtCore/QDebug>
 
 #include "ofonointerface.h"
 

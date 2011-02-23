@@ -191,7 +191,6 @@ void OfonoVoiceCallManager::holdAndAnswerResp()
 
 void OfonoVoiceCallManager::holdAndAnswerErr(const QDBusError &error)
 {
-    qDebug() << "request failed" << error;
     m_if->setError(error.name(), error.message());
     emit holdAndAnswerComplete(FALSE);
 }
@@ -203,7 +202,6 @@ void OfonoVoiceCallManager::releaseAndAnswerResp()
 
 void OfonoVoiceCallManager::releaseAndAnswerErr(const QDBusError &error)
 {
-    qDebug() << "request failed" << error;
     m_if->setError(error.name(), error.message());
     emit releaseAndAnswerComplete(FALSE);
 }
@@ -215,7 +213,6 @@ void OfonoVoiceCallManager::swapCallsResp()
 
 void OfonoVoiceCallManager::swapCallsErr(const QDBusError &error)
 {
-    qDebug() << "request failed" << error;
     m_if->setError(error.name(), error.message());
     emit swapCallsComplete(FALSE);
 }
@@ -227,7 +224,6 @@ void OfonoVoiceCallManager::dialResp()
 
 void OfonoVoiceCallManager::dialErr(const QDBusError &error)
 {
-    qDebug() << "request failed" << error;
     m_if->setError(error.name(), error.message());
     emit dialComplete(FALSE);
 }
@@ -239,7 +235,6 @@ void OfonoVoiceCallManager::hangupAllResp()
 
 void OfonoVoiceCallManager::hangupAllErr(const QDBusError &error)
 {
-    qDebug() << "request failed" << error;
     m_if->setError(error.name(), error.message());
     emit hangupAllComplete(FALSE);
 }
@@ -250,7 +245,6 @@ void OfonoVoiceCallManager::sendTonesResp()
 
 void OfonoVoiceCallManager::sendTonesErr(const QDBusError &error)
 {
-    qDebug() << "request failed" << error;
     m_if->setError(error.name(), error.message());
     emit sendTonesComplete(FALSE);
 }
@@ -262,7 +256,6 @@ void OfonoVoiceCallManager::transferResp()
 
 void OfonoVoiceCallManager::transferErr(const QDBusError &error)
 {
-    qDebug() << "request failed" << error;
     m_if->setError(error.name(), error.message());
     emit transferComplete(FALSE);
 }

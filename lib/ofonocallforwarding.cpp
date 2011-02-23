@@ -161,7 +161,6 @@ void OfonoCallForwarding::disableAllResp()
 
 void OfonoCallForwarding::disableAllErr(QDBusError error)
 {
-    qDebug() << "DisableAll failed" << error;
     m_if->setError(error.name(), error.message());
     emit disableAllComplete(FALSE);
 }

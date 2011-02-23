@@ -164,7 +164,6 @@ void OfonoSupplementaryServices::initiateResp(QString message, QDBusVariant deta
 
 void OfonoSupplementaryServices::initiateErr(QDBusError error)
 {
-    qDebug() << "Initiate failed" << error;
     m_if->setError(error.name(), error.message());
     emit initiateFailed();
 }
@@ -177,7 +176,6 @@ void OfonoSupplementaryServices::respondResp(QString message)
 
 void OfonoSupplementaryServices::respondErr(QDBusError error)
 {
-    qDebug() << "Respond failed" << error;
     m_if->setError(error.name(), error.message());
     emit respondComplete(FALSE, QString());
 }
@@ -189,7 +187,6 @@ void OfonoSupplementaryServices::cancelResp()
 
 void OfonoSupplementaryServices::cancelErr(QDBusError error)
 {
-    qDebug() << "Cancel failed" << error;
     m_if->setError(error.name(), error.message());
     emit cancelComplete(FALSE);
 }

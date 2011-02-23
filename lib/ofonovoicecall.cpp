@@ -23,7 +23,6 @@
 
 #include <QtDBus/QtDBus>
 #include <QtCore/QObject>
-#include <QtCore/QDebug>
 
 #include "ofonointerface.h"
 #include "ofonovoicecall.h"
@@ -118,7 +117,6 @@ void OfonoVoiceCall::answerResp()
 
 void OfonoVoiceCall::answerErr(const QDBusError &error)
 {
-    qDebug() << "request failed" << error;
     m_if->setError(error.name(), error.message());
     emit answerComplete(FALSE);
 }
@@ -130,7 +128,6 @@ void OfonoVoiceCall::hangupResp()
 
 void OfonoVoiceCall::hangupErr(const QDBusError &error)
 {
-    qDebug() << "request failed" << error;
     m_if->setError(error.name(), error.message());
     emit hangupComplete(FALSE);
 }
@@ -142,7 +139,6 @@ void OfonoVoiceCall::deflectResp()
 
 void OfonoVoiceCall::deflectErr(const QDBusError &error)
 {
-    qDebug() << "request failed" << error;
     m_if->setError(error.name(), error.message());
     emit deflectComplete(FALSE);
 }

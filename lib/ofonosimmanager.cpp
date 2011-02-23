@@ -210,7 +210,6 @@ void OfonoSimManager::changePinResp()
 
 void OfonoSimManager::changePinErr(QDBusError error)
 {
-    qDebug() << "ChangePin failed" << error;
     m_if->setError(error.name(), error.message());    
     emit changePinComplete(FALSE);
 }
@@ -222,7 +221,6 @@ void OfonoSimManager::enterPinResp()
 
 void OfonoSimManager::enterPinErr(QDBusError error)
 {
-    qDebug() << "EnterPin failed" << error;
     m_if->setError(error.name(), error.message());
     emit enterPinComplete(FALSE);
 }
@@ -234,7 +232,6 @@ void OfonoSimManager::resetPinResp()
 
 void OfonoSimManager::resetPinErr(QDBusError error)
 {
-    qDebug() << "ResetPin failed" << error;
     m_if->setError(error.name(), error.message());
     emit resetPinComplete(FALSE);
 }
@@ -245,7 +242,6 @@ void OfonoSimManager::lockPinResp()
 }
 void OfonoSimManager::lockPinErr(QDBusError error)
 {
-    qDebug() << "LockPin failed" << error;
     m_if->setError(error.name(), error.message());
     emit lockPinComplete(FALSE);
 }
@@ -256,7 +252,6 @@ void OfonoSimManager::unlockPinResp()
 }
 void OfonoSimManager::unlockPinErr(QDBusError error)
 {
-    qDebug() << "UnlockPin failed" << error;
     m_if->setError(error.name(), error.message()); 
     emit unlockPinComplete(FALSE);
 }

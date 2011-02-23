@@ -23,7 +23,6 @@
  
 #include <QtDBus/QtDBus>
 #include <QtCore/QObject>
-#include <QtCore/QDebug>
 
 #include "ofonointerface.h"
 #include "ofononetworkoperator.h"
@@ -76,7 +75,6 @@ void OfonoNetworkOperator::registerResp()
 
 void OfonoNetworkOperator::registerErr(const QDBusError& error)
 {
-    qDebug() << "Register failed" << error;
     m_if->setError(error.name(), error.message());
     emit registerComplete(FALSE);
 }

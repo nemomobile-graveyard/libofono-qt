@@ -163,7 +163,6 @@ void OfonoCallBarring::changePasswordResp()
 
 void OfonoCallBarring::changePasswordErr(QDBusError error)
 {
-    qDebug() << "ChangePassword failed" << error;
     m_if->setError(error.name(), error.message());
     emit changePasswordComplete(FALSE);
 }
@@ -175,7 +174,6 @@ void OfonoCallBarring::disableAllResp()
 
 void OfonoCallBarring::disableAllErr(QDBusError error)
 {
-    qDebug() << "DisableAll failed" << error;
     m_if->setError(error.name(), error.message());
     emit disableAllComplete(FALSE);
 }
@@ -187,7 +185,6 @@ void OfonoCallBarring::disableAllIncomingResp()
 
 void OfonoCallBarring::disableAllIncomingErr(QDBusError error)
 {
-    qDebug() << "DisableAllIncoming failed" << error;
     m_if->setError(error.name(), error.message());
     emit disableAllIncomingComplete(FALSE);
 }
@@ -199,7 +196,6 @@ void OfonoCallBarring::disableAllOutgoingResp()
 
 void OfonoCallBarring::disableAllOutgoingErr(QDBusError error)
 {
-    qDebug() << "DisableAllOutgoing failed" << error;
     m_if->setError(error.name(), error.message());
     emit disableAllOutgoingComplete(FALSE);
 }
