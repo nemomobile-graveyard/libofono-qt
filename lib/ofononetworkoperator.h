@@ -46,7 +46,8 @@ public:
     OfonoNetworkOperator(const QString& operatorId, QObject *parent=0);
     OfonoNetworkOperator(const OfonoNetworkOperator& op);
     ~OfonoNetworkOperator();
-    
+
+    OfonoNetworkOperator operator=(const OfonoNetworkOperator &op);
     bool operator==(const OfonoNetworkOperator &op);
 
     //! Returns the D-Bus object path of the network operator object

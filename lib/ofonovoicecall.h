@@ -45,6 +45,7 @@ public:
     OfonoVoiceCall(const OfonoVoiceCall &op);
     ~OfonoVoiceCall();
 
+    OfonoVoiceCall operator=(const OfonoVoiceCall &op);
     bool operator==(const OfonoVoiceCall &op);
 
     //! Returns the D-Bus object path of the voice call object
