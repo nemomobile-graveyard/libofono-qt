@@ -33,6 +33,9 @@
 typedef QMap<QString, QString> OfonoServiceNumbers;
 Q_DECLARE_METATYPE(OfonoServiceNumbers);
 
+typedef QMap<QString, quint8> OfonoPinRetries;
+Q_DECLARE_METATYPE(OfonoPinRetries);
+
 //! This class is used to access oFono SIM API
 /*!
  * The API is documented in
@@ -57,6 +60,7 @@ public:
     QStringList lockedPins() const;
     QString cardIdentifier() const;
     QStringList preferredLanguages() const;
+    OfonoPinRetries pinRetries() const;
 
     void changePin(const QString &pintype, const QString &oldpin, const QString &newpin);
     void enterPin(const QString &pintype, const QString &pin);
@@ -78,6 +82,7 @@ signals:
     void lockedPinsChanged(const QStringList &pins);
     void cardIdentifierChanged(const QString &iccid);
     void preferredLanguagesChanged(const QStringList &languages);
+    void pinRetriesChanged(const OfonoPinRetries &pinRetries);
 
     void changePinComplete(bool success);
     void enterPinComplete(bool success);

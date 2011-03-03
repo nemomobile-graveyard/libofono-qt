@@ -31,6 +31,7 @@ OfonoSimManager::OfonoSimManager(OfonoModem::SelectionSetting modemSetting, cons
     : OfonoModemInterface(modemSetting, modemPath, "org.ofono.SimManager", OfonoGetAllOnStartup, parent)
 {
     qRegisterMetaType<OfonoServiceNumbers>("OfonoServiceNumbers");
+    qRegisterMetaType<OfonoPinRetries>("OfonoPinRetries");
     connect(m_if, SIGNAL(propertyChanged(const QString&, const QVariant&)), 
             this, SLOT(propertyChanged(const QString&, const QVariant&)));
     connect(m_if, SIGNAL(setPropertyFailed(const QString&)), 
@@ -169,6 +170,12 @@ QStringList OfonoSimManager::preferredLanguages() const
     return m_if->properties()["PreferredLanguages"].value<QStringList>();
 }
 
+OfonoPinRetries OfonoSimManager::pinRetries() const
+{
+    OfonoPinRetries retries;
+    m_if->properties()["Retries"].value<QDBusArgument>() >> retries;
+    return retries;
+}
 
 void OfonoSimManager::propertyChanged(const QString& property, const QVariant& value)
 {
@@ -194,6 +201,10 @@ void OfonoSimManager::propertyChanged(const QString& property, const QVariant& v
         emit cardIdentifierChanged(value.value<QString>());
     } else if (property == "PreferredLanguages") {	
         emit preferredLanguagesChanged(value.value<QStringList>());
+    } else if (property == "Retries") {
+        OfonoPinRetries retries;
+        value.value<QDBusArgument>() >> retries;
+        emit pinRetriesChanged(retries);
     }
 }
 

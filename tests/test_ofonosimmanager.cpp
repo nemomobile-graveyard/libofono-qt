@@ -85,6 +85,7 @@ private slots:
 	QCOMPARE(m->cardIdentifier(), QString("8949222074451242066"));
 	QVERIFY(m->preferredLanguages().count() > 0);
 	QCOMPARE(m->preferredLanguages()[0], QString("de"));
+        QCOMPARE(m->pinRetries().count(), 0);
 	
 	QStringList numbers = m->subscriberNumbers();
 	QStringList newNumbers;
@@ -156,6 +157,7 @@ private slots:
         QSignalSpy lockedPins(m, SIGNAL(lockedPinsChanged(QStringList)));
         QSignalSpy cardIdentifier(m, SIGNAL(cardIdentifierChanged(QString)));
         QSignalSpy preferredLanguages(m, SIGNAL(preferredLanguagesChanged(QStringList)));
+        QSignalSpy pinRetries(m, SIGNAL(pinRetriesChanged(OfonoPinRetries)));
 
         QSignalSpy changePin(m, SIGNAL(changePinComplete(bool)));
         QSignalSpy enterPin(m, SIGNAL(enterPinComplete(bool)));
@@ -192,6 +194,9 @@ private slots:
 	QCOMPARE(enterPin.takeFirst().at(0).toBool(), false);
 	QCOMPARE(resetPin.count(), 1);
 	QCOMPARE(resetPin.takeFirst().at(0).toBool(), false);
+
+        // entering PIN is not possible with phonesim's default config
+        QCOMPARE(pinRetries.count(), 0);
     }
 
 
