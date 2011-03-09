@@ -59,7 +59,7 @@ OfonoVoiceCallManager::OfonoVoiceCallManager(OfonoModem::SelectionSetting modemS
     QDBusMessage request;
 
     qDBusRegisterMetaType<OfonoVoiceCallManagerStruct>();
-    qDBusRegisterMetaType<OfonoVoiceCallManagerStruct>();
+    qDBusRegisterMetaType<OfonoVoiceCallManagerList>();
 
     request = QDBusMessage::createMethodCall("org.ofono",
                                              path(), m_if->ifname(),
