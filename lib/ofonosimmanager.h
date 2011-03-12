@@ -42,6 +42,16 @@ class OFONO_QT_EXPORT OfonoSimManager : public OfonoModemInterface
 {
     Q_OBJECT
 
+    Q_PROPERTY(bool present READ present NOTIFY presenceChanged)
+    Q_PROPERTY(QString subscriberIdentity READ subscriberIdentity NOTIFY subscriberIdentityChanged)
+    Q_PROPERTY(QString mobileCountryCode READ mobileCountryCode NOTIFY mobileCountryCodeChanged)
+    Q_PROPERTY(QString mobileNetworkCode READ mobileNetworkCode NOTIFY mobileNetworkCodeChanged)
+    Q_PROPERTY(QStringList subscriberNumbers READ subscriberNumbers NOTIFY subscriberNumbersChanged)
+    Q_PROPERTY(QString pinRequired READ pinRequired NOTIFY pinRequiredChanged)
+    Q_PROPERTY(QStringList lockedPins READ lockedPins NOTIFY lockedPinsChanged)
+    Q_PROPERTY(QString cardIdentifier READ cardIdentifier NOTIFY cardIdentifierChanged)
+    Q_PROPERTY(QStringList preferredLanguages READ preferredLanguages NOTIFY preferredLanguagesChanged)
+
 public:
     OfonoSimManager(OfonoModem::SelectionSetting modemSetting, const QString &modemPath, QObject *parent=0);
     ~OfonoSimManager();
