@@ -37,6 +37,8 @@ class OFONO_QT_EXPORT OfonoRadioSettings : public OfonoModemInterface
 {
     Q_OBJECT
 
+    Q_PROPERTY(QString technologyPreference READ technologyPreference WRITE setTechnologyPreference NOTIFY technologyPreferenceChanged)
+
 public:
     OfonoRadioSettings(OfonoModem::SelectionSetting modemSetting, const QString &modemPath, QObject *parent=0);
     ~OfonoRadioSettings();
