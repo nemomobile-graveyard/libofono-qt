@@ -42,6 +42,14 @@ class OfonoInterface;
 class OFONO_QT_EXPORT OfonoNetworkOperator : public QObject
 {
     Q_OBJECT
+    
+    Q_PROPERTY(QString name READ name NOTIFY nameChanged)
+    Q_PROPERTY(QString status READ status NOTIFY statusChanged)
+    Q_PROPERTY(QString mcc READ mcc NOTIFY mccChanged)
+    Q_PROPERTY(QString mnc READ mnc NOTIFY mncChanged)
+    Q_PROPERTY(QStringList technologies READ technologies NOTIFY technologiesChanged)
+    Q_PROPERTY(QString additionalInfo READ additionalInfo NOTIFY additionalInfoChanged)
+    
 public:
     OfonoNetworkOperator(const QString& operatorId, QObject *parent=0);
     OfonoNetworkOperator(const OfonoNetworkOperator& op);
