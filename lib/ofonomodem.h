@@ -26,6 +26,7 @@
 #define OFONOMODEM_H
 
 #include <QtCore/QObject>
+#include <QtCore/QStringList>
 #include "libofono-qt_global.h"
 
 class OfonoModemManager;
@@ -40,6 +41,19 @@ class OFONO_QT_EXPORT OfonoModem : public QObject
 {
 
 Q_OBJECT
+
+Q_PROPERTY(bool powered READ powered WRITE setPowered NOTIFY poweredChanged)
+Q_PROPERTY(bool online READ online WRITE setOnline NOTIFY onlineChanged)
+Q_PROPERTY(bool emergency READ emergency NOTIFY emergencyChanged)
+
+Q_PROPERTY(QString name READ name NOTIFY nameChanged)
+Q_PROPERTY(QString manufacturer READ manufacturer NOTIFY manufacturerChanged)
+Q_PROPERTY(QString model READ model NOTIFY modelChanged)
+Q_PROPERTY(QString revision READ revision NOTIFY revisionChanged)
+Q_PROPERTY(QString serial READ serial NOTIFY serialChanged)
+
+Q_PROPERTY(QStringList features READ features NOTIFY featuresChanged)
+Q_PROPERTY(QStringList interfaces READ interfaces NOTIFY interfacesChanged)
 
 public:
 
