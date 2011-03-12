@@ -48,6 +48,17 @@ class OFONO_QT_EXPORT OfonoNetworkRegistration : public OfonoModemInterface
 {
     Q_OBJECT
 
+    Q_PROPERTY(QString mode READ mode NOTIFY modeChanged)
+    Q_PROPERTY(QString status READ status NOTIFY statusChanged)
+    Q_PROPERTY(uint locationAreaCode READ locationAreaCode NOTIFY locationAreaCodeChanged)
+    Q_PROPERTY(uint cellId READ cellId NOTIFY cellIdChanged)
+    Q_PROPERTY(QString mcc READ mcc NOTIFY mccChanged)
+    Q_PROPERTY(QString mnc READ mnc NOTIFY mncChanged)
+    Q_PROPERTY(QString technology READ technology NOTIFY technologyChanged)
+    Q_PROPERTY(QString name READ name NOTIFY nameChanged)
+    Q_PROPERTY(uint strength READ strength NOTIFY strengthChanged)
+    Q_PROPERTY(QString baseStation READ baseStation NOTIFY baseStationChanged)
+    
 public:
     OfonoNetworkRegistration(OfonoModem::SelectionSetting modemSetting, const QString &modemPath, QObject *parent=0);
     ~OfonoNetworkRegistration();
