@@ -73,6 +73,7 @@ private slots:
         QSignalSpy pw (context, SIGNAL(passwordChanged(const QString&)));
         QSignalSpy proto (context, SIGNAL(protocolChanged(const QString&)));
         QSignalSpy sett (context, SIGNAL(settingsChanged(const QVariantMap&)));
+        QSignalSpy sett6 (context, SIGNAL(IPv6SettingsChanged(const QVariantMap&)));
 
         context->setAccessPointName("hyva");
         QTest::qWait(5000);
@@ -100,8 +101,9 @@ private slots:
         QCOMPARE(name.takeFirst().at(0).toString(),QString("yota"));
         QCOMPARE(type.count(),1);
         QCOMPARE(type.takeFirst().at(0).toString(),QString("mms"));
-        QCOMPARE(sett.count(),1);
-        QVariantMap settings = context->settings();
+        QCOMPARE(sett.count(),0);
+        QCOMPARE(sett6.count(),1);
+        QVariantMap settings = context->IPv6Settings();
         QCOMPARE(settings["Interface"].value<QString>(),QString("dummy0"));
         QCOMPARE(proto.count(),1);
         QCOMPARE(proto.takeFirst().at(0).toString(),QString("ipv6"));
@@ -114,7 +116,8 @@ private slots:
         m->removeContext(contextid);
         QTest::qWait(5000);
         QCOMPARE(active.count(),2);
-        QCOMPARE(sett.count(),2);
+        QCOMPARE(sett.count(),0);
+        QCOMPARE(sett6.count(),2);
         QCOMPARE(conrem.count(), 1);
 
     }

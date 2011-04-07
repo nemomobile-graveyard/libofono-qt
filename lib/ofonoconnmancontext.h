@@ -76,6 +76,7 @@ public:
     QString messageProxy() const;
     QString messageCenter() const;
     QVariantMap settings() const;
+    QVariantMap IPv6Settings() const;
 
     void setActive(const bool);
     void setAccessPointName(const QString&);
@@ -110,6 +111,7 @@ signals:
 
     /* Settings change notification*/
     void settingsChanged(const QVariantMap&);
+    void IPv6SettingsChanged(const QVariantMap&);
 
 private slots:
     void propertyChanged(const QString &property, const QVariant &value);

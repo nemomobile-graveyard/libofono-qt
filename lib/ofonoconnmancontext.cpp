@@ -123,13 +123,15 @@ void OfonoConnmanContext::propertyChanged(const QString &property, const QVarian
     } else if (property == "MessageProxy") {
         emit messageProxyChanged(value.value<QString>());
     } else if (property == "MessageCenter") {
-            emit messageCenterChanged(value.value<QString>());
-
+        emit messageCenterChanged(value.value<QString>());
     } else if (property == "Settings") {
-
         QVariantMap map;
         value.value<QDBusArgument>()>>map;
         emit settingsChanged(map);
+    } else if (property == "IPv6.Settings") {
+        QVariantMap map;
+        value.value<QDBusArgument>()>>map;
+        emit IPv6SettingsChanged(map);
     }
 }
 
@@ -137,6 +139,13 @@ QVariantMap OfonoConnmanContext::settings() const
 {
     QVariantMap map;
     m_if->properties()["Settings"].value<QDBusArgument>()>>map;
+    return map;
+}
+
+QVariantMap OfonoConnmanContext::IPv6Settings() const
+{
+    QVariantMap map;
+    m_if->properties()["IPv6.Settings"].value<QDBusArgument>()>>map;
     return map;
 }
 
