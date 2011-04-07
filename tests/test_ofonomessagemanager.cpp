@@ -247,6 +247,7 @@ private slots:
         QCOMPARE(params.at(0).toBool(), true);
         QString bearer = params.at(1).toString();
         QVERIFY(bearer.length() > 0);
+        QCOMPARE(bearer, QString("cs-preferred"));
         qDebug() << bearer;
 
         m->setBearer("ps-preferred");
@@ -256,21 +257,11 @@ private slots:
             QTest::qWait(1000);
         }
 
-        m->requestBearer();
-        for (int i=0; i<30; i++) {
-            if (bearerComplete.count() > 0)
-                break;
-            QTest::qWait(1000);
-        }
+        QCOMPARE(setBearerFailed.count(), 0);
+        QCOMPARE(bearerChanged.count(), 1);
+        QCOMPARE(bearerChanged.takeFirst().at(0).toString(), QString("ps-preferred"));
 
-        QCOMPARE(bearerComplete.count(), 1);
-        params = bearerComplete.takeFirst();
-        QCOMPARE(params.at(0).toBool(), true);
-        bearer = params.at(1).toString();
-        QVERIFY(bearer.length() > 0);
-        QCOMPARE(bearer, QString("ps-preferred"));
-
-        m->setBearer("cs-preferred"); // change value
+        m->setBearer(bearer); // change value
         for (int i=0; i<30; i++) {
             if (setBearerFailed.count() > 0 || bearerChanged.count() > 0)
                 break;
@@ -279,6 +270,7 @@ private slots:
 
         QCOMPARE(setBearerFailed.count(), 0);
         QCOMPARE(bearerChanged.count(), 1);
+        QCOMPARE(bearerChanged.takeFirst().at(0).toString(), bearer);        
     }
 
     void cleanupTestCase()
