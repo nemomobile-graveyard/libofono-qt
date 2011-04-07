@@ -1,0 +1,132 @@
+/*
+ * This file is part of ofono-qt
+ *
+ * Copyright (C) 2011 Nokia Corporation and/or its subsidiary(-ies).
+ *
+ * Contact: Alexander Kanavin <alexander.kanavin@nokia.com>
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public License
+ * version 2.1 as published by the Free Software Foundation.
+ *
+ * This library is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA
+ *
+ */
+
+#include <QtTest/QtTest>
+#include <QtCore/QObject>
+
+#include <ofonoconnman.h>
+#include <ofonoconnmancontext.h>
+#include <QtDebug>
+
+
+class TestOfonoConnmanContext : public QObject
+{
+    Q_OBJECT
+
+private slots:
+    void initTestCase()
+    {
+        m = new OfonoConnMan(OfonoModem::ManualSelect, "/phonesim", this);
+        QCOMPARE(m->modem()->isValid(), true);
+        if (!m->modem()->powered()) {
+            m->modem()->setPowered(true);
+            QTest::qWait(5000);
+        }
+        if (!m->modem()->online()) {
+            m->modem()->setOnline(true);
+            QTest::qWait(5000);
+        }
+        QCOMPARE(m->isValid(), true);
+    }
+
+    void testOfonoConnmanContext ()
+    {
+        QSignalSpy addcon(m,SIGNAL(addContextComplete(bool)));
+        QSignalSpy conadd(m, SIGNAL(contextAdded(const QString&)));
+        QSignalSpy conrem(m, SIGNAL(contextRemoved(const QString&)));
+
+        m->addContext("internet");
+        QTest::qWait(1000);
+
+        QCOMPARE(addcon.count(), 1);
+        QCOMPARE(addcon.takeFirst().at(0).toBool(),true);
+        QCOMPARE(conadd.count(), 1);
+        QString contextid = conadd.takeFirst().at(0).toString();
+
+        OfonoConnmanContext* context = new OfonoConnmanContext(contextid);
+
+        QSignalSpy active(context, SIGNAL(activeChanged(const bool)));
+        QSignalSpy apn(context,SIGNAL(accessPointNameChanged(const QString&)));
+        QSignalSpy name(context, SIGNAL(nameChanged(const QString&)));
+        QSignalSpy type (context, SIGNAL(typeChanged(const QString&)));
+        QSignalSpy uname (context, SIGNAL(userNameChanged(const QString&)));
+        QSignalSpy pw (context, SIGNAL(passwordChanged(const QString&)));
+        QSignalSpy proto (context, SIGNAL(protocolChanged(const QString&)));
+        QSignalSpy sett (context, SIGNAL(settingsChanged(const QVariantMap&)));
+
+        context->setAccessPointName("hyva");
+        QTest::qWait(5000);
+        context->setUsername("huomenta");
+        QTest::qWait(5000);
+        context->setPassword("HYVA");
+        QTest::qWait(5000);
+        context->setName("yota");
+        QTest::qWait(5000);
+        context->setType("mms");
+        QTest::qWait(5000);
+        context->setProtocol("ipv6");
+        QTest::qWait(5000);
+
+        context->setActive(true);
+        QTest::qWait(10000);
+
+        QCOMPARE(apn.count(),1);
+        QCOMPARE(apn.takeFirst().at(0).toString(),QString("hyva"));
+        QCOMPARE(uname.count(),1);
+        QCOMPARE(uname.takeFirst().at(0).toString(),QString("huomenta"));
+        QCOMPARE(pw.count(),1);
+        QCOMPARE(pw.takeFirst().at(0).toString(),QString("HYVA"));
+        QCOMPARE(name.count(),1);
+        QCOMPARE(name.takeFirst().at(0).toString(),QString("yota"));
+        QCOMPARE(type.count(),1);
+        QCOMPARE(type.takeFirst().at(0).toString(),QString("mms"));
+        QCOMPARE(sett.count(),1);
+        QVariantMap settings = context->settings();
+        QCOMPARE(settings["Interface"].value<QString>(),QString("dummy0"));
+        QCOMPARE(proto.count(),1);
+        QCOMPARE(proto.takeFirst().at(0).toString(),QString("ipv6"));
+        QCOMPARE(active.count(),1);
+        QCOMPARE(context->active(),true);
+        context->setActive(false);
+        QTest::qWait(5000);
+        delete context;
+        QTest::qWait(5000);
+        m->removeContext(contextid);
+        QTest::qWait(5000);
+        QCOMPARE(active.count(),2);
+        QCOMPARE(sett.count(),2);
+        QCOMPARE(conrem.count(), 1);
+
+    }
+
+    void cleanupTestCase()
+    {
+
+    }
+
+private:
+    OfonoConnMan *m;
+};
+
+QTEST_MAIN(TestOfonoConnmanContext)
+#include "test_ofonoconnmancontext.moc"
