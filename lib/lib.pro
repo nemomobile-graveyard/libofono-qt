@@ -31,13 +31,14 @@ PUBLIC_HEADERS += ofonovoicecallmanager.h
 PUBLIC_HEADERS += ofonovoicecall.h
 PUBLIC_HEADERS += ofonocallvolume.h
 PUBLIC_HEADERS += ofonomessage.h
+PUBLIC_HEADERS += ofonoconnman.h
 
 HEADERS += $$PUBLIC_HEADERS
-HEADERS += ofonointerface.h 
+HEADERS += ofonointerface.h
 
-SOURCES += ofonointerface.cpp 
-SOURCES += ofonomodeminterface.cpp 
-SOURCES += ofonomodemmanager.cpp	
+SOURCES += ofonointerface.cpp
+SOURCES += ofonomodeminterface.cpp
+SOURCES += ofonomodemmanager.cpp
 SOURCES += ofonomodem.cpp
 SOURCES += ofonophonebook.cpp
 SOURCES += ofonomessagemanager.cpp
@@ -55,6 +56,7 @@ SOURCES += ofonovoicecallmanager.cpp
 SOURCES += ofonovoicecall.cpp
 SOURCES += ofonocallvolume.cpp
 SOURCES += ofonomessage.cpp
+SOURCES += ofonoconnman.cpp
 
 target.path = $$[QT_INSTALL_PREFIX]/lib
 headers.files = $$PUBLIC_HEADERS
