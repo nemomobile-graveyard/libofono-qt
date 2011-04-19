@@ -183,6 +183,11 @@ bool OfonoVoiceCall::emergency() const
     return m_if->properties()["Emergency"].value<bool>();
 }
 
+quint8 OfonoVoiceCall::icon() const
+{
+    return m_if->properties()["Icon"].value<quint8>();
+}
+
 void OfonoVoiceCall::propertyChanged(const QString &property, const QVariant &value)
 {
     if (property == "LineIdentification") {

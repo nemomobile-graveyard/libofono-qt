@@ -42,6 +42,10 @@ class OfonoInterface;
 class OFONO_QT_EXPORT OfonoNetworkOperator : public QObject
 {
     Q_OBJECT
+
+    Q_PROPERTY(QString path READ path)
+    Q_PROPERTY(QString errorName READ errorName)
+    Q_PROPERTY(QString errorMessage READ errorMessage)
     
     Q_PROPERTY(QString name READ name NOTIFY nameChanged)
     Q_PROPERTY(QString status READ status NOTIFY statusChanged)

@@ -40,6 +40,7 @@ class OFONO_QT_EXPORT OfonoSupplementaryServices : public OfonoModemInterface
 {
     Q_OBJECT
 
+    Q_PROPERTY(QString state READ state)
 public:
     OfonoSupplementaryServices(OfonoModem::SelectionSetting modemSetting, const QString &modemPath, QObject *parent=0);
     ~OfonoSupplementaryServices();

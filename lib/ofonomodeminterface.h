@@ -41,6 +41,12 @@ class OfonoInterface;
 class OFONO_QT_EXPORT OfonoModemInterface : public QObject
 {
     Q_OBJECT
+    
+    Q_PROPERTY(bool isValid READ isValid NOTIFY validityChanged)
+    Q_PROPERTY(QString path READ path)
+    Q_PROPERTY(QString errorName READ errorName)
+    Q_PROPERTY(QString errorMessage READ errorMessage)
+    
 public:
 
     //! Construct a modem interface object

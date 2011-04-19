@@ -42,6 +42,11 @@ class OFONO_QT_EXPORT OfonoModem : public QObject
 
 Q_OBJECT
 
+Q_PROPERTY(bool isValid READ isValid NOTIFY validityChanged)
+Q_PROPERTY(QString path READ path NOTIFY pathChanged)
+Q_PROPERTY(QString errorName READ errorName)
+Q_PROPERTY(QString errorMessage READ errorMessage)
+
 Q_PROPERTY(bool powered READ powered WRITE setPowered NOTIFY poweredChanged)
 Q_PROPERTY(bool online READ online WRITE setOnline NOTIFY onlineChanged)
 Q_PROPERTY(bool emergency READ emergency NOTIFY emergencyChanged)

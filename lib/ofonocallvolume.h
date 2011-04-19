@@ -37,6 +37,10 @@ class OFONO_QT_EXPORT OfonoCallVolume : public OfonoModemInterface
 {
     Q_OBJECT
 
+    Q_PROPERTY(bool muted READ muted WRITE setMuted NOTIFY mutedChanged)
+    Q_PROPERTY(quint8 speakerVolume READ speakerVolume WRITE setSpeakerVolume NOTIFY speakerVolumeChanged)
+    Q_PROPERTY(quint8 microphoneVolume READ microphoneVolume WRITE setMicrophoneVolume NOTIFY microphoneVolumeChanged)
+    
 public:
     OfonoCallVolume(OfonoModem::SelectionSetting modemSetting, const QString &modemPath, QObject *parent=0);
     ~OfonoCallVolume();

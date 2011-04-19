@@ -40,6 +40,21 @@ class OfonoInterface;
 class OFONO_QT_EXPORT OfonoVoiceCall : public QObject
 {
     Q_OBJECT
+    
+    Q_PROPERTY(QString path READ path)
+    Q_PROPERTY(QString errorName READ errorName)
+    Q_PROPERTY(QString errorMessage READ errorMessage)
+    
+    Q_PROPERTY(QString lineIdentification READ lineIdentification NOTIFY lineIdentificationChanged)
+    Q_PROPERTY(QString incomingLine READ incomingLine NOTIFY incomingLineChanged)
+    Q_PROPERTY(QString name READ name NOTIFY nameChanged)
+    Q_PROPERTY(QString state READ state NOTIFY stateChanged)
+    Q_PROPERTY(QString startTime READ startTime NOTIFY startTimeChanged)
+    Q_PROPERTY(QString information READ information NOTIFY informationChanged)
+    Q_PROPERTY(bool multiparty READ multiparty NOTIFY multipartyChanged)
+    Q_PROPERTY(bool emergency READ emergency NOTIFY emergencyChanged)
+    Q_PROPERTY(quint8 icon READ icon NOTIFY iconChanged)
+
 public:
     OfonoVoiceCall(const QString &callId, QObject *parent=0);
     OfonoVoiceCall(const OfonoVoiceCall &op);
@@ -76,6 +91,7 @@ public:
     QString information() const;
     bool multiparty() const;
     bool emergency() const;
+    quint8 icon() const;
 
 signals:
     void answerComplete(bool status);

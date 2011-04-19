@@ -40,6 +40,13 @@ class OfonoInterface;
 class OFONO_QT_EXPORT OfonoMessage : public QObject
 {
     Q_OBJECT
+
+    Q_PROPERTY(QString path READ path)
+    Q_PROPERTY(QString errorName READ errorName)
+    Q_PROPERTY(QString errorMessage READ errorMessage)
+    
+    Q_PROPERTY(QString state READ state NOTIFY stateChanged)
+    
 public:
     OfonoMessage(const QString &messageId, QObject *parent=0);
     OfonoMessage(const OfonoMessage &message);

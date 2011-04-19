@@ -48,6 +48,12 @@ class OFONO_QT_EXPORT OfonoConnMan : public OfonoModemInterface
 {
     Q_OBJECT
 
+    Q_PROPERTY(bool attached READ attached NOTIFY attachedChanged)
+    Q_PROPERTY(QString bearer READ bearer NOTIFY bearerChanged)
+    Q_PROPERTY(bool suspended READ suspended NOTIFY suspendedChanged)
+    Q_PROPERTY(bool roamingAllowed READ roamingAllowed WRITE setRoamingAllowed NOTIFY roamingAllowedChanged)
+    Q_PROPERTY(bool powered READ powered WRITE setPowered NOTIFY poweredChanged)
+
 public:
     OfonoConnMan(OfonoModem::SelectionSetting modemSetting, const QString &modemPath, QObject *parent=0);
     ~OfonoConnMan();

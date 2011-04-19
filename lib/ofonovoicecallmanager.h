@@ -50,6 +50,8 @@ class OFONO_QT_EXPORT OfonoVoiceCallManager : public OfonoModemInterface
 {
     Q_OBJECT
 
+    Q_PROPERTY(QStringList emergencyNumbers READ emergencyNumbers NOTIFY emergencyNumbersChanged)
+
 public:
     OfonoVoiceCallManager(OfonoModem::SelectionSetting modemSetting, const QString &modemPath, QObject *parent=0);
     ~OfonoVoiceCallManager();
