@@ -54,6 +54,7 @@ class OFONO_QT_EXPORT OfonoSimManager : public OfonoModemInterface
     Q_PROPERTY(QStringList lockedPins READ lockedPins NOTIFY lockedPinsChanged)
     Q_PROPERTY(QString cardIdentifier READ cardIdentifier NOTIFY cardIdentifierChanged)
     Q_PROPERTY(QStringList preferredLanguages READ preferredLanguages NOTIFY preferredLanguagesChanged)
+    Q_PROPERTY(OfonoPinRetries pinRetries READ pinRetries NOTIFY pinRetriesChanged)
 
 public:
     OfonoSimManager(OfonoModem::SelectionSetting modemSetting, const QString &modemPath, QObject *parent=0);
