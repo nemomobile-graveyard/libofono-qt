@@ -41,6 +41,7 @@ public:
     OfonoCallSettings(OfonoModem::SelectionSetting modemSetting, const QString &modemPath, QObject *parent=0);
     ~OfonoCallSettings();
 
+public slots:
     /* Properties */
     void requestCallingLinePresentation();
     void requestCalledLinePresentation();

@@ -74,7 +74,8 @@ public:
     QString name() const;
     uint strength() const;
     QString baseStation() const;
-    
+
+public slots:    
     void registerOp();
     void getOperators();
     void scan();

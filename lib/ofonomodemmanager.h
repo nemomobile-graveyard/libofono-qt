@@ -42,7 +42,7 @@ public:
     ~OfonoModemManager();
 
     //! Returns a list of d-bus object paths that represent available modems
-    QStringList modems() const;
+    Q_INVOKABLE QStringList modems() const;
 
 signals:
     //! Issued when a modem has been added

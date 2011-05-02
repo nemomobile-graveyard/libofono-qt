@@ -41,6 +41,7 @@ public:
     OfonoCallMeter(OfonoModem::SelectionSetting modemSetting, const QString &modemPath, QObject *parent=0);
     ~OfonoCallMeter();
 
+public slots:
     /* Properties */
     void requestCallMeter();
     

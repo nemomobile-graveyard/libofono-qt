@@ -58,7 +58,10 @@ public:
 
     /* Properties */
     QStringList emergencyNumbers() const;
-    QStringList getCalls() const;
+
+    Q_INVOKABLE QStringList getCalls() const;
+
+public slots:
     void dial(const QString &number, const QString &callerid_hide);
     void hangupAll();
     void sendTones(const QString &tonestring);

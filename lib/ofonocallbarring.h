@@ -42,6 +42,7 @@ public:
     OfonoCallBarring(OfonoModem::SelectionSetting modemSetting, const QString &modemPath, QObject *parent=0);
     ~OfonoCallBarring();
 
+public slots:
     /* Properties */
     void requestVoiceIncoming();
     void setVoiceIncoming(const QString &barrings, const QString &password);

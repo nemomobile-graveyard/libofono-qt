@@ -42,6 +42,7 @@ public:
     OfonoCallForwarding(OfonoModem::SelectionSetting modemSetting, const QString &modemPath, QObject *parent=0);
     ~OfonoCallForwarding();
 
+public slots:
     /* Properties */
     void requestVoiceUnconditional(); /* "" | phonenumber */
     void setVoiceUnconditional(const QString &property); 

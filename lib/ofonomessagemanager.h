@@ -52,6 +52,8 @@ public:
     OfonoMessageManager(OfonoModem::SelectionSetting modemSetting, const QString &modemPath, QObject *parent=0);
     ~OfonoMessageManager();
 
+    Q_INVOKABLE QStringList getMessages() const;
+public slots:
     /* Properties */
     void requestServiceCenterAddress();
     void setServiceCenterAddress(QString address);
@@ -62,7 +64,6 @@ public:
     void requestAlphabet();
     void setAlphabet(QString alphabet);
 
-    QStringList getMessages() const;
     void sendMessage(const QString &to, const QString &message);
 
 signals:

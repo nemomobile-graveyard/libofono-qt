@@ -45,6 +45,7 @@ public:
 
     ~OfonoPhonebook();
 
+public slots:
     void import();
 
 signals:

@@ -79,14 +79,15 @@ public:
      */
     QString errorMessage() const;
 
-    void registerOp();
-    
     QString name() const;
     QString status() const;
     QString mcc() const;
     QString mnc() const;
     QStringList technologies() const;
     QString additionalInfo() const;
+
+public slots:
+    void registerOp();
     
 signals:
     void registerComplete(bool success);

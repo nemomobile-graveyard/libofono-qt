@@ -55,7 +55,6 @@ public:
     void setMicrophoneVolume(const quint8 &mpvolume);
 
 signals:
-
     void mutedChanged(const bool &muted);
     void speakerVolumeChanged(const quint8 &volume);
     void microphoneVolumeChanged(const quint8 &mvolume);

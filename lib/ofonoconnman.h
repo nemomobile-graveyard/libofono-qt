@@ -68,9 +68,10 @@ public:
     void setPowered(const bool);
     void setRoamingAllowed(const bool);
     void deactivateAll();
-    QStringList getContexts();
     void addContext(const QString& type);
     void removeContext(const QString& path);
+
+    Q_INVOKABLE QStringList getContexts();
 
 signals:
     void attachedChanged(const bool value);

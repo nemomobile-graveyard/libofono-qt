@@ -80,9 +80,6 @@ public:
      */
     QString errorMessage() const;
 
-    void answer();
-    void hangup();
-    void deflect(const QString &number);
     QString lineIdentification() const;
     QString incomingLine() const;
     QString name() const;
@@ -92,6 +89,11 @@ public:
     bool multiparty() const;
     bool emergency() const;
     quint8 icon() const;
+
+public slots:
+    void answer();
+    void hangup();
+    void deflect(const QString &number);
 
 signals:
     void answerComplete(bool status);
