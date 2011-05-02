@@ -104,7 +104,7 @@ private slots:
         QCOMPARE(sett.count(),0);
         QCOMPARE(sett6.count(),1);
         QVariantMap settings = context->IPv6Settings();
-        QCOMPARE(settings["Interface"].value<QString>(),QString("dummy0"));
+        QCOMPARE(settings["Interface"].value<QString>().left(5),QString("dummy")); // "dummy" plus number
         QCOMPARE(proto.count(),1);
         QCOMPARE(proto.takeFirst().at(0).toString(),QString("ipv6"));
         QCOMPARE(active.count(),1);
