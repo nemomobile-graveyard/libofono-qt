@@ -115,7 +115,7 @@ void OfonoConnmanContext::propertyChanged(const QString &property, const QVarian
     } else if (property == "Type") {
         emit typeChanged(value.value<QString>());
     } else if (property == "Username") {
-        emit userNameChanged(value.value<QString>());
+        emit usernameChanged(value.value<QString>());
     } else if (property == "Password") {
         emit passwordChanged(value.value<QString>());
     } else if (property == "Protocol") {

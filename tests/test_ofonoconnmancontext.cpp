@@ -69,7 +69,7 @@ private slots:
         QSignalSpy apn(context,SIGNAL(accessPointNameChanged(const QString&)));
         QSignalSpy name(context, SIGNAL(nameChanged(const QString&)));
         QSignalSpy type (context, SIGNAL(typeChanged(const QString&)));
-        QSignalSpy uname (context, SIGNAL(userNameChanged(const QString&)));
+        QSignalSpy uname (context, SIGNAL(usernameChanged(const QString&)));
         QSignalSpy pw (context, SIGNAL(passwordChanged(const QString&)));
         QSignalSpy proto (context, SIGNAL(protocolChanged(const QString&)));
         QSignalSpy sett (context, SIGNAL(settingsChanged(const QVariantMap&)));

@@ -110,7 +110,7 @@ signals:
     void accessPointNameChanged(const QString &apn);
     void nameChanged(const QString &name);
     void typeChanged(const QString &type);
-    void userNameChanged(const QString &uname);
+    void usernameChanged(const QString &uname);
     void passwordChanged(const QString &pw);
     void protocolChanged(const QString &proto);
     void messageProxyChanged(const QString &proxy);
