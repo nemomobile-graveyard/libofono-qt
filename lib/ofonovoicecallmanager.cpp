@@ -5,6 +5,9 @@
  *
  * Contact: Alexander Kanavin <alexander.kanavin@nokia.com>
  *
+ * Portions of this file are Copyright (C) 2011 Intel Corporation
+ * Contact: Shane Bryan <shane.bryan@linux.intel.com>
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
  * version 2.1 as published by the Free Software Foundation.
@@ -33,6 +36,8 @@
 #define SWAP_TIMEOUT 20000
 #define HANGUP_TIMEOUT 30000
 #define HOLD_TIMEOUT 30000
+#define PRIVATE_CHAT_TIMEOUT 30000
+#define CREATE_MULTIPARTY_TIMEOUT 30000
 
 QDBusArgument &operator<<(QDBusArgument &argument, const OfonoVoiceCallManagerStruct &call)
 {
@@ -182,6 +187,81 @@ void OfonoVoiceCallManager::holdAndAnswer()
                                         SLOT(holdAndAnswerResp()),
                                         SLOT(holdAndAnswerErr(const QDBusError&)),
                                         HOLD_TIMEOUT);
+}
+
+void OfonoVoiceCallManager::privateChat(const QString &call)
+{
+    QDBusMessage request;
+    request = QDBusMessage::createMethodCall("org.ofono",
+                                             path(), m_if->ifname(),
+                                             "PrivateChat");
+
+    QList<QVariant>arg;
+    arg.append(qVariantFromValue(QDBusObjectPath(call)));
+    request.setArguments(arg);
+    QDBusConnection::systemBus().callWithCallback(request, this,
+                                        SLOT(privateChatResp()),
+                                        SLOT(privateChatErr(const QDBusError&)),
+                                        PRIVATE_CHAT_TIMEOUT);
+}
+
+void OfonoVoiceCallManager::createMultiparty()
+{
+    QDBusMessage request;
+    request = QDBusMessage::createMethodCall("org.ofono",
+                                             path(), m_if->ifname(),
+                                             "CreateMultiparty");
+
+    QDBusConnection::systemBus().callWithCallback(request, this,
+                                        SLOT(createMultipartyResp()),
+                                        SLOT(createMultipartyErr(const QDBusError&)),
+                                        CREATE_MULTIPARTY_TIMEOUT);
+}
+
+void OfonoVoiceCallManager::hangupMultiparty()
+{
+    QDBusMessage request;
+    request = QDBusMessage::createMethodCall("org.ofono",
+                                             path(), m_if->ifname(),
+                                             "HangupMultiparty");
+
+    QDBusConnection::systemBus().callWithCallback(request, this,
+                                        SLOT(hangupMultipartyResp()),
+                                        SLOT(hangupMultipartyErr(const QDBusError&)),
+                                        HANGUP_TIMEOUT);
+}
+
+void OfonoVoiceCallManager::hangupMultipartyResp()
+{
+    emit hangupMultipartyComplete(TRUE);
+}
+
+void OfonoVoiceCallManager::hangupMultipartyErr(const QDBusError &error)
+{
+    m_if->setError(error.name(), error.message());
+    emit hangupMultipartyComplete(FALSE);
+}
+
+void OfonoVoiceCallManager::createMultipartyResp()
+{
+    emit createMultipartyComplete(TRUE);
+}
+
+void OfonoVoiceCallManager::createMultipartyErr(const QDBusError &error)
+{
+    m_if->setError(error.name(), error.message());
+    emit createMultipartyComplete(FALSE);
+}
+
+void OfonoVoiceCallManager::privateChatResp()
+{
+    emit privateChatComplete(TRUE);
+}
+
+void OfonoVoiceCallManager::privateChatErr(const QDBusError &error)
+{
+    m_if->setError(error.name(), error.message());
+    emit privateChatComplete(FALSE);
 }
 
 void OfonoVoiceCallManager::holdAndAnswerResp()

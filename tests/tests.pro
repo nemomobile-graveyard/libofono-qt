@@ -20,3 +20,4 @@ SUBDIRS += test_ofonovoicecall.pro
 SUBDIRS += test_ofonocallvolume.pro
 SUBDIRS += test_ofonoconnman.pro
 SUBDIRS += test_ofonoconnmancontext.pro
+SUBDIRS += test_ofonomultipartycall.pro

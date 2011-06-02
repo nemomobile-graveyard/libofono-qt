@@ -5,6 +5,9 @@
  *
  * Contact: Alexander Kanavin <alexander.kanavin@nokia.com>
  *
+ * Portions of this file are Copyright (C) 2011 Intel Corporation
+ * Contact: Shane Bryan <shane.bryan@linux.intel.com>
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
  * version 2.1 as published by the Free Software Foundation.
@@ -69,6 +72,9 @@ public slots:
     void swapCalls();
     void releaseAndAnswer();
     void holdAndAnswer();
+    void privateChat(const QString &path);
+    void createMultiparty();
+    void hangupMultiparty();
 
 signals:
     void emergencyNumbersChanged(const QStringList &numbers);
@@ -81,6 +87,9 @@ signals:
     void swapCallsComplete(const bool status);
     void releaseAndAnswerComplete(const bool status);
     void holdAndAnswerComplete(const bool status);
+    void privateChatComplete(const bool status);
+    void createMultipartyComplete(const bool status);
+    void hangupMultipartyComplete(const bool status);
 
 private slots:
     void propertyChanged(const QString &property, const QVariant &value);
@@ -100,6 +109,12 @@ private slots:
     void releaseAndAnswerErr(const QDBusError &error);
     void holdAndAnswerResp();
     void holdAndAnswerErr(const QDBusError &error);
+    void privateChatResp();
+    void privateChatErr(const QDBusError &error);
+    void createMultipartyResp();
+    void createMultipartyErr(const QDBusError &error);
+    void hangupMultipartyResp();
+    void hangupMultipartyErr(const QDBusError &error);
 
 
 private:
