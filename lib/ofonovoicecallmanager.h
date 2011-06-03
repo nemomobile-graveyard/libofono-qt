@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2010-2011 Nokia Corporation and/or its subsidiary(-ies).
  *
- * Contact: Alexander Kanavin <alexander.kanavin@nokia.com>
+ * Contact: Alexander Kanavin <alex.kanavin@gmail.com>
  *
  * Portions of this file are Copyright (C) 2011 Intel Corporation
  * Contact: Shane Bryan <shane.bryan@linux.intel.com>

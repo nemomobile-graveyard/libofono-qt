@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2011 Nokia Corporation and/or its subsidiary(-ies).
  *
- * Contact: Alexander Kanavin <alexander.kanavin@nokia.com>
+ * Contact: Alexander Kanavin <alex.kanavin@gmail.com>
  * Author: Arun Ravindran <ext-arun.1.ravindran@nokia.com>
  *
  * This library is free software; you can redistribute it and/or
