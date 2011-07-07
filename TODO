@@ -1,0 +1,24 @@
+Check the API and get it up to date:
+ - message manager should not use dbusobjectpath class
+ - connman contextAdd should return object path
+ - radio settings has missing stuff
+ - there might be plenty of other things
+
+More formal "certification" of ofono-qt to specific ofono versions
+ - change the versioning to match ofono's
+ - when new version of ofono is out, diff of ofono/doc/* could serve
+   as a list of things to fix
+
+Convert "void setPowered(bool powered)" type functions to public slots.
+
+SIM toolkit bindings. This requires implementing a d-bus agent and some 
+kind of reasonable test. 
+ - same for CallHistory.
+
+When automatic modem selection is used, and ofono-qt class moves to using a
+new modem, in addition to property change signal also other d-bus signal 
+subscriptions should be moved to the new modem path.
+
+When interface availability changes, in addition to properties also lists of
+object paths (such as voice calls, messages, GPRS contexts etc) should be 
+refreshed.
