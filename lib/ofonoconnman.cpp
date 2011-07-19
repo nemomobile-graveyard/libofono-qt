@@ -50,14 +50,41 @@ const QDBusArgument &operator>>(const QDBusArgument &argument, OfonoConnmanStruc
 OfonoConnMan::OfonoConnMan(OfonoModem::SelectionSetting modemSetting, const QString &modemPath, QObject *parent)
     : OfonoModemInterface(modemSetting, modemPath, "org.ofono.ConnectionManager", OfonoGetAllOnStartup, parent)
 {
-
-    QDBusReply<OfonoConnmanList> reply;
-    OfonoConnmanList contexts;
-
-    QDBusMessage request;
-
     qDBusRegisterMetaType<OfonoConnmanStruct>();
     qDBusRegisterMetaType<OfonoConnmanList>();
+
+    m_contextlist = getContextList();
+
+    connect(m_if, SIGNAL(propertyChanged(const QString&, const QVariant&)),
+            this, SLOT(propertyChanged(const QString&, const QVariant&)));
+    connect(this, SIGNAL(validityChanged(bool)),
+            this, SLOT(validityChanged(bool)));
+    connect(modem(), SIGNAL(pathChanged(QString)), this, SLOT(pathChanged(const QString&)));
+
+    connectDbusSignals(path());
+}
+
+OfonoConnMan::~OfonoConnMan()
+{
+}
+
+void OfonoConnMan::validityChanged(bool /*validity*/)
+{
+    m_contextlist = getContextList();
+}
+
+void OfonoConnMan::pathChanged(const QString& path)
+{
+    connectDbusSignals(path);
+}
+
+QStringList OfonoConnMan::getContextList()
+{
+    QDBusReply<OfonoConnmanList> reply;
+    OfonoConnmanList contexts;
+    QStringList contextList;
+
+    QDBusMessage request;
 
     request = QDBusMessage::createMethodCall("org.ofono",
                                              path(), m_if->ifname(),
@@ -67,24 +94,29 @@ OfonoConnMan::OfonoConnMan(OfonoModem::SelectionSetting modemSetting, const QStr
 
     contexts = reply;
     foreach(OfonoConnmanStruct context, contexts) {
-        m_contextlist<< context.path.path();
+        contextList << context.path.path();
     }
+    return contextList;
+}
 
-
-    connect(m_if, SIGNAL(propertyChanged(const QString&, const QVariant&)),
-            this, SLOT(propertyChanged(const QString&, const QVariant&)));
-
-    QDBusConnection::systemBus().connect("org.ofono",path(),m_if->ifname(),
+void OfonoConnMan::connectDbusSignals(const QString& path)
+{
+    QDBusConnection::systemBus().disconnect("org.ofono",QString(),m_if->ifname(),
                                          "ContextAdded", this,
                                          SLOT(contextAddedChanged(const QDBusObjectPath&, const QVariantMap&)));
 
-    QDBusConnection::systemBus().connect("org.ofono",path(),m_if->ifname(),
+    QDBusConnection::systemBus().disconnect("org.ofono",QString(),m_if->ifname(),
                                          "ContextRemoved", this,
                                          SLOT(contextRemovedChanged(const QDBusObjectPath&)));
-}
 
-OfonoConnMan::~OfonoConnMan()
-{
+    QDBusConnection::systemBus().connect("org.ofono",path,m_if->ifname(),
+                                         "ContextAdded", this,
+                                         SLOT(contextAddedChanged(const QDBusObjectPath&, const QVariantMap&)));
+
+    QDBusConnection::systemBus().connect("org.ofono",path,m_if->ifname(),
+                                         "ContextRemoved", this,
+                                         SLOT(contextRemovedChanged(const QDBusObjectPath&)));
+
 }
 
 void OfonoConnMan::deactivateAll()

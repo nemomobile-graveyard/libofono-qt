@@ -90,6 +90,8 @@ signals:
     void setRoamingAllowedFailed();
 
 private slots:
+    void validityChanged(bool);
+    void pathChanged(const QString& path);
     void propertyChanged(const QString& property, const QVariant& value);
     void contextAddedChanged(const QDBusObjectPath &path, const QVariantMap &properties);
     void contextRemovedChanged(const QDBusObjectPath &path);
@@ -100,6 +102,9 @@ private slots:
     void removeContextResp();
     void removeContextErr(const QDBusError& error);
     void setPropertyFailed(const QString& property);
+private:
+    QStringList getContextList();
+    void connectDbusSignals(const QString& path);
 private:
     QStringList m_contextlist;
 };

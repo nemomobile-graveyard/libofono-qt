@@ -89,6 +89,8 @@ signals:
     void incomingMessage(const QString &message, const QVariantMap &info);
 
 private slots:
+    void validityChanged(bool);
+    void pathChanged(const QString& path);
     void propertyChanged(const QString &property, const QVariant &value);
     void setPropertyFailed(const QString &property);
     void requestPropertyComplete(bool success, const QString &property, const QVariant &value);
@@ -96,6 +98,10 @@ private slots:
     void onMessageRemoved(const QDBusObjectPath &message);
     void sendMessageResp(const QDBusObjectPath& objectPath);
     void sendMessageErr(QDBusError error);
+
+private:
+    QStringList getMessageList();
+    void connectDbusSignals(const QString& path);
 
 private:
     QStringList m_messagelist;

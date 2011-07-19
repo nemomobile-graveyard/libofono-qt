@@ -92,6 +92,8 @@ signals:
     void hangupMultipartyComplete(const bool status);
 
 private slots:
+    void validityChanged(bool);
+    void pathChanged(const QString& path);
     void propertyChanged(const QString &property, const QVariant &value);
     void callAddedChanged(const QDBusObjectPath &call, const QVariantMap &properties);
     void callRemovedChanged(const QDBusObjectPath &call);
@@ -116,7 +118,9 @@ private slots:
     void hangupMultipartyResp();
     void hangupMultipartyErr(const QDBusError &error);
 
-
+private:
+    QStringList getCallList();
+    void connectDbusSignals(const QString& path);
 private:
     QStringList m_calllist;
 };

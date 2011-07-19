@@ -58,10 +58,42 @@ const QDBusArgument &operator>>(const QDBusArgument &argument, OfonoVoiceCallMan
 OfonoVoiceCallManager::OfonoVoiceCallManager(OfonoModem::SelectionSetting modemSetting, const QString &modemPath, QObject *parent)
     : OfonoModemInterface(modemSetting, modemPath, "org.ofono.VoiceCallManager", OfonoGetAllOnStartup, parent)
 {
+    qDBusRegisterMetaType<OfonoVoiceCallManagerStruct>();
+    qDBusRegisterMetaType<OfonoVoiceCallManagerList>();
+
+    m_calllist = getCallList();
+
+    connect(m_if, SIGNAL(propertyChanged(const QString&, const QVariant&)), 
+            this, SLOT(propertyChanged(const QString&, const QVariant&)));
+    connect(this, SIGNAL(validityChanged(bool)),
+            this, SLOT(validityChanged(bool)));
+    connect(modem(), SIGNAL(pathChanged(QString)), this, SLOT(pathChanged(const QString&)));
+
+    connectDbusSignals(path());
+}
+
+OfonoVoiceCallManager::~OfonoVoiceCallManager()
+{
+}
+
+
+void OfonoVoiceCallManager::validityChanged(bool /*validity*/)
+{
+    m_calllist = getCallList();
+}
+
+void OfonoVoiceCallManager::pathChanged(const QString& path)
+{
+    connectDbusSignals(path);
+}
+
+QStringList OfonoVoiceCallManager::getCallList()
+{
     QDBusReply<OfonoVoiceCallManagerList> reply;
     OfonoVoiceCallManagerList calls;
 
     QDBusMessage request;
+    QStringList messageList;
 
     qDBusRegisterMetaType<OfonoVoiceCallManagerStruct>();
     qDBusRegisterMetaType<OfonoVoiceCallManagerList>();
@@ -73,23 +105,28 @@ OfonoVoiceCallManager::OfonoVoiceCallManager(OfonoModem::SelectionSetting modemS
 
     calls = reply;
     foreach(OfonoVoiceCallManagerStruct call, calls) {
-        m_calllist<< call.path.path();
+        messageList<< call.path.path();
     }
+    return messageList;
+}
 
-    connect(m_if, SIGNAL(propertyChanged(const QString&, const QVariant&)), 
-            this, SLOT(propertyChanged(const QString&, const QVariant&)));
-
-    QDBusConnection::systemBus().connect("org.ofono",path(),m_if->ifname(),
+void OfonoVoiceCallManager::connectDbusSignals(const QString& path)
+{
+    QDBusConnection::systemBus().disconnect("org.ofono", QString(), m_if->ifname(),
                                          "CallAdded", this,
                                          SLOT(callAddedChanged(const QDBusObjectPath&, const QVariantMap&)));
 
-    QDBusConnection::systemBus().connect("org.ofono",path(),m_if->ifname(),
+    QDBusConnection::systemBus().disconnect("org.ofono", QString(), m_if->ifname(),
                                          "CallRemoved", this,
                                          SLOT(callRemovedChanged(const QDBusObjectPath&)));
-}
 
-OfonoVoiceCallManager::~OfonoVoiceCallManager()
-{
+    QDBusConnection::systemBus().connect("org.ofono", path, m_if->ifname(),
+                                         "CallAdded", this,
+                                         SLOT(callAddedChanged(const QDBusObjectPath&, const QVariantMap&)));
+
+    QDBusConnection::systemBus().connect("org.ofono", path, m_if->ifname(),
+                                         "CallRemoved", this,
+                                         SLOT(callRemovedChanged(const QDBusObjectPath&)));
 }
 
 void OfonoVoiceCallManager::dial(const QString &number, const QString &callerid_hide)

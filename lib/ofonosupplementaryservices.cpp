@@ -32,14 +32,33 @@
 OfonoSupplementaryServices::OfonoSupplementaryServices(OfonoModem::SelectionSetting modemSetting, const QString &modemPath, QObject *parent)
     : OfonoModemInterface(modemSetting, modemPath, "org.ofono.SupplementaryServices", OfonoGetAllOnStartup, parent)
 {
-
     connect(m_if, SIGNAL(propertyChanged(const QString&, const QVariant&)), 
             this, SLOT(propertyChanged(const QString&, const QVariant&)));
-    QDBusConnection::systemBus().connect("org.ofono", path(), m_if->ifname(), 
+    connect(modem(), SIGNAL(pathChanged(QString)), this, SLOT(pathChanged(const QString&)));
+
+    connectDbusSignals(path());
+}
+
+void OfonoSupplementaryServices::pathChanged(const QString& path)
+{
+    connectDbusSignals(path);
+}
+
+void OfonoSupplementaryServices::connectDbusSignals(const QString& path)
+{
+    QDBusConnection::systemBus().disconnect("org.ofono", QString(), m_if->ifname(), 
 					     "NotificationReceived",
 					     this,
 					     SIGNAL(notificationReceived(QString)));
-    QDBusConnection::systemBus().connect("org.ofono", path(), m_if->ifname(), 
+    QDBusConnection::systemBus().disconnect("org.ofono", QString(), m_if->ifname(), 
+					     "RequestReceived",
+					     this,
+					     SIGNAL(requestReceived(QString)));
+    QDBusConnection::systemBus().connect("org.ofono", path, m_if->ifname(), 
+					     "NotificationReceived",
+					     this,
+					     SIGNAL(notificationReceived(QString)));
+    QDBusConnection::systemBus().connect("org.ofono", path, m_if->ifname(), 
 					     "RequestReceived",
 					     this,
 					     SIGNAL(requestReceived(QString)));

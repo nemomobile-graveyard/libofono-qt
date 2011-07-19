@@ -72,6 +72,7 @@ signals:
     void disableAllOutgoingComplete(bool success);
 
 private slots:
+    void pathChanged(const QString& path);
     void propertyChanged(const QString& property, const QVariant& value);
     void setPropertyFailed(const QString& property);
     void changePasswordResp();
@@ -83,6 +84,8 @@ private slots:
     void disableAllOutgoingResp();
     void disableAllOutgoingErr(QDBusError error);
     void requestPropertyComplete(bool success, const QString& property, const QVariant& value);
+private:
+    void connectDbusSignals(const QString& path);
 };
 
 #endif  /* !OFONOCALLBARRING_H */

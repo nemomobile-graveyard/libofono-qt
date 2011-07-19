@@ -37,18 +37,39 @@ OfonoCallBarring::OfonoCallBarring(OfonoModem::SelectionSetting modemSetting, co
             this, SLOT(setPropertyFailed(const QString&)));
     connect(m_if, SIGNAL(requestPropertyComplete(bool, const QString&, const QVariant&)),
     	    this, SLOT(requestPropertyComplete(bool, const QString&, const QVariant&)));
-    QDBusConnection::systemBus().connect("org.ofono", path(), m_if->ifname(), 
-					 "IncomingBarringInEffect",
-					 this,
-					 SIGNAL(incomingBarringInEffect()));
-    QDBusConnection::systemBus().connect("org.ofono", path(), m_if->ifname(), 
-					 "OutgoingBarringInEffect",
-					 this,
-					 SIGNAL(outgoingBarringInEffect()));
+
+    connect(modem(), SIGNAL(pathChanged(QString)), this, SLOT(pathChanged(const QString&)));
+
+    connectDbusSignals(path());
 }
 
 OfonoCallBarring::~OfonoCallBarring()
 {
+}
+
+void OfonoCallBarring::pathChanged(const QString& path)
+{
+    connectDbusSignals(path);
+}
+
+void OfonoCallBarring::connectDbusSignals(const QString& path)
+{
+    QDBusConnection::systemBus().disconnect("org.ofono", QString(), m_if->ifname(), 
+					 "IncomingBarringInEffect",
+					 this,
+					 SIGNAL(incomingBarringInEffect()));
+    QDBusConnection::systemBus().disconnect("org.ofono", QString(), m_if->ifname(), 
+					 "OutgoingBarringInEffect",
+					 this,
+					 SIGNAL(outgoingBarringInEffect()));
+    QDBusConnection::systemBus().connect("org.ofono", path, m_if->ifname(), 
+					 "IncomingBarringInEffect",
+					 this,
+					 SIGNAL(incomingBarringInEffect()));
+    QDBusConnection::systemBus().connect("org.ofono", path, m_if->ifname(), 
+					 "OutgoingBarringInEffect",
+					 this,
+					 SIGNAL(outgoingBarringInEffect()));
 }
 
 void OfonoCallBarring::changePassword(const QString &old_password, 

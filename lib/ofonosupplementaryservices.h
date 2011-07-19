@@ -71,6 +71,7 @@ signals:
     void cancelComplete(bool success);
     
 private slots:
+    void pathChanged(const QString& path);
     void propertyChanged(const QString& property, const QVariant& value);
     void initiateResp(QString message, QDBusVariant details);
     void initiateErr(QDBusError error);
@@ -78,8 +79,8 @@ private slots:
     void respondErr(QDBusError error);
     void cancelResp();
     void cancelErr(QDBusError error);
-
 private:
+    void connectDbusSignals(const QString& path);
 
 };
 
