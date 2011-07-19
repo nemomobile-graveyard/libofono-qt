@@ -99,7 +99,8 @@ private slots:
         QSignalSpy c1st (c1, SIGNAL(startTimeChanged(QString)));
         QSignalSpy c1ic (c1, SIGNAL(iconChanged(quint8)));
 
-        QTest::qWait(3000);
+	qDebug() << "Please find a call in 'Dialing' state in phonesim window and press 'Active' button";
+        QTest::qWait(15000);
         //    - new call should have a state change, and be in "active" state
         QVERIFY(c1state.count()>0);
         QVERIFY(c1st.count()>0);
@@ -222,7 +223,8 @@ private slots:
         QSignalSpy c3st (c3, SIGNAL(startTimeChanged(QString)));
         QSignalSpy c3ic (c3, SIGNAL(iconChanged(quint8)));
 
-        QTest::qWait(3000);
+	qDebug() << "Please find a call in 'Dialing' state in phonesim window and press 'Active' button";
+        QTest::qWait(15000);
         //    - 3rd call should have a state change, and be in "active" state
         QVERIFY(c3state.count()>0);
         QVERIFY(c3st.count()>0);

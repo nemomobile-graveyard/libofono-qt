@@ -72,14 +72,15 @@ private slots:
         QVERIFY(emergencyNumbers.takeFirst().at(0).toStringList().count() > 0);
         //Dial testing
         m->dial("123","");
-        QTest::qWait(5000);
+        qDebug() << "Please find a call in 'Dialing' state in phonesim window and press 'Active' button";
+        QTest::qWait(15000);
         QCOMPARE(dialreg.count(), 1);
         QCOMPARE(dialreg.takeFirst().at(0).toBool(),true);
         QCOMPARE(dspy.count(), 1);
         //Tones testing
         QTest::qWait(5000);
         m->sendTones("1234");
-        QTest::qWait(45000);
+        QTest::qWait(5000);
         QCOMPARE(tonereg.count(), 1);
         QCOMPARE(tonereg.takeFirst().at(0).toBool(),true);
         QTest::qWait(5000);
@@ -119,19 +120,6 @@ private slots:
         QTest::qWait(10000);
         QCOMPARE(hspy.count(), 1);
 
-    }
-    void testOfonoVoiceCallmanagerStep3()
-    {
-        // MO call and MT hangup
-        QSignalSpy dspy(m, SIGNAL(callAdded(QString)));
-        QSignalSpy hspy(m, SIGNAL(callRemoved(QString)));
-
-        QTest::qWait(5000);
-        m->dial("0512305","");
-        QTest::qWait(10000);
-        QCOMPARE(dspy.count(), 1);
-        QTest::qWait(10000);
-        QCOMPARE(hspy.count(), 1);
     }
 
     void cleanupTestCase()

@@ -76,7 +76,8 @@ private slots:
         QSignalSpy st (call, SIGNAL(startTimeChanged(QString)));
         QSignalSpy ic (call, SIGNAL(iconChanged(quint8)));
 
-        QTest::qWait(10000);
+        qDebug() << "Please find a call in 'Dialing' state in phonesim window and press 'Active' button";
+        QTest::qWait(15000);
 
         QVERIFY(state.count()>0);
         QVERIFY(st.count()>0);
