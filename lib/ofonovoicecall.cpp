@@ -188,6 +188,16 @@ quint8 OfonoVoiceCall::icon() const
     return m_if->properties()["Icon"].value<quint8>();
 }
 
+bool OfonoVoiceCall::remoteHeld() const
+{
+    return m_if->properties()["RemoteHeld"].value<bool>();
+}
+
+bool OfonoVoiceCall::remoteMultiparty() const
+{
+    return m_if->properties()["RemoteMultiparty"].value<bool>();
+}
+
 void OfonoVoiceCall::propertyChanged(const QString &property, const QVariant &value)
 {
     if (property == "LineIdentification") {
@@ -207,7 +217,11 @@ void OfonoVoiceCall::propertyChanged(const QString &property, const QVariant &va
     } else if (property == "StartTime") {
         emit startTimeChanged(value.value<QString>());
     } else if (property == "Icon") {
-            emit iconChanged(value.value<quint8>());
+        emit iconChanged(value.value<quint8>());
+    } else if (property == "RemoteHeld") {
+        emit remoteHeldChanged(value.value<bool>());
+    } else if (property == "RemoteMultiparty") {
+        emit remoteMultipartyChanged(value.value<bool>());
     }
 }
 

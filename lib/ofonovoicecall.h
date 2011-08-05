@@ -89,6 +89,8 @@ public:
     bool multiparty() const;
     bool emergency() const;
     quint8 icon() const;
+    bool remoteHeld() const;
+    bool remoteMultiparty() const;
 
 public slots:
     void answer();
@@ -109,6 +111,8 @@ signals:
     void multipartyChanged(const bool multiparty);
     void iconChanged(const quint8 &icon);
     void emergencyChanged(const bool emergency);
+    void remoteHeldChanged(const bool remoteHeld);
+    void remoteMultipartyChanged(const bool remoteMultiparty);
 
 private slots:
     void propertyChanged(const QString &property, const QVariant &value);
