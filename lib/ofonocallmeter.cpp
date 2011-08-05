@@ -48,7 +48,7 @@ void OfonoCallMeter::requestCallMeter()
 void OfonoCallMeter::requestPropertyComplete(bool success, const QString& property, const QVariant& value)
 {
     if (property == "CallMeter") {	
-        success ? emit callMeterComplete(true, value.value<uint>()) : emit callMeterComplete(false, 0);
+        emit callMeterComplete(success, value.value<uint>());
     }
 }
 
