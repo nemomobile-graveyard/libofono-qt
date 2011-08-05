@@ -113,6 +113,20 @@ void OfonoSimManager::unlockPin(const QString &pintype, const QString &pin)
 					SLOT(unlockPinErr(const QDBusError&)));
 }
 
+void OfonoSimManager::getIcon(quint8 id)
+{
+    QDBusMessage request;
+
+    request = QDBusMessage::createMethodCall("org.ofono",
+					     path(), m_if->ifname(),
+					     "GetIcon");
+    request << qVariantFromValue(id);
+
+    QDBusConnection::systemBus().callWithCallback(request, this,
+					SLOT(getIconResp(QByteArray)),
+					SLOT(getIconErr(const QDBusError&)));
+}
+
 void OfonoSimManager::setSubscriberNumbers(const QStringList &numbers)
 {
     m_if->setProperty("SubscriberNumbers", qVariantFromValue(numbers));
@@ -177,6 +191,16 @@ OfonoPinRetries OfonoSimManager::pinRetries() const
     return retries;
 }
 
+bool OfonoSimManager::fixedDialing() const
+{
+    return m_if->properties()["FixedDialing"].value<bool>();
+}
+
+bool OfonoSimManager::barredDialing() const
+{
+    return m_if->properties()["BarredDialing"].value<bool>();
+}
+
 void OfonoSimManager::propertyChanged(const QString& property, const QVariant& value)
 {
     if (property == "Present") {	
@@ -205,6 +229,10 @@ void OfonoSimManager::propertyChanged(const QString& property, const QVariant& v
         OfonoPinRetries retries;
         value.value<QDBusArgument>() >> retries;
         emit pinRetriesChanged(retries);
+    } else if (property == "FixedDialing") {	
+        emit fixedDialingChanged(value.value<bool>());
+    } else if (property == "BarredDialing") {	
+        emit barredDialingChanged(value.value<bool>());
     }
 }
 
@@ -265,4 +293,14 @@ void OfonoSimManager::unlockPinErr(QDBusError error)
 {
     m_if->setError(error.name(), error.message()); 
     emit unlockPinComplete(FALSE);
+}
+
+void OfonoSimManager::getIconResp(QByteArray icon)
+{
+    emit getIconComplete(TRUE, icon);
+}
+void OfonoSimManager::getIconErr(QDBusError error)
+{
+    m_if->setError(error.name(), error.message()); 
+    emit getIconComplete(FALSE, QByteArray());
 }

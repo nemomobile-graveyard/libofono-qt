@@ -55,6 +55,8 @@ class OFONO_QT_EXPORT OfonoSimManager : public OfonoModemInterface
     Q_PROPERTY(QString cardIdentifier READ cardIdentifier NOTIFY cardIdentifierChanged)
     Q_PROPERTY(QStringList preferredLanguages READ preferredLanguages NOTIFY preferredLanguagesChanged)
     Q_PROPERTY(OfonoPinRetries pinRetries READ pinRetries NOTIFY pinRetriesChanged)
+    Q_PROPERTY(bool fixedDialing READ fixedDialing NOTIFY fixedDialingChanged)
+    Q_PROPERTY(bool barredDialing READ barredDialing NOTIFY barredDialingChanged)
 
 public:
     OfonoSimManager(OfonoModem::SelectionSetting modemSetting, const QString &modemPath, QObject *parent=0);
@@ -72,12 +74,16 @@ public:
     QString cardIdentifier() const;
     QStringList preferredLanguages() const;
     OfonoPinRetries pinRetries() const;
+    bool fixedDialing() const;
+    bool barredDialing() const;
 
+public slots:
     void changePin(const QString &pintype, const QString &oldpin, const QString &newpin);
     void enterPin(const QString &pintype, const QString &pin);
     void resetPin(const QString &pintype, const QString &puk, const QString &newpin);
     void lockPin(const QString &pintype, const QString &pin);
     void unlockPin(const QString &pintype, const QString &pin);
+    void getIcon(quint8 id);
 
     void setSubscriberNumbers(const QStringList &numbers);
 
@@ -94,13 +100,15 @@ signals:
     void cardIdentifierChanged(const QString &iccid);
     void preferredLanguagesChanged(const QStringList &languages);
     void pinRetriesChanged(const OfonoPinRetries &pinRetries);
+    void fixedDialingChanged(bool fixedDialing);
+    void barredDialingChanged(bool barredDialing);
 
     void changePinComplete(bool success);
     void enterPinComplete(bool success);
     void resetPinComplete(bool success);
     void lockPinComplete(bool success);
     void unlockPinComplete(bool success);
-
+    void getIconComplete(bool success, const QByteArray &icon);
 
 private slots:
     void propertyChanged(const QString& property, const QVariant& value);
@@ -116,6 +124,8 @@ private slots:
     void lockPinErr(QDBusError error);
     void unlockPinResp();
     void unlockPinErr(QDBusError error);
+    void getIconResp(QByteArray icon);
+    void getIconErr(QDBusError error);
 
 private:
 

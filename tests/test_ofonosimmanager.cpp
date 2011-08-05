@@ -63,6 +63,8 @@ private slots:
         QSignalSpy lockedPins(m, SIGNAL(lockedPinsChanged(QStringList)));
         QSignalSpy cardIdentifier(m, SIGNAL(cardIdentifierChanged(QString)));
         QSignalSpy preferredLanguages(m, SIGNAL(preferredLanguagesChanged(QStringList)));
+        QSignalSpy fixedDialing(m, SIGNAL(fixedDialingChanged(bool)));
+        QSignalSpy barredDialing(m, SIGNAL(barredDialingChanged(bool)));
 
         QSignalSpy setSubscriberNumbersFailed(m, SIGNAL(setSubscriberNumbersFailed()));
 
@@ -86,6 +88,8 @@ private slots:
 	QVERIFY(m->preferredLanguages().count() > 0);
 	QCOMPARE(m->preferredLanguages()[0], QString("de"));
         QCOMPARE(m->pinRetries().count(), 0);
+ 	QCOMPARE(m->fixedDialing(), false);
+ 	QCOMPARE(m->barredDialing(), false);
 	
 	QStringList numbers = m->subscriberNumbers();
 	QStringList newNumbers;
@@ -143,6 +147,8 @@ private slots:
         QStringList languages = preferredLanguages.takeFirst().at(0).toStringList();
         QVERIFY(languages.count() > 0);
        	QCOMPARE(languages[0], QString("de"));
+	QCOMPARE(fixedDialing.count(), 0);
+	QCOMPARE(barredDialing.count(), 0);
     }
     
     void testOfonoSimManagerPin()
@@ -199,6 +205,19 @@ private slots:
         QCOMPARE(pinRetries.count(), 0);
     }
 
+    void testOfonoSimManagerIcon()
+    {
+	QSignalSpy getIcon(m, SIGNAL(getIconComplete(bool, QByteArray)));
+	m->getIcon(0);
+	QTest::qWait(1000);
+	m->getIcon(1);
+	QTest::qWait(1000);
+	QCOMPARE(getIcon.count(), 2);
+	QCOMPARE(getIcon.takeFirst().at(0).toBool(), false);
+	QVariantList list = getIcon.takeFirst();
+	QCOMPARE(list.at(0).toBool(), true);
+	QVERIFY(list.at(1).toByteArray().length() > 0);
+    }
 
     void cleanupTestCase()
     {
