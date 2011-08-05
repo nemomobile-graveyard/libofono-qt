@@ -1,16 +1,28 @@
-Check the API and get it up to date:
- - message manager should not use dbusobjectpath class
- - connman contextAdd should return object path
- - radio settings has missing stuff
- - there might be plenty of other things
+Amount of effort required:
+* small
+** medium
+*** large
+
+Implement missing APIs:
+org.ofono.AssistedSatelliteNavigation and org.ofono.PositioningRequestAgent **
+org.ofono.AudioSettings * 
+org.ofono.CallMeter * (class implementation exists, but lots of missing
+stuff)
+org.ofono.cdma.ConnectionManager **
+org.ofono.cdma.MessageManager ***
+org.ofono.cdma.NetworkRegistration **
+org.ofono.cdma.VoiceCallManager **
+org.ofono.CellBroadcast **
+org.ofono.LocationReporting *
+org.ofono.PushNotification and org.ofono.PushNotificationAgent **
+org.ofono.SmartMessaging and org.ofono.SmartMessagingAgent **
+org.ofono.SimToolkit and org.ofono.SimToolkitAgent ***
+org.ofono.TextTelephony *
+Call History - that seems to be a separately available plugin and I can't
+find where it is.
 
 More formal "certification" of ofono-qt to specific ofono versions
- - change the versioning to match ofono's
- - when new version of ofono is out, diff of ofono/doc/* could serve
+ - the versioning should match ofono's
+ - when new version of ofono is out, diff of ofono/doc/* can serve
    as a list of things to fix
 
-Convert "void setPowered(bool powered)" type functions to public slots.
-
-SIM toolkit bindings. This requires implementing a d-bus agent and some 
-kind of reasonable test. 
- - same for CallHistory.
