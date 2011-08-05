@@ -38,17 +38,33 @@ class OFONO_QT_EXPORT OfonoRadioSettings : public OfonoModemInterface
     Q_OBJECT
 
     Q_PROPERTY(QString technologyPreference READ technologyPreference WRITE setTechnologyPreference NOTIFY technologyPreferenceChanged)
+    Q_PROPERTY(QString gsmBand READ gsmBand WRITE setGsmBand NOTIFY gsmBandChanged)
+    Q_PROPERTY(QString umtsBand READ umtsBand WRITE setUmtsBand NOTIFY umtsBandChanged)
+    Q_PROPERTY(bool fastDormancy READ fastDormancy WRITE setFastDormancy NOTIFY fastDormancyChanged)
 
 public:
     OfonoRadioSettings(OfonoModem::SelectionSetting modemSetting, const QString &modemPath, QObject *parent=0);
     ~OfonoRadioSettings();
 
     QString technologyPreference() const;
+    QString gsmBand() const;
+    QString umtsBand() const;
+    bool fastDormancy() const;
+public slots:
     void setTechnologyPreference(QString preference);
+    void setGsmBand(QString gsmBand);
+    void setUmtsBand(QString umtsBand);
+    void setFastDormancy(bool fastDormancy);
 
 signals:
     void technologyPreferenceChanged(const QString &preference);
     void setTechnologyPreferenceFailed();
+    void gsmBandChanged(const QString &gsmBand);
+    void setGsmBandFailed();
+    void umtsBandChanged(const QString &umtsBand);
+    void setUmtsBandFailed();
+    void fastDormancyChanged(bool fastDormancy);
+    void setFastDormancyFailed();
         
 private slots:
     void propertyChanged(const QString& property, const QVariant& value);

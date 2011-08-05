@@ -49,15 +49,58 @@ void OfonoRadioSettings::setTechnologyPreference(QString preference)
     m_if->setProperty("TechnologyPreference", qVariantFromValue(preference));
 }
 
+QString OfonoRadioSettings::gsmBand() const
+{
+    return m_if->properties()["GsmBand"].value<QString>();
+}
+
+void OfonoRadioSettings::setGsmBand(QString gsmBand)
+{
+    m_if->setProperty("GsmBand", qVariantFromValue(gsmBand));
+}
+
+QString OfonoRadioSettings::umtsBand() const
+{
+    return m_if->properties()["UmtsBand"].value<QString>();
+}
+
+void OfonoRadioSettings::setUmtsBand(QString umtsBand)
+{
+    m_if->setProperty("UmtsBand", qVariantFromValue(umtsBand));
+}
+
+bool OfonoRadioSettings::fastDormancy() const
+{
+    return m_if->properties()["FastDormancy"].value<bool>();
+}
+
+void OfonoRadioSettings::setFastDormancy(bool fastDormancy)
+{
+    m_if->setProperty("FastDormancy", qVariantFromValue(fastDormancy));
+}
+
 void OfonoRadioSettings::setPropertyFailed(const QString& property)
 {
     if (property == "TechnologyPreference")
         emit setTechnologyPreferenceFailed();
+    else if (property == "GsmBand")
+        emit setGsmBandFailed();
+    else if (property == "UmtsBand")
+        emit setUmtsBandFailed();
+    else if (property == "FastDormancy")
+        emit setFastDormancyFailed();
 }
 
 void OfonoRadioSettings::propertyChanged(const QString& property, const QVariant& value)
 {
     if (property == "TechnologyPreference") {	
         emit technologyPreferenceChanged(value.value<QString>());
+    } else if (property == "GsmBand") {	
+        emit gsmBandChanged(value.value<QString>());
+    } else if (property == "UmtsBand") {	
+        emit umtsBandChanged(value.value<QString>());
+    } else if (property == "FastDormancy") {	
+        emit fastDormancyChanged(value.value<bool>());
     }
+
 }
