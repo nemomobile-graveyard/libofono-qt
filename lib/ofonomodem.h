@@ -49,6 +49,7 @@ Q_PROPERTY(QString errorMessage READ errorMessage)
 
 Q_PROPERTY(bool powered READ powered WRITE setPowered NOTIFY poweredChanged)
 Q_PROPERTY(bool online READ online WRITE setOnline NOTIFY onlineChanged)
+Q_PROPERTY(bool lockdown READ lockdown WRITE setLockdown NOTIFY lockdownChanged)
 Q_PROPERTY(bool emergency READ emergency NOTIFY emergencyChanged)
 
 Q_PROPERTY(QString name READ name NOTIFY nameChanged)
@@ -103,9 +104,8 @@ public:
     QString errorMessage() const;
 
     bool powered() const;
-    void setPowered(bool powered);
     bool online() const;
-    void setOnline(bool online);
+    bool lockdown() const;
     bool emergency() const;
     
     QString name() const;
@@ -117,6 +117,11 @@ public:
     QStringList features() const;
     QStringList interfaces() const;
 
+public slots:
+    void setPowered(bool powered);
+    void setOnline(bool online);
+    void setLockdown(bool lockdown);
+
 signals:
     //! Issued when a modem becomes unavailable or available again
     void validityChanged(bool validity);
@@ -127,6 +132,8 @@ signals:
     void setPoweredFailed();
     void onlineChanged(bool online);
     void setOnlineFailed();
+    void lockdownChanged(bool lockdown);
+    void setLockdownFailed();
     void emergencyChanged(bool emergency);
 
     void nameChanged(const QString &name);

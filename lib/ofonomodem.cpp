@@ -65,6 +65,8 @@ void OfonoModem::propertyChanged(const QString& property, const QVariant& value)
         emit onlineChanged(value.value<bool>());
     else if (property == "Powered")
         emit poweredChanged(value.value<bool>());
+    else if (property == "Lockdown")
+        emit lockdownChanged(value.value<bool>());
     else if (property == "Emergency")
         emit emergencyChanged(value.value<bool>());
     else if (property == "Name")
@@ -89,6 +91,8 @@ void OfonoModem::setPropertyFailed(const QString& property)
         emit setOnlineFailed();
     else if (property == "Powered")
         emit setPoweredFailed();
+    else if (property == "Lockdown")
+        emit setLockdownFailed();
 }
 
 void OfonoModem::modemAdded(const QString& /*modem*/)
@@ -166,6 +170,16 @@ bool OfonoModem::online() const
 void OfonoModem::setOnline(bool online)
 {
     m_if->setProperty("Online", qVariantFromValue(online));
+}
+
+bool OfonoModem::lockdown() const
+{
+    return m_if->properties()["Lockdown"].value<bool>();
+}
+
+void OfonoModem::setLockdown(bool lockdown)
+{
+    m_if->setProperty("Lockdown", qVariantFromValue(lockdown));
 }
 
 bool OfonoModem::emergency() const

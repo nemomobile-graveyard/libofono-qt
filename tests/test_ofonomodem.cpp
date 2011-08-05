@@ -55,6 +55,7 @@ private slots:
         QVERIFY(mm->isValid());
         QVERIFY(mm->powered());
         QVERIFY(mm->online());
+        QVERIFY(!mm->lockdown());
         QVERIFY(!mm->emergency());
         QVERIFY(mm->features().count() > 0);
         QVERIFY(mm->interfaces().count() > 0);
@@ -121,6 +122,8 @@ private slots:
         QSignalSpy poweredFailed(mm, SIGNAL(setPoweredFailed()));
         QSignalSpy online(mm, SIGNAL(onlineChanged(bool)));
         QSignalSpy onlineFailed(mm, SIGNAL(setOnlineFailed()));
+        QSignalSpy lockdown(mm, SIGNAL(lockdownChanged(bool)));
+        QSignalSpy lockdownFailed(mm, SIGNAL(setLockdownFailed()));
         QSignalSpy emergency(mm, SIGNAL(emergencyChanged(bool)));
         QSignalSpy name(mm, SIGNAL(nameChanged(const QString &)));
         QSignalSpy manufacturer(mm, SIGNAL(manufacturerChanged(const QString &)));
@@ -165,6 +168,18 @@ private slots:
         QCOMPARE(features.takeFirst().at(0).toStringList().count(), 0);
         QCOMPARE(interfaces.count(), 1);
         QCOMPARE(interfaces.takeFirst().at(0).toStringList().count(), 0);
+
+        mm->setLockdown(true);
+        QTest::qWait(5000);
+        QCOMPARE(lockdown.count(), 1);
+        QCOMPARE(lockdown.takeFirst().at(0).toBool(), true);
+        QCOMPARE(lockdownFailed.count(), 0);
+
+        mm->setLockdown(false);
+        QTest::qWait(5000);
+        QCOMPARE(lockdown.count(), 1);
+        QCOMPARE(lockdown.takeFirst().at(0).toBool(), false);
+        QCOMPARE(lockdownFailed.count(), 0);
 
 	mm->setOnline(true);
         QTest::qWait(5000);
