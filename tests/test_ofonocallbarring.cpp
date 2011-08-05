@@ -60,10 +60,6 @@ private slots:
         QSignalSpy setVoiceIncomingFailed(m, SIGNAL(setVoiceIncomingFailed()));
         QSignalSpy setVoiceOutgoingFailed(m, SIGNAL(setVoiceOutgoingFailed()));
 
-        // These two are unused until we support a voicecall API
-        QSignalSpy incomingBarringInEffect(m, SIGNAL(incomingBarringInEffect()));
-        QSignalSpy outgoingBarringInEffect(m, SIGNAL(outgoingBarringInEffect()));        
-
         QSignalSpy changePasswordComplete(m, SIGNAL(changePasswordComplete(bool)));
         QSignalSpy disableAllComplete(m, SIGNAL(disableAllComplete(bool)));
         QSignalSpy disableAllIncomingComplete(m, SIGNAL(disableAllIncomingComplete(bool)));

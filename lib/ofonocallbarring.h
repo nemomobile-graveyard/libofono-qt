@@ -56,9 +56,6 @@ public slots:
     void disableAllOutgoing(const QString &password);
 
 signals:
-    void incomingBarringInEffect();
-    void outgoingBarringInEffect();
-
     void voiceIncomingComplete(bool success, const QString &barrings);
     void voiceOutgoingComplete(bool success, const QString &barrings);
     void voiceIncomingChanged(const QString &barrings);

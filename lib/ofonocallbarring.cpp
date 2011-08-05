@@ -52,24 +52,8 @@ void OfonoCallBarring::pathChanged(const QString& path)
     connectDbusSignals(path);
 }
 
-void OfonoCallBarring::connectDbusSignals(const QString& path)
+void OfonoCallBarring::connectDbusSignals(const QString& /*path*/)
 {
-    QDBusConnection::systemBus().disconnect("org.ofono", QString(), m_if->ifname(), 
-					 "IncomingBarringInEffect",
-					 this,
-					 SIGNAL(incomingBarringInEffect()));
-    QDBusConnection::systemBus().disconnect("org.ofono", QString(), m_if->ifname(), 
-					 "OutgoingBarringInEffect",
-					 this,
-					 SIGNAL(outgoingBarringInEffect()));
-    QDBusConnection::systemBus().connect("org.ofono", path, m_if->ifname(), 
-					 "IncomingBarringInEffect",
-					 this,
-					 SIGNAL(incomingBarringInEffect()));
-    QDBusConnection::systemBus().connect("org.ofono", path, m_if->ifname(), 
-					 "OutgoingBarringInEffect",
-					 this,
-					 SIGNAL(outgoingBarringInEffect()));
 }
 
 void OfonoCallBarring::changePassword(const QString &old_password, 
@@ -171,9 +155,9 @@ void OfonoCallBarring::setPropertyFailed(const QString& property)
 void OfonoCallBarring::requestPropertyComplete(bool success, const QString& property, const QVariant& value)
 {
     if (property == "VoiceIncoming") {	
-        success ? emit voiceIncomingComplete(true, value.value<QString>()) : emit voiceIncomingComplete(false, QString());
+        emit voiceIncomingComplete(success, value.value<QString>());
     } else if (property == "VoiceOutgoing") {	
-        success ? emit voiceOutgoingComplete(true, value.value<QString>()) : emit voiceOutgoingComplete(false, QString());
+        emit voiceOutgoingComplete(success, value.value<QString>());
     }
 }
 
