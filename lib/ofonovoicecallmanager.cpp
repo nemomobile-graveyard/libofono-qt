@@ -115,18 +115,28 @@ void OfonoVoiceCallManager::connectDbusSignals(const QString& path)
     QDBusConnection::systemBus().disconnect("org.ofono", QString(), m_if->ifname(),
                                          "CallAdded", this,
                                          SLOT(callAddedChanged(const QDBusObjectPath&, const QVariantMap&)));
-
     QDBusConnection::systemBus().disconnect("org.ofono", QString(), m_if->ifname(),
                                          "CallRemoved", this,
                                          SLOT(callRemovedChanged(const QDBusObjectPath&)));
+    QDBusConnection::systemBus().disconnect("org.ofono", QString(), m_if->ifname(), 
+                                        "BarringActive", this,
+                                        SIGNAL(barringActive(const QString&)));
+    QDBusConnection::systemBus().disconnect("org.ofono", QString(), m_if->ifname(), 
+                                        "Forwarded", this,
+                                        SIGNAL(forwarded(const QString&)));
 
     QDBusConnection::systemBus().connect("org.ofono", path, m_if->ifname(),
                                          "CallAdded", this,
                                          SLOT(callAddedChanged(const QDBusObjectPath&, const QVariantMap&)));
-
     QDBusConnection::systemBus().connect("org.ofono", path, m_if->ifname(),
                                          "CallRemoved", this,
                                          SLOT(callRemovedChanged(const QDBusObjectPath&)));
+    QDBusConnection::systemBus().connect("org.ofono", path, m_if->ifname(), 
+                                        "BarringActive", this,
+                                        SIGNAL(barringActive(const QString&)));
+    QDBusConnection::systemBus().connect("org.ofono", path, m_if->ifname(), 
+                                        "Forwarded", this,
+                                        SIGNAL(forwarded(const QString&)));
 }
 
 void OfonoVoiceCallManager::dial(const QString &number, const QString &callerid_hide)
@@ -237,7 +247,7 @@ void OfonoVoiceCallManager::privateChat(const QString &call)
     arg.append(qVariantFromValue(QDBusObjectPath(call)));
     request.setArguments(arg);
     QDBusConnection::systemBus().callWithCallback(request, this,
-                                        SLOT(privateChatResp()),
+                                        SLOT(privateChatResp(const QList<QDBusObjectPath>&)),
                                         SLOT(privateChatErr(const QDBusError&)),
                                         PRIVATE_CHAT_TIMEOUT);
 }
@@ -250,7 +260,7 @@ void OfonoVoiceCallManager::createMultiparty()
                                              "CreateMultiparty");
 
     QDBusConnection::systemBus().callWithCallback(request, this,
-                                        SLOT(createMultipartyResp()),
+                                        SLOT(createMultipartyResp(const QList<QDBusObjectPath>&)),
                                         SLOT(createMultipartyErr(const QDBusError&)),
                                         CREATE_MULTIPARTY_TIMEOUT);
 }
@@ -279,26 +289,32 @@ void OfonoVoiceCallManager::hangupMultipartyErr(const QDBusError &error)
     emit hangupMultipartyComplete(FALSE);
 }
 
-void OfonoVoiceCallManager::createMultipartyResp()
+void OfonoVoiceCallManager::createMultipartyResp(const QList<QDBusObjectPath> &paths)
 {
-    emit createMultipartyComplete(TRUE);
+    QStringList calls;
+    foreach(QDBusObjectPath path, paths)
+	calls << path.path();
+    emit createMultipartyComplete(TRUE, calls);
 }
 
 void OfonoVoiceCallManager::createMultipartyErr(const QDBusError &error)
 {
     m_if->setError(error.name(), error.message());
-    emit createMultipartyComplete(FALSE);
+    emit createMultipartyComplete(FALSE, QStringList());
 }
 
-void OfonoVoiceCallManager::privateChatResp()
+void OfonoVoiceCallManager::privateChatResp(const QList<QDBusObjectPath> &paths)
 {
-    emit privateChatComplete(TRUE);
+    QStringList calls;
+    foreach(QDBusObjectPath path, paths)
+	calls << path.path();
+    emit privateChatComplete(TRUE, calls);
 }
 
 void OfonoVoiceCallManager::privateChatErr(const QDBusError &error)
 {
     m_if->setError(error.name(), error.message());
-    emit privateChatComplete(FALSE);
+    emit privateChatComplete(FALSE, QStringList());
 }
 
 void OfonoVoiceCallManager::holdAndAnswerResp()

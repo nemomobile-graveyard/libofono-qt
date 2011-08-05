@@ -67,16 +67,18 @@ private slots:
         // 11. Verify hangupMultiparty() works as expected
         // 12. Hangup all calls
 
+	QVariantList variantList;
+
         // VoiceCallManager Spy's
         QSignalSpy dialreg(m,SIGNAL(dialComplete(bool)));
         QSignalSpy dspy(m, SIGNAL(callAdded(QString)));
         QSignalSpy rspy(m, SIGNAL(callRemoved(QString)));
         QSignalSpy haspy(m, SIGNAL(hangupAllComplete(bool)));
         QSignalSpy haaspy(m, SIGNAL(holdAndAnswerComplete(bool)));
-        QSignalSpy cmspy(m, SIGNAL(createMultipartyComplete(bool)));
+        QSignalSpy cmspy(m, SIGNAL(createMultipartyComplete(bool, QStringList)));
         QSignalSpy hmspy(m, SIGNAL(hangupMultipartyComplete(bool)));
         QSignalSpy scspy(m, SIGNAL(swapCallsComplete(bool)));
-        QSignalSpy pcspy(m, SIGNAL(privateChatComplete(bool)));
+        QSignalSpy pcspy(m, SIGNAL(privateChatComplete(bool, QStringList)));
 
         // 1. Dial a call (outgoing)
         m->dial("123","");
@@ -172,7 +174,9 @@ private slots:
         m->createMultiparty();
         QTest::qWait(1000);
         QCOMPARE(cmspy.count(),1);
-        QCOMPARE(cmspy.takeFirst().at(0).toBool(),true);
+	variantList = cmspy.takeFirst();
+        QCOMPARE(variantList.at(0).toBool(),true);
+	QVERIFY(variantList.at(1).toStringList().length() > 0);
 
         QTest::qWait(3000);
         // 4. Verify createMultiparty() works as expected
@@ -247,7 +251,9 @@ private slots:
         QTest::qWait(1000);
 
         QCOMPARE(cmspy.count(),1);
-        QCOMPARE(cmspy.takeFirst().at(0).toBool(),true);
+	variantList = cmspy.takeFirst();
+        QCOMPARE(variantList.at(0).toBool(),true);
+	QVERIFY(variantList.at(1).toStringList().length() > 0);
 
         QTest::qWait(3000);
         //    - calls #1 and #2 should have a stateChanged signal triggered
@@ -270,7 +276,9 @@ private slots:
         QTest::qWait(1000);
 
         QCOMPARE(pcspy.count(),1);
-        QCOMPARE(pcspy.takeFirst().at(0).toBool(),true);
+	variantList = pcspy.takeFirst();
+        QCOMPARE(variantList.at(0).toBool(),true);
+	QVERIFY(variantList.at(1).toStringList().length() > 0);
 
         QTest::qWait(3000);
         // 9.  Verify privateChat() works as expected

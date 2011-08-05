@@ -87,9 +87,12 @@ signals:
     void swapCallsComplete(const bool status);
     void releaseAndAnswerComplete(const bool status);
     void holdAndAnswerComplete(const bool status);
-    void privateChatComplete(const bool status);
-    void createMultipartyComplete(const bool status);
+    void privateChatComplete(const bool status, const QStringList& calls);
+    void createMultipartyComplete(const bool status, const QStringList& calls);
     void hangupMultipartyComplete(const bool status);
+
+    void barringActive(const QString &type);
+    void forwarded(const QString &type);
 
 private slots:
     void validityChanged(bool);
@@ -111,9 +114,9 @@ private slots:
     void releaseAndAnswerErr(const QDBusError &error);
     void holdAndAnswerResp();
     void holdAndAnswerErr(const QDBusError &error);
-    void privateChatResp();
+    void privateChatResp(const QList<QDBusObjectPath> &paths);
     void privateChatErr(const QDBusError &error);
-    void createMultipartyResp();
+    void createMultipartyResp(const QList<QDBusObjectPath> &paths);
     void createMultipartyErr(const QDBusError &error);
     void hangupMultipartyResp();
     void hangupMultipartyErr(const QDBusError &error);
