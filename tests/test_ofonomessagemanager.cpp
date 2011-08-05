@@ -55,7 +55,7 @@ private slots:
 
     void testOfonoMessageManager()
     {
-        QSignalSpy sendMessage(m, SIGNAL(sendMessageComplete(bool, QDBusObjectPath)));
+        QSignalSpy sendMessage(m, SIGNAL(sendMessageComplete(bool, QString)));
         QSignalSpy messageAdded(m, SIGNAL(messageAdded(QString)));
         QSignalSpy messageRemoved(m, SIGNAL(messageRemoved(QString)));
         QSignalSpy immediateMessage(m, SIGNAL(immediateMessage(QString, QVariantMap)));
@@ -72,9 +72,9 @@ private slots:
         QCOMPARE(sendMessage.count(), 1);
         QVariantList params = sendMessage.takeFirst();
         QCOMPARE(params.at(0).toBool(), true);
-        QDBusObjectPath objectPath = params.at(1).value<QDBusObjectPath>();
-        QVERIFY(objectPath.path().length() > 0);
-        qDebug() << objectPath.path();
+        QString objectPath = params.at(1).value<QString>();
+        QVERIFY(objectPath.length() > 0);
+        qDebug() << objectPath;
 
         QCOMPARE(messageAdded.count(), 1);
         QCOMPARE(messageRemoved.count(), 1);
@@ -91,8 +91,8 @@ private slots:
         QCOMPARE(sendMessage.count(), 1);
         params = sendMessage.takeFirst();
         QCOMPARE(params.at(0).toBool(), false);
-        objectPath = params.at(1).value<QDBusObjectPath>();
-        QVERIFY(objectPath.path().length() == 0);
+        objectPath = params.at(1).value<QString>();
+        QVERIFY(objectPath.length() == 0);
     }
 
     void testOfonoMessageManagerSca()

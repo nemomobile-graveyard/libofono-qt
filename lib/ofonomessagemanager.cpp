@@ -193,13 +193,13 @@ void OfonoMessageManager::sendMessage(const QString &to, const QString &message)
 void OfonoMessageManager::requestPropertyComplete(bool success, const QString& property, const QVariant& value)
 {
     if (property == "ServiceCenterAddress") {
-        success ? emit serviceCenterAddressComplete(true, value.value<QString>()) : emit serviceCenterAddressComplete(false, QString());
+        emit serviceCenterAddressComplete(success, value.value<QString>());
     } else if (property == "UseDeliveryReports") {
-        success ? emit useDeliveryReportsComplete(true, value.value<bool>()) : emit useDeliveryReportsComplete(false, bool());
+        emit useDeliveryReportsComplete(success, value.value<bool>());
     } else if (property == "Bearer") {
-        success ? emit bearerComplete(true, value.value<QString>()) : emit bearerComplete(false, QString());
+        emit bearerComplete(success, value.value<QString>());
     } else if (property == "Alphabet") {
-        success ? emit alphabetComplete(true, value.value<QString>()) : emit alphabetComplete(false, QString());
+        emit alphabetComplete(success, value.value<QString>());
     }
 }
 
@@ -231,13 +231,13 @@ void OfonoMessageManager::setPropertyFailed(const QString& property)
 
 void OfonoMessageManager::sendMessageResp(const QDBusObjectPath& objectPath)
 {
-    emit sendMessageComplete(true, objectPath);
+    emit sendMessageComplete(true, objectPath.path());
 }
 
 void OfonoMessageManager::sendMessageErr(QDBusError error)
 {
     m_if->setError(error.name(), error.message());
-    emit sendMessageComplete(false, QDBusObjectPath());
+    emit sendMessageComplete(false, QString());
 }
 
 QStringList OfonoMessageManager::getMessages() const

@@ -76,7 +76,7 @@ signals:
     void useDeliveryReportsComplete(bool success, const bool &useDeliveryReports);
     void bearerComplete(bool success, const QString &bearer);
     void alphabetComplete(bool success, const QString &alphabet);
-    void sendMessageComplete(bool success, const QDBusObjectPath& objectPath);
+    void sendMessageComplete(bool success, const QString& path);
 
     void setServiceCenterAddressFailed();
     void setUseDeliveryReportsFailed();
