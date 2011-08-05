@@ -45,6 +45,7 @@ public slots:
     /* Properties */
     void requestCallingLinePresentation();
     void requestCalledLinePresentation();
+    void requestCallingNamePresentation();
     void requestConnectedLinePresentation();
     void requestConnectedLineRestriction();
     void requestCallingLineRestriction();
@@ -56,6 +57,7 @@ public slots:
 signals:
     void callingLinePresentationComplete(bool success, const QString &setting);
     void calledLinePresentationComplete(bool success, const QString &setting);
+    void callingNamePresentationComplete(bool success, const QString &setting);
     void connectedLinePresentationComplete(bool success, const QString &setting);
     void connectedLineRestrictionComplete(bool success, const QString &setting);
     void callingLineRestrictionComplete(bool success, const QString &setting);
@@ -64,6 +66,7 @@ signals:
 
     void callingLinePresentationChanged(const QString &setting);
     void calledLinePresentationChanged(const QString &setting);
+    void callingNamePresentationChanged(const QString &setting);
     void connectedLinePresentationChanged(const QString &setting);
     void connectedLineRestrictionChanged(const QString &setting);
     void callingLineRestrictionChanged(const QString &setting);

@@ -54,6 +54,7 @@ private slots:
     {
         QSignalSpy callingLinePresentationComplete(m, SIGNAL(callingLinePresentationComplete(bool, QString)));
         QSignalSpy calledLinePresentationComplete(m, SIGNAL(calledLinePresentationComplete(bool, QString)));
+        QSignalSpy callingNamePresentationComplete(m, SIGNAL(callingNamePresentationComplete(bool, QString)));
         QSignalSpy connectedLinePresentationComplete(m, SIGNAL(connectedLinePresentationComplete(bool, QString)));
         QSignalSpy connectedLineRestrictionComplete(m, SIGNAL(connectedLineRestrictionComplete(bool, QString)));
         QSignalSpy callingLineRestrictionComplete(m, SIGNAL(callingLineRestrictionComplete(bool, QString)));
@@ -62,6 +63,7 @@ private slots:
 
         QSignalSpy callingLinePresentationChanged(m, SIGNAL(callingLinePresentationChanged(QString)));        
         QSignalSpy calledLinePresentationChanged(m, SIGNAL(calledLinePresentationChanged(QString)));        
+        QSignalSpy callingNamePresentationChanged(m, SIGNAL(callingNamePresentationChanged(QString)));        
         QSignalSpy connectedLinePresentationChanged(m, SIGNAL(connectedLinePresentationChanged(QString)));
         QSignalSpy connectedLineRestrictionChanged(m, SIGNAL(connectedLineRestrictionChanged(QString)));
         QSignalSpy callingLineRestrictionChanged(m, SIGNAL(callingLineRestrictionChanged(QString)));        
@@ -87,6 +89,14 @@ private slots:
 	QCOMPARE(list.at(1).toString(), QString("enabled"));
 	QVERIFY(calledLinePresentationChanged.count() > 0);	
 	QCOMPARE(calledLinePresentationChanged.takeFirst().at(0).toString(), QString("enabled"));	
+	m->requestCallingNamePresentation();
+	QTest::qWait(5000);
+	QCOMPARE(callingNamePresentationComplete.count(), 1);
+	list = callingNamePresentationComplete.takeFirst();
+	QCOMPARE(list.at(0).toBool(), true);
+	QCOMPARE(list.at(1).toString(), QString("enabled"));
+	QVERIFY(callingNamePresentationChanged.count() > 0);	
+	QCOMPARE(callingNamePresentationChanged.takeFirst().at(0).toString(), QString("enabled"));	
         m->requestConnectedLinePresentation();
 	QTest::qWait(1000);
         QCOMPARE(connectedLinePresentationComplete.count(), 1);

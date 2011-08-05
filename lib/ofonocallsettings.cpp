@@ -52,6 +52,11 @@ void OfonoCallSettings::requestCalledLinePresentation()
     m_if->requestProperty("CalledLinePresentation");
 }
 
+void OfonoCallSettings::requestCallingNamePresentation()
+{
+    m_if->requestProperty("CallingNamePresentation");
+}
+
 void OfonoCallSettings::requestConnectedLinePresentation()
 {
     m_if->requestProperty("ConnectedLinePresentation");
@@ -90,19 +95,21 @@ void OfonoCallSettings::setVoiceCallWaiting(const QString &preference)
 void OfonoCallSettings::requestPropertyComplete(bool success, const QString& property, const QVariant& value)
 {
     if (property == "CallingLinePresentation") {	
-        success ? emit callingLinePresentationComplete(true, value.value<QString>()) : emit callingLinePresentationComplete(false, value.value<QString>());
+        emit callingLinePresentationComplete(success, value.value<QString>());
     } else if (property == "CalledLinePresentation") {	
-        success ? emit calledLinePresentationComplete(true, value.value<QString>()) : emit calledLinePresentationComplete(false, value.value<QString>());
+        emit calledLinePresentationComplete(success, value.value<QString>());
+    } else if (property == "CallingNamePresentation") {	
+        emit callingNamePresentationComplete(success, value.value<QString>());
     } else if (property == "ConnectedLinePresentation") {
-        success ? emit connectedLinePresentationComplete(true, value.value<QString>()) : emit connectedLinePresentationComplete(false, value.value<QString>());
+        emit connectedLinePresentationComplete(success, value.value<QString>());
     } else if (property == "ConnectedLineRestriction") {
-        success ? emit connectedLineRestrictionComplete(true, value.value<QString>()) : emit connectedLineRestrictionComplete(false, value.value<QString>());
+        emit connectedLineRestrictionComplete(success, value.value<QString>());
     } else if (property == "CallingLineRestriction") {	
-        success ? emit callingLineRestrictionComplete(true, value.value<QString>()) : emit callingLineRestrictionComplete(false, value.value<QString>());
+        emit callingLineRestrictionComplete(success, value.value<QString>());
     } else if (property == "HideCallerId") {	
-        success ? emit hideCallerIdComplete(true, value.value<QString>()) : emit hideCallerIdComplete(false, value.value<QString>());
+        emit hideCallerIdComplete(success, value.value<QString>());
     } else if (property == "VoiceCallWaiting") {	
-        success ? emit voiceCallWaitingComplete(true, value.value<QString>()) : emit voiceCallWaitingComplete(false, value.value<QString>());
+        emit voiceCallWaitingComplete(success, value.value<QString>());
     }
 }
 
@@ -112,6 +119,8 @@ void OfonoCallSettings::propertyChanged(const QString& property, const QVariant&
         emit callingLinePresentationChanged(value.value<QString>());
     } else if (property == "CalledLinePresentation") {	
         emit calledLinePresentationChanged(value.value<QString>());
+    } else if (property == "CallingNamePresentation") {	
+        emit callingNamePresentationChanged(value.value<QString>());
     } else if (property == "ConnectedLinePresentation") {
         emit connectedLinePresentationChanged(value.value<QString>());
     } else if (property == "ConnectedLineRestriction") {
