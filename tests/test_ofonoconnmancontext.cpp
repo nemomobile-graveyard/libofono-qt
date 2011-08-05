@@ -51,7 +51,7 @@ private slots:
 
     void testOfonoConnmanContext ()
     {
-        QSignalSpy addcon(m,SIGNAL(addContextComplete(bool)));
+        QSignalSpy addcon(m,SIGNAL(addContextComplete(bool, const QString&)));
         QSignalSpy conadd(m, SIGNAL(contextAdded(const QString&)));
         QSignalSpy conrem(m, SIGNAL(contextRemoved(const QString&)));
 
@@ -59,9 +59,11 @@ private slots:
         QTest::qWait(1000);
 
         QCOMPARE(addcon.count(), 1);
-        QCOMPARE(addcon.takeFirst().at(0).toBool(),true);
+	QVariantList list = addcon.takeFirst();
+        QCOMPARE(list.at(0).toBool(),true);
         QCOMPARE(conadd.count(), 1);
         QString contextid = conadd.takeFirst().at(0).toString();
+	QCOMPARE(contextid, list.at(1).toString());
 
         OfonoConnmanContext* context = new OfonoConnmanContext(contextid);
 

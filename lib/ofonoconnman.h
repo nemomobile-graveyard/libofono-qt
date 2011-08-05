@@ -58,6 +58,8 @@ public:
     OfonoConnMan(OfonoModem::SelectionSetting modemSetting, const QString &modemPath, QObject *parent=0);
     ~OfonoConnMan();
 
+    Q_INVOKABLE QStringList getContexts();
+
     /* Properties */
     bool attached() const;
     QString bearer() const;
@@ -65,13 +67,12 @@ public:
     bool roamingAllowed() const;
     bool powered() const;
 
+public slots:
     void setPowered(const bool);
     void setRoamingAllowed(const bool);
     void deactivateAll();
     void addContext(const QString& type);
     void removeContext(const QString& path);
-
-    Q_INVOKABLE QStringList getContexts();
 
 signals:
     void attachedChanged(const bool value);
@@ -83,7 +84,7 @@ signals:
     void contextRemoved(const QString& path);
 
     void deactivateAllComplete(bool success);
-    void addContextComplete(bool success);
+    void addContextComplete(bool success, const QString& path);
     void removeContextComplete(bool success);
 
     void setPoweredFailed();
@@ -97,7 +98,7 @@ private slots:
     void contextRemovedChanged(const QDBusObjectPath &path);
     void deactivateAllResp();
     void deactivateAllErr(const QDBusError& error);
-    void addContextResp();
+    void addContextResp(const QDBusObjectPath &path);
     void addContextErr(const QDBusError& error);
     void removeContextResp();
     void removeContextErr(const QDBusError& error);

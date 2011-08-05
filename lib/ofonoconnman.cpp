@@ -157,20 +157,20 @@ void OfonoConnMan::addContext(const QString& type)
     request.setArguments(arg);
 
     QDBusConnection::systemBus().callWithCallback(request, this,
-                                        SLOT(addContextResp()),
+                                        SLOT(addContextResp(const QDBusObjectPath &)),
                                         SLOT(addContextErr(const QDBusError&)),
                                         ADD_TIMEOUT);
 }
 
-void OfonoConnMan::addContextResp()
+void OfonoConnMan::addContextResp(const QDBusObjectPath &path)
 {
-    emit addContextComplete(TRUE);
+    emit addContextComplete(TRUE, path.path());
 }
 
 void OfonoConnMan::addContextErr(const QDBusError& error)
 {
     m_if->setError(error.name(), error.message());
-    emit addContextComplete(FALSE);
+    emit addContextComplete(FALSE, QString());
 }
 
 void OfonoConnMan::removeContext(const QString& contextpath)

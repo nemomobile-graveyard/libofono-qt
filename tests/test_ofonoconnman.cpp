@@ -59,7 +59,7 @@ private slots:
         QSignalSpy pow(m,SIGNAL(poweredChanged(const bool)));
         QSignalSpy add(m, SIGNAL(contextAdded(const QString&)));
         QSignalSpy rem(m, SIGNAL(contextRemoved(const QString&)));
-        QSignalSpy cadd(m,SIGNAL(addContextComplete(bool)));
+        QSignalSpy cadd(m,SIGNAL(addContextComplete(bool, const QString&)));
         QSignalSpy crem(m,SIGNAL(removeContextComplete(bool)));
         QSignalSpy deact(m,SIGNAL(deactivateAllComplete(bool)));
 
@@ -83,6 +83,8 @@ private slots:
         QCOMPARE(roam.count(), 2);
         QCOMPARE(add.count(), 1);
         QString path = add.takeFirst().at(0).toString();
+        QString path2 = cadd.takeFirst().at(1).toString();
+	QCOMPARE(path, path2);
         m->removeContext(path);
         QTest::qWait(10000);
         QCOMPARE(rem.count(), 1);
