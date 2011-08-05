@@ -50,6 +50,7 @@ public:
     quint8 speakerVolume() const;
     quint8 microphoneVolume()const ;
 
+public slots:
     void setMuted(const bool mute);
     void setSpeakerVolume(const quint8 &spvolume);
     void setMicrophoneVolume(const quint8 &mpvolume);

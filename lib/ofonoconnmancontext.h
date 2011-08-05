@@ -95,6 +95,7 @@ public:
     QVariantMap settings() const;
     QVariantMap IPv6Settings() const;
 
+public slots:
     void setActive(const bool);
     void setAccessPointName(const QString&);
     void setType(const QString&);

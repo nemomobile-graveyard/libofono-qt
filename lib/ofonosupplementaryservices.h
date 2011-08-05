@@ -47,7 +47,8 @@ public:
     
     /* Properties */
     QString state() const;
-    
+
+public slots:    
     void initiate(const QString &command);
     void respond(const QString &reply);
     void cancel();

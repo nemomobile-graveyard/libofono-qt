@@ -48,6 +48,7 @@ public:
     bool voicemailWaiting() const;
     int voicemailMessageCount() const;
     QString voicemailMailboxNumber() const;
+public slots:
     void setVoicemailMailboxNumber(QString mailboxnumber);
 
 signals:
