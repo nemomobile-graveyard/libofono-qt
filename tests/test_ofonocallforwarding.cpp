@@ -57,12 +57,14 @@ private slots:
         QSignalSpy voiceNoReplyComplete(m, SIGNAL(voiceNoReplyComplete(bool, QString)));
         QSignalSpy voiceNoReplyTimeoutComplete(m, SIGNAL(voiceNoReplyTimeoutComplete(bool, ushort)));
         QSignalSpy voiceNotReachableComplete(m, SIGNAL(voiceNotReachableComplete(bool, QString)));
+        QSignalSpy forwardingFlagOnSimComplete(m, SIGNAL(forwardingFlagOnSimComplete(bool, bool)));
 
         QSignalSpy voiceUnconditionalChanged(m, SIGNAL(voiceUnconditionalChanged(QString)));        
         QSignalSpy voiceBusyChanged(m, SIGNAL(voiceBusyChanged(QString)));        
         QSignalSpy voiceNoReplyChanged(m, SIGNAL(voiceNoReplyChanged(QString)));        
         QSignalSpy voiceNoReplyTimeoutChanged(m, SIGNAL(voiceNoReplyTimeoutChanged(ushort)));        
         QSignalSpy voiceNotReachableChanged(m, SIGNAL(voiceNotReachableChanged(QString)));        
+        QSignalSpy forwardingFlagOnSimChanged(m, SIGNAL(forwardingFlagOnSimChanged(bool)));
 
         QSignalSpy setVoiceUnconditionalFailed(m, SIGNAL(setVoiceUnconditionalFailed()));
         QSignalSpy setVoiceBusyFailed(m, SIGNAL(setVoiceBusyFailed()));
@@ -112,6 +114,14 @@ private slots:
 	QCOMPARE(list.at(1).toString(), QString(""));
 	QCOMPARE(voiceNotReachableChanged.count(), 1);	
 	QCOMPARE(voiceNotReachableChanged.takeFirst().at(0).toString(), QString(""));
+	m->requestForwardingFlagOnSim();
+	QTest::qWait(1000);
+	QCOMPARE(forwardingFlagOnSimComplete.count(), 1);
+	list = forwardingFlagOnSimComplete.takeFirst();
+	QCOMPARE(list.at(0).toBool(), true);
+	QCOMPARE(list.at(1).toBool(), false);
+	QCOMPARE(forwardingFlagOnSimChanged.count(), 1);	
+	QCOMPARE(forwardingFlagOnSimChanged.takeFirst().at(0).toBool(), false);
 	
 	m->setVoiceUnconditional("abc");
 	QTest::qWait(1000);

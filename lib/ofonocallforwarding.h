@@ -54,6 +54,7 @@ public slots:
     void setVoiceNoReplyTimeout(ushort timeout);
     void requestVoiceNotReachable();
     void setVoiceNotReachable(const QString &property);
+    void requestForwardingFlagOnSim();
     
     /* Methods */
     void disableAll(const QString &type); /* "all" | "conditional" */
@@ -64,12 +65,14 @@ signals:
     void voiceNoReplyComplete(bool success, const QString &property);
     void voiceNoReplyTimeoutComplete(bool success, ushort timeout);
     void voiceNotReachableComplete(bool success, const QString &property);
+    void forwardingFlagOnSimComplete(bool success, bool property);
 
     void voiceUnconditionalChanged(const QString &property);
     void voiceBusyChanged(const QString &property);
     void voiceNoReplyChanged(const QString &property);
     void voiceNoReplyTimeoutChanged(ushort timeout);
     void voiceNotReachableChanged(const QString &property);
+    void forwardingFlagOnSimChanged(bool property);
 
     void setVoiceUnconditionalFailed();
     void setVoiceBusyFailed();

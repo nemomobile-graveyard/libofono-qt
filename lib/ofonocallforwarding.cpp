@@ -108,6 +108,10 @@ void OfonoCallForwarding::setVoiceNotReachable(const QString &property)
     return m_if->setProperty("VoiceNotReachable", qVariantFromValue(property));
 }
 
+void OfonoCallForwarding::requestForwardingFlagOnSim()
+{
+    m_if->requestProperty("ForwardingFlagOnSim");
+}
 
 void OfonoCallForwarding::propertyChanged(const QString& property, const QVariant& value)
 {
@@ -121,6 +125,8 @@ void OfonoCallForwarding::propertyChanged(const QString& property, const QVarian
         emit voiceNoReplyTimeoutChanged(value.value<ushort>());
     } else  if (property == "VoiceNotReachable") {	
         emit voiceNotReachableChanged(value.value<QString>());
+    } else  if (property == "ForwardingFlagOnSim") {	
+        emit forwardingFlagOnSimChanged(value.value<bool>());
     }
 }
 
@@ -142,15 +148,17 @@ void OfonoCallForwarding::setPropertyFailed(const QString& property)
 void OfonoCallForwarding::requestPropertyComplete(bool success, const QString& property, const QVariant& value)
 {
     if (property == "VoiceUnconditional") {	
-        success ? emit voiceUnconditionalComplete(true, value.value<QString>()) : emit voiceUnconditionalComplete(false, QString());
+        emit voiceUnconditionalComplete(success, value.value<QString>());
     } else if (property == "VoiceBusy") {	
-        success ? emit voiceBusyComplete(true, value.value<QString>()) : emit voiceBusyComplete(false, QString());
+        emit voiceBusyComplete(success, value.value<QString>());
     } else if (property == "VoiceNoReply") {	
-        success ? emit voiceNoReplyComplete(true, value.value<QString>()) : emit voiceNoReplyComplete(false, QString());
+        emit voiceNoReplyComplete(success, value.value<QString>());
     } else if (property == "VoiceNoReplyTimeout") {
-        success ? emit voiceNoReplyTimeoutComplete(true, value.value<ushort>()) : emit voiceNoReplyTimeoutComplete(false, 0);
+        emit voiceNoReplyTimeoutComplete(success, value.value<ushort>());
     } else if (property == "VoiceNotReachable") {
-        success ? emit voiceNotReachableComplete(true, value.value<QString>()) : emit voiceNotReachableComplete(false, QString());
+        emit voiceNotReachableComplete(success, value.value<QString>());
+    } else if (property == "ForwardingFlagOnSim") {
+        emit forwardingFlagOnSimComplete(success, value.value<bool>());
     }
 }
 
