@@ -13,6 +13,7 @@ org.ofono.cdma.MessageManager ***
 org.ofono.cdma.NetworkRegistration **
 org.ofono.cdma.VoiceCallManager **
 org.ofono.CellBroadcast **
+org.ofono.Handsfree *
 org.ofono.LocationReporting *
 org.ofono.PushNotification and org.ofono.PushNotificationAgent **
 org.ofono.SmartMessaging and org.ofono.SmartMessagingAgent **

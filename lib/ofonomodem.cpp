@@ -79,6 +79,8 @@ void OfonoModem::propertyChanged(const QString& property, const QVariant& value)
         emit revisionChanged(value.value<QString>());
     else if (property == "Serial")
         emit serialChanged(value.value<QString>());
+    else if (property == "Type")
+        emit typeChanged(value.value<QString>());
     else if (property == "Features")
         emit featuresChanged(value.value<QStringList>());
     else if (property == "Interfaces")
@@ -210,6 +212,11 @@ QString OfonoModem::revision() const
 QString OfonoModem::serial() const
 {
     return m_if->properties()["Serial"].value<QString>();
+}
+
+QString OfonoModem::type() const
+{
+    return m_if->properties()["Type"].value<QString>();
 }
 
 QStringList OfonoModem::features() const

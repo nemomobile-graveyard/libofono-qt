@@ -66,6 +66,7 @@ private slots:
         QCOMPARE(mm->model(), QString("Synthetic Device"));
         QCOMPARE(mm->revision(), QString("REV1"));
         QCOMPARE(mm->serial(), QString("1234567890"));
+        QCOMPARE(mm->type(), QString("hardware"));
     }
 
     void testOfonoModemAutomatic()
@@ -130,6 +131,7 @@ private slots:
         QSignalSpy model(mm, SIGNAL(modelChanged(const QString &)));
         QSignalSpy revision(mm, SIGNAL(revisionChanged(const QString &)));
         QSignalSpy serial(mm, SIGNAL(serialChanged(const QString &)));
+        QSignalSpy type(mm, SIGNAL(typeChanged(const QString &)));
         QSignalSpy features(mm, SIGNAL(featuresChanged(const QStringList &)));
         QSignalSpy interfaces(mm, SIGNAL(interfacesChanged(const QStringList &)));
         
@@ -146,6 +148,7 @@ private slots:
         QCOMPARE(model.count(), 0);
         QCOMPARE(revision.count(), 0);
         QCOMPARE(serial.count(), 0);
+        QCOMPARE(type.count(), 0);
         QCOMPARE(features.count(), 1);
         QVERIFY(features.takeFirst().at(0).toStringList().count() > 0);
         QCOMPARE(interfaces.count(), 1);
@@ -164,6 +167,7 @@ private slots:
         QCOMPARE(model.count(), 0);
         QCOMPARE(revision.count(), 0);
         QCOMPARE(serial.count(), 0);
+        QCOMPARE(type.count(), 0);
         QCOMPARE(features.count(), 1);
         QCOMPARE(features.takeFirst().at(0).toStringList().count(), 0);
         QCOMPARE(interfaces.count(), 1);
@@ -203,6 +207,7 @@ private slots:
         revision.takeFirst();
         QCOMPARE(serial.count(), 1);
         serial.takeFirst();
+        QCOMPARE(type.count(), 0);
         QVERIFY(features.count() > 0);
         QVERIFY(features.takeLast().at(0).toStringList().count() > 0);
         features.clear();
@@ -223,6 +228,7 @@ private slots:
         QCOMPARE(model.count(), 0);
         QCOMPARE(revision.count(), 0);
         QCOMPARE(serial.count(), 0);
+        QCOMPARE(type.count(), 0);
         QVERIFY(features.count() > 0);
         QVERIFY(features.takeLast().at(0).toStringList().count() > 0);
         QVERIFY(interfaces.count() > 0);

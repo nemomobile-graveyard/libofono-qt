@@ -57,6 +57,7 @@ Q_PROPERTY(QString manufacturer READ manufacturer NOTIFY manufacturerChanged)
 Q_PROPERTY(QString model READ model NOTIFY modelChanged)
 Q_PROPERTY(QString revision READ revision NOTIFY revisionChanged)
 Q_PROPERTY(QString serial READ serial NOTIFY serialChanged)
+Q_PROPERTY(QString type READ type NOTIFY typeChanged)
 
 Q_PROPERTY(QStringList features READ features NOTIFY featuresChanged)
 Q_PROPERTY(QStringList interfaces READ interfaces NOTIFY interfacesChanged)
@@ -113,6 +114,7 @@ public:
     QString model() const;
     QString revision() const;
     QString serial() const;
+    QString type() const;
     
     QStringList features() const;
     QStringList interfaces() const;
@@ -141,6 +143,7 @@ signals:
     void modelChanged(const QString &model);
     void revisionChanged(const QString &revision);
     void serialChanged(const QString &serial);
+    void typeChanged(const QString &type);
 
     void featuresChanged(const QStringList &features);
     void interfacesChanged(const QStringList &interfaces);
