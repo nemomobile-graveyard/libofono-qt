@@ -47,7 +47,8 @@ OfonoConnmanContext::OfonoConnmanContext(const OfonoConnmanContext& context)
 
     connect(m_if, SIGNAL(propertyChanged(const QString&, const QVariant&)),
             this, SLOT(propertyChanged(const QString&, const QVariant&)));
-
+    connect(m_if, SIGNAL(setPropertyFailed(const QString&)),
+            this, SLOT(setPropertyFailed(const QString&)));
 }
 
 bool OfonoConnmanContext::operator==(const OfonoConnmanContext &context)

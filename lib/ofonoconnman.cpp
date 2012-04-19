@@ -57,6 +57,8 @@ OfonoConnMan::OfonoConnMan(OfonoModem::SelectionSetting modemSetting, const QStr
 
     connect(m_if, SIGNAL(propertyChanged(const QString&, const QVariant&)),
             this, SLOT(propertyChanged(const QString&, const QVariant&)));
+    connect(m_if, SIGNAL(setPropertyFailed(const QString&)),
+            this, SLOT(setPropertyFailed(const QString&)));
     connect(this, SIGNAL(validityChanged(bool)),
             this, SLOT(validityChanged(bool)));
     connect(modem(), SIGNAL(pathChanged(QString)), this, SLOT(pathChanged(const QString&)));
