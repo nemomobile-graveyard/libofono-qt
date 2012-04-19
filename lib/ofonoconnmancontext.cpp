@@ -37,6 +37,8 @@ OfonoConnmanContext::OfonoConnmanContext(const QString& contextId, QObject *pare
 
     connect(m_if, SIGNAL(propertyChanged(const QString&, const QVariant&)),
             this, SLOT(propertyChanged(const QString&, const QVariant&)));
+    connect(m_if, SIGNAL(setPropertyFailed(const QString&)),
+            this, SLOT(setPropertyFailed(const QString&)));
 
 }
 
