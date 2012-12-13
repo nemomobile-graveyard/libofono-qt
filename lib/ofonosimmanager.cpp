@@ -244,63 +244,63 @@ void OfonoSimManager::setPropertyFailed(const QString& property)
 
 void OfonoSimManager::changePinResp()
 {
-    emit changePinComplete(TRUE);
+    emit changePinComplete(true);
 }
 
 void OfonoSimManager::changePinErr(QDBusError error)
 {
     m_if->setError(error.name(), error.message());    
-    emit changePinComplete(FALSE);
+    emit changePinComplete(false);
 }
 
 void OfonoSimManager::enterPinResp()
 {
-    emit enterPinComplete(TRUE);
+    emit enterPinComplete(true);
 }
 
 void OfonoSimManager::enterPinErr(QDBusError error)
 {
     m_if->setError(error.name(), error.message());
-    emit enterPinComplete(FALSE);
+    emit enterPinComplete(false);
 }
 
 void OfonoSimManager::resetPinResp()
 {
-    emit resetPinComplete(TRUE);
+    emit resetPinComplete(true);
 }
 
 void OfonoSimManager::resetPinErr(QDBusError error)
 {
     m_if->setError(error.name(), error.message());
-    emit resetPinComplete(FALSE);
+    emit resetPinComplete(false);
 }
 
 void OfonoSimManager::lockPinResp()
 {
-    emit lockPinComplete(TRUE);
+    emit lockPinComplete(true);
 }
 void OfonoSimManager::lockPinErr(QDBusError error)
 {
     m_if->setError(error.name(), error.message());
-    emit lockPinComplete(FALSE);
+    emit lockPinComplete(false);
 }
 
 void OfonoSimManager::unlockPinResp()
 {
-    emit unlockPinComplete(TRUE);
+    emit unlockPinComplete(true);
 }
 void OfonoSimManager::unlockPinErr(QDBusError error)
 {
     m_if->setError(error.name(), error.message()); 
-    emit unlockPinComplete(FALSE);
+    emit unlockPinComplete(false);
 }
 
 void OfonoSimManager::getIconResp(QByteArray icon)
 {
-    emit getIconComplete(TRUE, icon);
+    emit getIconComplete(true, icon);
 }
 void OfonoSimManager::getIconErr(QDBusError error)
 {
     m_if->setError(error.name(), error.message()); 
-    emit getIconComplete(FALSE, QByteArray());
+    emit getIconComplete(false, QByteArray());
 }

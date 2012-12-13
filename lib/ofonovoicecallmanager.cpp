@@ -280,13 +280,13 @@ void OfonoVoiceCallManager::hangupMultiparty()
 
 void OfonoVoiceCallManager::hangupMultipartyResp()
 {
-    emit hangupMultipartyComplete(TRUE);
+    emit hangupMultipartyComplete(true);
 }
 
 void OfonoVoiceCallManager::hangupMultipartyErr(const QDBusError &error)
 {
     m_if->setError(error.name(), error.message());
-    emit hangupMultipartyComplete(FALSE);
+    emit hangupMultipartyComplete(false);
 }
 
 void OfonoVoiceCallManager::createMultipartyResp(const QList<QDBusObjectPath> &paths)
@@ -294,13 +294,13 @@ void OfonoVoiceCallManager::createMultipartyResp(const QList<QDBusObjectPath> &p
     QStringList calls;
     foreach(QDBusObjectPath path, paths)
 	calls << path.path();
-    emit createMultipartyComplete(TRUE, calls);
+    emit createMultipartyComplete(true, calls);
 }
 
 void OfonoVoiceCallManager::createMultipartyErr(const QDBusError &error)
 {
     m_if->setError(error.name(), error.message());
-    emit createMultipartyComplete(FALSE, QStringList());
+    emit createMultipartyComplete(false, QStringList());
 }
 
 void OfonoVoiceCallManager::privateChatResp(const QList<QDBusObjectPath> &paths)
@@ -308,89 +308,89 @@ void OfonoVoiceCallManager::privateChatResp(const QList<QDBusObjectPath> &paths)
     QStringList calls;
     foreach(QDBusObjectPath path, paths)
 	calls << path.path();
-    emit privateChatComplete(TRUE, calls);
+    emit privateChatComplete(true, calls);
 }
 
 void OfonoVoiceCallManager::privateChatErr(const QDBusError &error)
 {
     m_if->setError(error.name(), error.message());
-    emit privateChatComplete(FALSE, QStringList());
+    emit privateChatComplete(false, QStringList());
 }
 
 void OfonoVoiceCallManager::holdAndAnswerResp()
 {
-    emit holdAndAnswerComplete(TRUE);
+    emit holdAndAnswerComplete(true);
 }
 
 void OfonoVoiceCallManager::holdAndAnswerErr(const QDBusError &error)
 {
     m_if->setError(error.name(), error.message());
-    emit holdAndAnswerComplete(FALSE);
+    emit holdAndAnswerComplete(false);
 }
 
 void OfonoVoiceCallManager::releaseAndAnswerResp()
 {
-    emit releaseAndAnswerComplete(TRUE);
+    emit releaseAndAnswerComplete(true);
 }
 
 void OfonoVoiceCallManager::releaseAndAnswerErr(const QDBusError &error)
 {
     m_if->setError(error.name(), error.message());
-    emit releaseAndAnswerComplete(FALSE);
+    emit releaseAndAnswerComplete(false);
 }
 
 void OfonoVoiceCallManager::swapCallsResp()
 {
-    emit swapCallsComplete(TRUE);
+    emit swapCallsComplete(true);
 }
 
 void OfonoVoiceCallManager::swapCallsErr(const QDBusError &error)
 {
     m_if->setError(error.name(), error.message());
-    emit swapCallsComplete(FALSE);
+    emit swapCallsComplete(false);
 }
 
 void OfonoVoiceCallManager::dialResp()
 {
-    emit dialComplete(TRUE);
+    emit dialComplete(true);
 }
 
 void OfonoVoiceCallManager::dialErr(const QDBusError &error)
 {
     m_if->setError(error.name(), error.message());
-    emit dialComplete(FALSE);
+    emit dialComplete(false);
 }
 
 void OfonoVoiceCallManager::hangupAllResp()
 {
-    emit hangupAllComplete(TRUE);
+    emit hangupAllComplete(true);
 }
 
 void OfonoVoiceCallManager::hangupAllErr(const QDBusError &error)
 {
     m_if->setError(error.name(), error.message());
-    emit hangupAllComplete(FALSE);
+    emit hangupAllComplete(false);
 }
 void OfonoVoiceCallManager::sendTonesResp()
 {
-    emit sendTonesComplete(TRUE);
+    emit sendTonesComplete(true);
 }
 
 void OfonoVoiceCallManager::sendTonesErr(const QDBusError &error)
 {
     m_if->setError(error.name(), error.message());
-    emit sendTonesComplete(FALSE);
+    emit sendTonesComplete(false);
 }
 
 void OfonoVoiceCallManager::transferResp()
 {
-    emit transferComplete(TRUE);
+    emit transferComplete(true);
 }
 
 void OfonoVoiceCallManager::transferErr(const QDBusError &error)
 {
     m_if->setError(error.name(), error.message());
-    emit transferComplete(FALSE);
+    emit transferComplete(false);
 }
 
 QStringList OfonoVoiceCallManager::emergencyNumbers() const

@@ -163,44 +163,44 @@ void OfonoCallBarring::requestPropertyComplete(bool success, const QString& prop
 
 void OfonoCallBarring::changePasswordResp()
 {
-    emit changePasswordComplete(TRUE);
+    emit changePasswordComplete(true);
 }
 
 void OfonoCallBarring::changePasswordErr(QDBusError error)
 {
     m_if->setError(error.name(), error.message());
-    emit changePasswordComplete(FALSE);
+    emit changePasswordComplete(false);
 }
 
 void OfonoCallBarring::disableAllResp()
 {
-    emit disableAllComplete(TRUE);
+    emit disableAllComplete(true);
 }
 
 void OfonoCallBarring::disableAllErr(QDBusError error)
 {
     m_if->setError(error.name(), error.message());
-    emit disableAllComplete(FALSE);
+    emit disableAllComplete(false);
 }
 
 void OfonoCallBarring::disableAllIncomingResp()
 {
-    emit disableAllIncomingComplete(TRUE);
+    emit disableAllIncomingComplete(true);
 }
 
 void OfonoCallBarring::disableAllIncomingErr(QDBusError error)
 {
     m_if->setError(error.name(), error.message());
-    emit disableAllIncomingComplete(FALSE);
+    emit disableAllIncomingComplete(false);
 }
 
 void OfonoCallBarring::disableAllOutgoingResp()
 {
-    emit disableAllOutgoingComplete(TRUE);
+    emit disableAllOutgoingComplete(true);
 }
 
 void OfonoCallBarring::disableAllOutgoingErr(QDBusError error)
 {
     m_if->setError(error.name(), error.message());
-    emit disableAllOutgoingComplete(FALSE);
+    emit disableAllOutgoingComplete(false);
 }

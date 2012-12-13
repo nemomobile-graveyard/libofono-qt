@@ -112,35 +112,35 @@ void OfonoVoiceCall::deflect(const QString &number)
 
 void OfonoVoiceCall::answerResp()
 {
-    emit answerComplete(TRUE);
+    emit answerComplete(true);
 }
 
 void OfonoVoiceCall::answerErr(const QDBusError &error)
 {
     m_if->setError(error.name(), error.message());
-    emit answerComplete(FALSE);
+    emit answerComplete(false);
 }
 
 void OfonoVoiceCall::hangupResp()
 {
-    emit hangupComplete(TRUE);
+    emit hangupComplete(true);
 }
 
 void OfonoVoiceCall::hangupErr(const QDBusError &error)
 {
     m_if->setError(error.name(), error.message());
-    emit hangupComplete(FALSE);
+    emit hangupComplete(false);
 }
 
 void OfonoVoiceCall::deflectResp()
 {
-    emit deflectComplete(TRUE);
+    emit deflectComplete(true);
 }
 
 void OfonoVoiceCall::deflectErr(const QDBusError &error)
 {
     m_if->setError(error.name(), error.message());
-    emit deflectComplete(FALSE);
+    emit deflectComplete(false);
 }
 
 QString OfonoVoiceCall::incomingLine() const

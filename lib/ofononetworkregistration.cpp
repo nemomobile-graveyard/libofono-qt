@@ -180,13 +180,13 @@ void OfonoNetworkRegistration::propertyChanged(const QString& property, const QV
 
 void OfonoNetworkRegistration::registerResp()
 {
-    emit registerComplete(TRUE);
+    emit registerComplete(true);
 }
 
 void OfonoNetworkRegistration::registerErr(QDBusError error)
 {
     m_if->setError(error.name(), error.message());
-    emit registerComplete(FALSE);
+    emit registerComplete(false);
 }
 
 void OfonoNetworkRegistration::getOperatorsResp(OfonoOperatorList list)
@@ -195,13 +195,13 @@ void OfonoNetworkRegistration::getOperatorsResp(OfonoOperatorList list)
     foreach(OfonoOperatorStruct op, list) {
     	oplist << op.path.path();
     }
-    emit getOperatorsComplete(TRUE, oplist);
+    emit getOperatorsComplete(true, oplist);
 }
 
 void OfonoNetworkRegistration::getOperatorsErr(QDBusError error)
 {
     m_if->setError(error.name(), error.message());
-    emit getOperatorsComplete(FALSE, QStringList());
+    emit getOperatorsComplete(false, QStringList());
 }
 
 void OfonoNetworkRegistration::scanResp(OfonoOperatorList list)
@@ -210,12 +210,12 @@ void OfonoNetworkRegistration::scanResp(OfonoOperatorList list)
     foreach(OfonoOperatorStruct op, list) {
     	oplist << op.path.path();
     }
-    emit scanComplete(TRUE, oplist);
+    emit scanComplete(true, oplist);
 }
 
 void OfonoNetworkRegistration::scanErr(QDBusError error)
 {
     m_if->setError(error.name(), error.message());
-    emit scanComplete(FALSE, QStringList());
+    emit scanComplete(false, QStringList());
 }
 

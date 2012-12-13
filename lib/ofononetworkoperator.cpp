@@ -70,13 +70,13 @@ void OfonoNetworkOperator::registerOp()
 
 void OfonoNetworkOperator::registerResp()
 {
-    emit registerComplete(TRUE);
+    emit registerComplete(true);
 }
 
 void OfonoNetworkOperator::registerErr(const QDBusError& error)
 {
     m_if->setError(error.name(), error.message());
-    emit registerComplete(FALSE);
+    emit registerComplete(false);
 }
 
 QString OfonoNetworkOperator::name() const
