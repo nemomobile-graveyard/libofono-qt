@@ -137,13 +137,13 @@ void OfonoConnMan::deactivateAll()
 
 void OfonoConnMan::deactivateAllResp()
 {
-    emit deactivateAllComplete(TRUE);
+    emit deactivateAllComplete(true);
 }
 
 void OfonoConnMan::deactivateAllErr(const QDBusError& error)
 {
     m_if->setError(error.name(), error.message());
-    emit deactivateAllComplete(FALSE);
+    emit deactivateAllComplete(false);
 }
 
 void OfonoConnMan::addContext(const QString& type)
@@ -166,13 +166,13 @@ void OfonoConnMan::addContext(const QString& type)
 
 void OfonoConnMan::addContextResp(const QDBusObjectPath &path)
 {
-    emit addContextComplete(TRUE, path.path());
+    emit addContextComplete(true, path.path());
 }
 
 void OfonoConnMan::addContextErr(const QDBusError& error)
 {
     m_if->setError(error.name(), error.message());
-    emit addContextComplete(FALSE, QString());
+    emit addContextComplete(false, QString());
 }
 
 void OfonoConnMan::removeContext(const QString& contextpath)
@@ -195,13 +195,13 @@ void OfonoConnMan::removeContext(const QString& contextpath)
 
 void OfonoConnMan::removeContextResp()
 {
-    emit removeContextComplete(TRUE);
+    emit removeContextComplete(true);
 }
 
 void OfonoConnMan::removeContextErr(const QDBusError& error)
 {
     m_if->setError(error.name(), error.message());
-    emit removeContextComplete(FALSE);
+    emit removeContextComplete(false);
 }
 
 bool OfonoConnMan::attached() const

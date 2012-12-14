@@ -164,12 +164,12 @@ void OfonoCallForwarding::requestPropertyComplete(bool success, const QString& p
 
 void OfonoCallForwarding::disableAllResp()
 {
-    emit disableAllComplete(TRUE);
+    emit disableAllComplete(true);
 }
 
 void OfonoCallForwarding::disableAllErr(QDBusError error)
 {
     m_if->setError(error.name(), error.message());
-    emit disableAllComplete(FALSE);
+    emit disableAllComplete(false);
 }
 

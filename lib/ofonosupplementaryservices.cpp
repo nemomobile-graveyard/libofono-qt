@@ -190,23 +190,23 @@ void OfonoSupplementaryServices::initiateErr(QDBusError error)
 
 void OfonoSupplementaryServices::respondResp(QString message)
 {
-    emit respondComplete(TRUE, message);
+    emit respondComplete(true, message);
 }
 
 void OfonoSupplementaryServices::respondErr(QDBusError error)
 {
     m_if->setError(error.name(), error.message());
-    emit respondComplete(FALSE, QString());
+    emit respondComplete(false, QString());
 }
 
 void OfonoSupplementaryServices::cancelResp()
 {
-    emit cancelComplete(TRUE);
+    emit cancelComplete(true);
 }
 
 void OfonoSupplementaryServices::cancelErr(QDBusError error)
 {
     m_if->setError(error.name(), error.message());
-    emit cancelComplete(FALSE);
+    emit cancelComplete(false);
 }
 
