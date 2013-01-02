@@ -21,4 +21,7 @@ SUBDIRS += test_ofonointerface.pro \
     test_ofonoconnman.pro \
     test_ofonoconnmancontext.pro \
     test_ofonomultipartycall.pro \
-    test_ofonocellbroadcast.pro
+    test_ofonocellbroadcast.pro \
+    tests.xml.pro
+# Don't forget to add your new tests to the tests.xml
+# for automated testing!
