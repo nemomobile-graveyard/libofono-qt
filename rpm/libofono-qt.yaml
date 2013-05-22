@@ -1,0 +1,50 @@
+Name: libofono-qt
+Summary: Qt bindings for oFono
+Version: 0.53
+Release: 1
+Group: System/Libraries
+License: LGPLv2.1
+URL: http://meego.gitorious.org/meego-cellular/ofono-qt
+Sources:
+    - "%{name}-%{version}.tar.bz2"
+Description: |
+    This package contains the Qt bindings for a number of oFono cellular service
+    interfaces.
+PkgBR:
+    - doxygen
+PkgConfigBR:
+    - QtCore
+    - QtDBus
+Configure: none
+Builder: qmake
+SetupOptions: "-q -n %{name}-%{version}"
+Files:
+    - "%{_libdir}/%{name}.so.*"
+SubPackages:
+    - Name: devel
+      Summary: Development files for the oFono Qt bindings
+      Group: Development/Libraries
+      Description: This package contains the development header files for the oFono Qt bindings.
+      Requires:
+          - "%{name} = %{version}"
+      Files:
+          - "%{_libdir}/%{name}.prl"
+          - "%{_libdir}/%{name}.so"
+          - "%{_libdir}/pkgconfig/ofono-qt.pc"
+          - "%{_includedir}/ofono-qt/%{name}_global.h"
+          - "%{_includedir}/ofono-qt/ofono*.h"
+          - "%{_datadir}/qt4/mkspecs/features/ofono-qt.prf"
+
+    - Name: doc
+      Summary: Documentation for the oFono Qt bindings
+      Group: Documentation
+      Description: This package contains the documentation for the oFono Qt bindings.
+      Files:
+          - "%doc %{_datadir}/doc/ofono-qt/"
+
+    - Name: tests
+      Summary: Unit and functional tests for the oFono Qt bindings
+      Group: Development/Tools
+      Description: This package contains the unit and functional tests for the oFono Qt bindings.
+      Files:
+          - "%{_libdir}/%{name}/tests/test_ofono*"

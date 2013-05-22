@@ -1,0 +1,26 @@
+* Mon Dec 10 2012 Marko Saukko <marko.saukko@jollamobile.com> - 0.53
+- Updated packaging.
+
+* Thu Sep 29 2011 Marko Saukko <marko.saukko@cybercom.com> - 0.53
+- Updated to the latest upstream version.
+
+* Wed Jun 29 2011 Shane Bryan <shane.bryan@linux.intel.com> - 0.1.4
+- Update to oFono Qt 0.1.4
+- Add Missing multiparty bindings (BMC# 18436)
+
+* Thu Feb 24 2011 Fathi Boudra <fathi.boudra@nokia.com> - 0.1.2
+- Update to oFono Qt 0.1.2
+- Add bindings to oFono VoiceCall and VoiceCallManager (BMC#12858)
+
+* Tue Dec 21 2010 Fathi Boudra <fathi.boudra@nokia.com> - 0.1.1
+- Update to oFono Qt 0.1.1 (BMC#11664)
+
+* Wed Dec 08 2010 Fathi Boudra <fathi.boudra@nokia.com> - 0.1.0
+- Update to oFono Qt 0.1.0 from MeeGo Cellular gitorious project
+- Re-write packaging from scratch and update license
+
+* Fri Oct 08 2010  Kaitlin Rupert <kaitlin.rupert@intel.com> - 0.0.7
+- Fixing build issues against an qt-mobility 1.1.0 beta2
+
+* Thu Aug 26 2010 Michael Leibowitz <michael.leibowitz@intel.com> - 0.0.7
+- Initial public import (previously proprietary)
