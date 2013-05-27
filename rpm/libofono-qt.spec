@@ -112,6 +112,6 @@ find %{buildroot}%{_libdir} -type f -name '*.prl' \
 
 %files tests
 %defattr(-,root,root,-)
-%{_libdir}/%{name}/tests/test_ofono*
+/opt/tests/%{name}/test_ofono*
 # >> files tests
 # << files tests
