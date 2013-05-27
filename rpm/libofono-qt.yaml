@@ -47,4 +47,4 @@ SubPackages:
       Group: Development/Tools
       Description: This package contains the unit and functional tests for the oFono Qt bindings.
       Files:
-          - "%{_libdir}/%{name}/tests/test_ofono*"
+          - "/opt/tests/%{name}/test_ofono*"
